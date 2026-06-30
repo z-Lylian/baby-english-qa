@@ -120,6 +120,24 @@
   .sub-toc-item:hover { background: #f0edff; color: #4338ca; }
   .sub-toc-item.active { background: #ede9fe; color: #4338ca; font-weight: 600; }
   @media(max-width:480px){ .sub-toc-panel{right:8px;left:8px;width:auto;max-height:45vh;bottom:72px} .sub-toc-btn{bottom:16px;right:16px} }
+  /* ===== Add Entry Panel ===== */
+  .add-entry-toggle { background: linear-gradient(135deg,#10b981,#059669); color:#fff; border:none; padding:6px 14px; border-radius:20px; font-size:0.8rem; cursor:pointer; box-shadow:0 2px 8px rgba(16,185,129,0.3); margin-left:auto; white-space:nowrap; }
+  .add-entry-toggle:hover { box-shadow:0 4px 12px rgba(16,185,129,0.4); transform:scale(1.03); }
+  .add-entry-panel { display:none; background:#fff; border-radius:16px; padding:16px; margin-bottom:1rem; box-shadow:0 4px 16px rgba(0,0,0,0.06); border:1px solid #e5e7eb; }
+  .add-entry-panel.open { display:block; }
+  .add-entry-panel h3 { font-size:0.9rem; margin-bottom:10px; color:#374151; }
+  .add-entry-row { display:flex; gap:8px; margin-bottom:8px; flex-wrap:wrap; }
+  .add-entry-row label { font-size:0.75rem; color:#6b7280; min-width:50px; align-self:center; }
+  .add-entry-row input, .add-entry-row textarea, .add-entry-row select { flex:1; padding:6px 10px; border:1px solid #d1d5db; border-radius:8px; font-size:0.8rem; font-family:inherit; min-width:0; }
+  .add-entry-row textarea { min-height:80px; resize:vertical; }
+  .add-entry-row select { max-width:160px; }
+  .add-entry-actions { display:flex; gap:8px; justify-content:flex-end; }
+  .add-entry-actions button { padding:6px 16px; border-radius:8px; font-size:0.8rem; cursor:pointer; border:none; }
+  .btn-save { background:#10b981; color:#fff; }
+  .btn-save:hover { background:#059669; }
+  .btn-cancel { background:#f3f4f6; color:#666; }
+  .btn-cancel:hover { background:#e5e7eb; }
+  .add-entry-saved { color:#10b981; font-size:0.78rem; margin-left:8px; }
 </style>
 </head>
 <body>
@@ -129,8 +147,8 @@
   <div class="sub-toc-body" id="subTocBody"></div>
 </div>
 <div class="header">
-  <h1>👶 宝宝英语启蒙知识库</h1>
-  <div class="subtitle">跟随 Susan 教英语 · 17个月宝宝启蒙记录</div>
+  <h1>👶 Susan教英语启蒙工具包</h1>
+
   <div class="meta" id="lastUpdated"></div>
 </div>
 
@@ -142,15 +160,52 @@
     <button class="cat-btn" data-cat="books">📖 绘本阅读 <span class="fav-count" data-count="books"></span></button>
     <button class="cat-btn" data-cat="daily">🗣️ 日常互动 <span class="fav-count" data-count="daily"></span></button>
     <button class="cat-btn" data-cat="vocab">📝 词汇与表达 <span class="fav-count" data-count="vocab"></span></button>
-    <button class="cat-btn" data-cat="random">🎲 随机组句 <span class="fav-count" data-count="random"></span></button>
     <button class="cat-btn" data-cat="cards">🃏 闪卡 <span class="fav-count" data-count="cards"></span></button>
     <button class="cat-btn" data-cat="methods">🎯 启蒙方法 <span class="fav-count" data-count="methods"></span></button>
     <button class="cat-btn" data-cat="phonics">🔤️ 自然拼读 <span class="fav-count" data-count="phonics"></span></button>
     <button class="cat-btn" data-cat="confusions">❓ 常见困惑 <span class="fav-count" data-count="confusions"></span></button>
     <button class="cat-btn" data-cat="resources">📦 资源推荐 <span class="fav-count" data-count="resources"></span></button>
+    <button class="cat-btn" data-cat="random">🎲 随机组句 <span class="fav-count" data-count="random"></span></button>
   </div>
   <div class="search-box" id="search-box">
     <input type="text" id="search" placeholder="🔍 搜索问题或关键词...">
+  </div>
+  <div style="display:flex;align-items:center;gap:8px;margin-bottom:0.5rem">
+    <span style="font-size:0.78rem;color:#9ca3af" id="userEntryCount"></span>
+    <button class="add-entry-toggle" id="addEntryToggle">➕ 录入知识点</button>
+  </div>
+  <div class="add-entry-panel" id="addEntryPanel">
+    <h3>📝 录入新知识点</h3>
+    <div class="add-entry-row">
+      <label>标题</label>
+      <input type="text" id="addEntryTitle" placeholder="如：如何引导宝宝开口说话">
+    </div>
+    <div class="add-entry-row">
+      <label>分类</label>
+      <select id="addEntryCat">
+        <option value="songs">🎵 儿歌童谣</option>
+        <option value="books">📖 绘本阅读</option>
+        <option value="daily">🗣️ 日常互动</option>
+        <option value="vocab">📝 词汇与表达</option>
+        <option value="cards">🃏 闪卡</option>
+        <option value="methods">🎯 启蒙方法</option>
+        <option value="phonics">🔤 自然拼读</option>
+        <option value="confusions">❓ 常见困惑</option>
+        <option value="resources">📦 资源推荐</option>
+      </select>
+    </div>
+    <div class="add-entry-row">
+      <label>内容</label>
+      <textarea id="addEntryContent" placeholder="输入知识点内容...&#10;支持多行，直接写就行"></textarea>
+    </div>
+    <div class="add-entry-row">
+      <label>标签</label>
+      <input type="text" id="addEntryTags" placeholder="用逗号分隔，如：TPR,互动,日常">
+    </div>
+    <div class="add-entry-actions">
+      <button class="btn-cancel" id="addEntryCancel">取消</button>
+      <button class="btn-save" id="addEntrySave">💾 保存</button>
+    </div>
   </div>
   <div id="qa-list"></div>
   <div id="sentence-builder">
@@ -1916,502 +1971,502 @@ var qaData = [
 {
 "en": "apple",
 "cn": "苹果",
-"img": "images/noun_apple.jpg"
+"img": "images/noun_apple.png"
 },
 {
 "en": "arm",
 "cn": "手臂",
-"img": "images/noun_arm.jpg"
+"img": "images/noun_arm.png"
 },
 {
 "en": "autumn",
 "cn": "秋天",
-"img": "images/noun_autumn.jpg"
+"img": "images/noun_autumn.png"
 },
 {
 "en": "baby",
 "cn": "宝宝",
-"img": "images/noun_baby.jpg"
+"img": "images/noun_baby.png"
 },
 {
 "en": "banana",
 "cn": "香蕉",
-"img": "images/noun_banana.jpg"
+"img": "images/noun_banana.png"
 },
 {
 "en": "bed",
 "cn": "床",
-"img": "images/noun_bed.jpg"
+"img": "images/noun_bed.png"
 },
 {
 "en": "boat",
 "cn": "船",
-"img": "images/noun_boat.jpg"
+"img": "images/noun_boat.png"
 },
 {
 "en": "book",
 "cn": "书",
-"img": "images/noun_book.jpg"
+"img": "images/noun_book.png"
 },
 {
 "en": "boy",
 "cn": "男孩",
-"img": "images/noun_boy.jpg"
+"img": "images/noun_boy.png"
 },
 {
 "en": "building",
 "cn": "建筑",
-"img": "images/noun_building.jpg"
+"img": "images/noun_building.png"
 },
 {
 "en": "bull",
 "cn": "公牛",
-"img": "images/noun_bull.jpg"
+"img": "images/noun_bull.png"
 },
 {
 "en": "bus",
 "cn": "公交车",
-"img": "images/noun_bus.jpg"
+"img": "images/noun_bus.png"
 },
 {
 "en": "candy",
 "cn": "糖果",
-"img": "images/noun_candy.jpg"
+"img": "images/noun_candy.png"
 },
 {
 "en": "cap",
 "cn": "帽子",
-"img": "images/noun_cap.jpg"
+"img": "images/noun_cap.png"
 },
 {
 "en": "car",
 "cn": "汽车",
-"img": "images/noun_car.jpg"
+"img": "images/noun_car.png"
 },
 {
 "en": "carrot",
 "cn": "胡萝卜",
-"img": "images/noun_carrot.jpg"
+"img": "images/noun_carrot.png"
 },
 {
 "en": "cat",
 "cn": "猫",
-"img": "images/noun_cat.jpg"
+"img": "images/noun_cat.png"
 },
 {
 "en": "chick",
 "cn": "小鸡",
-"img": "images/noun_chick.jpg"
+"img": "images/noun_chick.png"
 },
 {
 "en": "clock",
 "cn": "时钟",
-"img": "images/noun_clock.jpg"
+"img": "images/noun_clock.png"
 },
 {
 "en": "coconut",
 "cn": "椰子",
-"img": "images/noun_coconut.jpg"
+"img": "images/noun_coconut.png"
 },
 {
 "en": "cow",
 "cn": "奶牛",
-"img": "images/noun_cow.jpg"
+"img": "images/noun_cow.png"
 },
 {
 "en": "cup",
 "cn": "杯子",
-"img": "images/noun_cup.jpg"
+"img": "images/noun_cup.png"
 },
 {
 "en": "dad",
 "cn": "爸爸",
-"img": "images/noun_dad.jpg"
+"img": "images/noun_dad.png"
 },
 {
 "en": "deer",
 "cn": "鹿",
-"img": "images/noun_deer.jpg"
+"img": "images/noun_deer.png"
 },
 {
 "en": "desk",
 "cn": "书桌",
-"img": "images/noun_desk.jpg"
+"img": "images/noun_desk.png"
 },
 {
 "en": "dog",
 "cn": "狗",
-"img": "images/noun_dog.jpg"
+"img": "images/noun_dog.png"
 },
 {
 "en": "donkey",
 "cn": "驴",
-"img": "images/noun_donkey.jpg"
+"img": "images/noun_donkey.png"
 },
 {
 "en": "door",
 "cn": "门",
-"img": "images/noun_door.jpg"
+"img": "images/noun_door.png"
 },
 {
 "en": "dress",
 "cn": "裙子",
-"img": "images/noun_dress.jpg"
+"img": "images/noun_dress.png"
 },
 {
 "en": "duck",
 "cn": "鸭子",
-"img": "images/noun_duck.jpg"
+"img": "images/noun_duck.png"
 },
 {
 "en": "egg",
 "cn": "鸡蛋",
-"img": "images/noun_egg.jpg"
+"img": "images/noun_egg.png"
 },
 {
 "en": "elephant",
 "cn": "大象",
-"img": "images/noun_elephant.jpg"
+"img": "images/noun_elephant.png"
 },
 {
 "en": "envelope",
 "cn": "信封",
-"img": "images/noun_envelope.jpg"
+"img": "images/noun_envelope.png"
 },
 {
 "en": "fish",
 "cn": "鱼",
-"img": "images/noun_fish.jpg"
+"img": "images/noun_fish.png"
 },
 {
 "en": "flower",
 "cn": "花",
-"img": "images/noun_flower.jpg"
+"img": "images/noun_flower.png"
 },
 {
 "en": "foot",
 "cn": "脚",
-"img": "images/noun_foot.jpg"
+"img": "images/noun_foot.png"
 },
 {
 "en": "fox",
 "cn": "狐狸",
-"img": "images/noun_fox.jpg"
+"img": "images/noun_fox.png"
 },
 {
 "en": "freezer",
 "cn": "冰箱",
-"img": "images/noun_freezer.jpg"
+"img": "images/noun_freezer.png"
 },
 {
 "en": "girl",
 "cn": "女孩",
-"img": "images/noun_girl.jpg"
+"img": "images/noun_girl.png"
 },
 {
 "en": "glasses",
 "cn": "眼镜",
-"img": "images/noun_glasses.jpg"
+"img": "images/noun_glasses.png"
 },
 {
 "en": "gorilla",
 "cn": "大猩猩",
-"img": "images/noun_gorilla.jpg"
+"img": "images/noun_gorilla.png"
 },
 {
 "en": "grandma",
 "cn": "奶奶",
-"img": "images/noun_grandma.jpg"
+"img": "images/noun_grandma.png"
 },
 {
 "en": "grandpa",
 "cn": "爷爷",
-"img": "images/noun_grandpa.jpg"
+"img": "images/noun_grandpa.png"
 },
 {
 "en": "grape",
 "cn": "葡萄",
-"img": "images/noun_grape.jpg"
+"img": "images/noun_grape.png"
 },
 {
 "en": "grass",
 "cn": "草",
-"img": "images/noun_grass.jpg"
+"img": "images/noun_grass.png"
 },
 {
 "en": "hamburger",
 "cn": "汉堡",
-"img": "images/noun_hamburger.jpg"
+"img": "images/noun_hamburger.png"
 },
 {
 "en": "hammer",
 "cn": "锤子",
-"img": "images/noun_hammer.jpg"
+"img": "images/noun_hammer.png"
 },
 {
 "en": "hand",
 "cn": "手",
-"img": "images/noun_hand.jpg"
+"img": "images/noun_hand.png"
 },
 {
 "en": "hat",
 "cn": "帽子",
-"img": "images/noun_hat.jpg"
+"img": "images/noun_hat.png"
 },
 {
 "en": "heart",
 "cn": "心",
-"img": "images/noun_heart.jpg"
+"img": "images/noun_heart.png"
 },
 {
 "en": "hen",
 "cn": "母鸡",
-"img": "images/noun_hen.jpg"
+"img": "images/noun_hen.png"
 },
 {
 "en": "horse",
 "cn": "马",
-"img": "images/noun_horse.jpg"
+"img": "images/noun_horse.png"
 },
 {
 "en": "ink",
 "cn": "墨水",
-"img": "images/noun_ink.jpg"
+"img": "images/noun_ink.png"
 },
 {
 "en": "jacket",
 "cn": "夹克",
-"img": "images/noun_jacket.jpg"
+"img": "images/noun_jacket.png"
 },
 {
 "en": "jeans",
 "cn": "牛仔裤",
-"img": "images/noun_jeans.jpg"
+"img": "images/noun_jeans.png"
 },
 {
 "en": "juice",
 "cn": "果汁",
-"img": "images/noun_juice.jpg"
+"img": "images/noun_juice.png"
 },
 {
 "en": "key",
 "cn": "钥匙",
-"img": "images/noun_key.jpg"
+"img": "images/noun_key.png"
 },
 {
 "en": "leg",
 "cn": "腿",
-"img": "images/noun_leg.jpg"
+"img": "images/noun_leg.png"
 },
 {
 "en": "lion",
 "cn": "狮子",
-"img": "images/noun_lion.jpg"
+"img": "images/noun_lion.png"
 },
 {
 "en": "lock",
 "cn": "锁",
-"img": "images/noun_lock.jpg"
+"img": "images/noun_lock.png"
 },
 {
 "en": "mom",
 "cn": "妈妈",
-"img": "images/noun_mom.jpg"
+"img": "images/noun_mom.png"
 },
 {
 "en": "monkey",
 "cn": "猴子",
-"img": "images/noun_monkey.jpg"
+"img": "images/noun_monkey.png"
 },
 {
 "en": "moon",
 "cn": "月亮",
-"img": "images/noun_moon.jpg"
+"img": "images/noun_moon.png"
 },
 {
 "en": "mouth",
 "cn": "嘴巴",
-"img": "images/noun_mouth.jpg"
+"img": "images/noun_mouth.png"
 },
 {
 "en": "newspaper",
 "cn": "报纸",
-"img": "images/noun_newspaper.jpg"
+"img": "images/noun_newspaper.png"
 },
 {
 "en": "noodles",
 "cn": "面条",
-"img": "images/noun_noodles.jpg"
+"img": "images/noun_noodles.png"
 },
 {
 "en": "orange",
 "cn": "橙子",
-"img": "images/noun_orange.jpg"
+"img": "images/noun_orange.png"
 },
 {
 "en": "owl",
 "cn": "猫头鹰",
-"img": "images/noun_owl.jpg"
+"img": "images/noun_owl.png"
 },
 {
 "en": "panda",
 "cn": "熊猫",
-"img": "images/noun_panda.jpg"
+"img": "images/noun_panda.png"
 },
 {
 "en": "pea",
 "cn": "豌豆",
-"img": "images/noun_pea.jpg"
+"img": "images/noun_pea.png"
 },
 {
 "en": "pear",
 "cn": "梨",
-"img": "images/noun_pear.jpg"
+"img": "images/noun_pear.png"
 },
 {
 "en": "pencil",
 "cn": "铅笔",
-"img": "images/noun_pencil.jpg"
+"img": "images/noun_pencil.png"
 },
 {
 "en": "penguin",
 "cn": "企鹅",
-"img": "images/noun_penguin.jpg"
+"img": "images/noun_penguin.png"
 },
 {
 "en": "piano",
 "cn": "钢琴",
-"img": "images/noun_piano.jpg"
+"img": "images/noun_piano.png"
 },
 {
 "en": "pig",
 "cn": "猪",
-"img": "images/noun_pig.jpg"
+"img": "images/noun_pig.png"
 },
 {
 "en": "potato",
 "cn": "土豆",
-"img": "images/noun_potato.jpg"
+"img": "images/noun_potato.png"
 },
 {
 "en": "rabbit",
 "cn": "兔子",
-"img": "images/noun_rabbit.jpg"
+"img": "images/noun_rabbit.png"
 },
 {
 "en": "robot",
 "cn": "机器人",
-"img": "images/noun_robot.jpg"
+"img": "images/noun_robot.png"
 },
 {
 "en": "sea",
 "cn": "大海",
-"img": "images/noun_sea.jpg"
+"img": "images/noun_sea.png"
 },
 {
 "en": "sheep",
 "cn": "羊",
-"img": "images/noun_sheep.jpg"
+"img": "images/noun_sheep.png"
 },
 {
 "en": "sock",
 "cn": "袜子",
-"img": "images/noun_sock.jpg"
+"img": "images/noun_sock.png"
 },
 {
 "en": "sofa",
 "cn": "沙发",
-"img": "images/noun_sofa.jpg"
+"img": "images/noun_sofa.png"
 },
 {
 "en": "spring",
 "cn": "春天",
-"img": "images/noun_spring.jpg"
+"img": "images/noun_spring.png"
 },
 {
 "en": "summer",
 "cn": "夏天",
-"img": "images/noun_summer.jpg"
+"img": "images/noun_summer.png"
 },
 {
 "en": "sun",
 "cn": "太阳",
-"img": "images/noun_sun.jpg"
+"img": "images/noun_sun.png"
 },
 {
 "en": "sunglasses",
 "cn": "太阳镜",
-"img": "images/noun_sunglasses.jpg"
+"img": "images/noun_sunglasses.png"
 },
 {
 "en": "table",
 "cn": "桌子",
-"img": "images/noun_table.jpg"
+"img": "images/noun_table.png"
 },
 {
 "en": "tiger",
 "cn": "老虎",
-"img": "images/noun_tiger.jpg"
+"img": "images/noun_tiger.png"
 },
 {
 "en": "tomato",
 "cn": "番茄",
-"img": "images/noun_tomato.jpg"
+"img": "images/noun_tomato.png"
 },
 {
 "en": "trafficlight",
 "cn": "红绿灯",
-"img": "images/noun_trafficlight.jpg"
+"img": "images/noun_trafficlight.png"
 },
 {
 "en": "tshirt",
 "cn": "T恤",
-"img": "images/noun_tshirt.jpg"
+"img": "images/noun_tshirt.png"
 },
 {
 "en": "tv",
 "cn": "电视",
-"img": "images/noun_tv.jpg"
+"img": "images/noun_tv.png"
 },
 {
 "en": "umbrella",
 "cn": "雨伞",
-"img": "images/noun_umbrella.jpg"
+"img": "images/noun_umbrella.png"
 },
 {
 "en": "van",
 "cn": "面包车",
-"img": "images/noun_van.jpg"
+"img": "images/noun_van.png"
 },
 {
 "en": "vegetable",
 "cn": "蔬菜",
-"img": "images/noun_vegetable.jpg"
+"img": "images/noun_vegetable.png"
 },
 {
 "en": "vest",
 "cn": "背心",
-"img": "images/noun_vest.jpg"
+"img": "images/noun_vest.png"
 },
 {
 "en": "watch",
 "cn": "手表",
-"img": "images/noun_watch.jpg"
+"img": "images/noun_watch.png"
 },
 {
 "en": "watermelon",
 "cn": "西瓜",
-"img": "images/noun_watermelon.jpg"
+"img": "images/noun_watermelon.png"
 },
 {
 "en": "window",
 "cn": "窗户",
-"img": "images/noun_window.jpg"
+"img": "images/noun_window.png"
 },
 {
 "en": "winter",
 "cn": "冬天",
-"img": "images/noun_winter.jpg"
+"img": "images/noun_winter.png"
 }
 ]
 }
@@ -2436,502 +2491,502 @@ var qaData = [
 {
 "en": "annoy",
 "cn": "惹恼",
-"img": "images/verb_annoy.jpg"
+"img": "images/verb_annoy.png"
 },
 {
 "en": "approach",
 "cn": "靠近",
-"img": "images/verb_approach.jpg"
+"img": "images/verb_approach.png"
 },
 {
 "en": "attack",
 "cn": "攻击",
-"img": "images/verb_attack.jpg"
+"img": "images/verb_attack.png"
 },
 {
 "en": "bite",
 "cn": "咬",
-"img": "images/verb_bite.jpg"
+"img": "images/verb_bite.png"
 },
 {
 "en": "break",
 "cn": "打破",
-"img": "images/verb_break.jpg"
+"img": "images/verb_break.png"
 },
 {
 "en": "brush",
 "cn": "刷",
-"img": "images/verb_brush.jpg"
+"img": "images/verb_brush.png"
 },
 {
 "en": "build",
 "cn": "建造",
-"img": "images/verb_build.jpg"
+"img": "images/verb_build.png"
 },
 {
 "en": "carry",
 "cn": "搬运",
-"img": "images/verb_carry.jpg"
+"img": "images/verb_carry.png"
 },
 {
 "en": "catch",
 "cn": "抓住",
-"img": "images/verb_catch.jpg"
+"img": "images/verb_catch.png"
 },
 {
 "en": "charge",
 "cn": "冲",
-"img": "images/verb_charge.jpg"
+"img": "images/verb_charge.png"
 },
 {
 "en": "chase",
 "cn": "追赶",
-"img": "images/verb_chase.jpg"
+"img": "images/verb_chase.png"
 },
 {
 "en": "clean",
 "cn": "干净的",
-"img": "images/verb_clean.jpg"
+"img": "images/verb_clean.png"
 },
 {
 "en": "climb",
 "cn": "攀爬",
-"img": "images/verb_climb.jpg"
+"img": "images/verb_climb.png"
 },
 {
 "en": "compare",
 "cn": "比较",
-"img": "images/verb_compare.jpg"
+"img": "images/verb_compare.png"
 },
 {
 "en": "cook",
 "cn": "做饭",
-"img": "images/verb_cook.jpg"
+"img": "images/verb_cook.png"
 },
 {
 "en": "cover",
 "cn": "覆盖",
-"img": "images/verb_cover.jpg"
+"img": "images/verb_cover.png"
 },
 {
 "en": "dance",
 "cn": "跳舞",
-"img": "images/verb_dance.jpg"
+"img": "images/verb_dance.png"
 },
 {
 "en": "defeat",
 "cn": "击败",
-"img": "images/verb_defeat.jpg"
+"img": "images/verb_defeat.png"
 },
 {
 "en": "dig",
 "cn": "挖",
-"img": "images/verb_dig.jpg"
+"img": "images/verb_dig.png"
 },
 {
 "en": "dive",
 "cn": "潜水",
-"img": "images/verb_dive.jpg"
+"img": "images/verb_dive.png"
 },
 {
 "en": "drink",
 "cn": "喝",
-"img": "images/verb_drink.jpg"
+"img": "images/verb_drink.png"
 },
 {
 "en": "escape",
 "cn": "逃跑",
-"img": "images/verb_escape.jpg"
+"img": "images/verb_escape.png"
 },
 {
 "en": "fart",
 "cn": "放屁",
-"img": "images/verb_fart.jpg"
+"img": "images/verb_fart.png"
 },
 {
 "en": "feed",
 "cn": "喂食",
-"img": "images/verb_feed.jpg"
+"img": "images/verb_feed.png"
 },
 {
 "en": "feel",
 "cn": "感觉",
-"img": "images/verb_feel.jpg"
+"img": "images/verb_feel.png"
 },
 {
 "en": "fight",
 "cn": "打架",
-"img": "images/verb_fight.jpg"
+"img": "images/verb_fight.png"
 },
 {
 "en": "float",
 "cn": "漂浮",
-"img": "images/verb_float.jpg"
+"img": "images/verb_float.png"
 },
 {
 "en": "fly",
 "cn": "飞",
-"img": "images/verb_fly.jpg"
+"img": "images/verb_fly.png"
 },
 {
 "en": "follow",
 "cn": "跟随",
-"img": "images/verb_follow.jpg"
+"img": "images/verb_follow.png"
 },
 {
 "en": "gasp",
 "cn": "喘气",
-"img": "images/verb_gasp.jpg"
+"img": "images/verb_gasp.png"
 },
 {
 "en": "give",
 "cn": "给",
-"img": "images/verb_give.jpg"
+"img": "images/verb_give.png"
 },
 {
 "en": "grin",
 "cn": "咧嘴笑",
-"img": "images/verb_grin.jpg"
+"img": "images/verb_grin.png"
 },
 {
 "en": "growl",
 "cn": "咆哮",
-"img": "images/verb_growl.jpg"
+"img": "images/verb_growl.png"
 },
 {
 "en": "hang",
 "cn": "挂",
-"img": "images/verb_hang.jpg"
+"img": "images/verb_hang.png"
 },
 {
 "en": "hatch",
 "cn": "孵化",
-"img": "images/verb_hatch.jpg"
+"img": "images/verb_hatch.png"
 },
 {
 "en": "hate",
 "cn": "讨厌",
-"img": "images/verb_hate.jpg"
+"img": "images/verb_hate.png"
 },
 {
 "en": "have",
 "cn": "有",
-"img": "images/verb_have.jpg"
+"img": "images/verb_have.png"
 },
 {
 "en": "headbutt",
 "cn": "顶头",
-"img": "images/verb_headbutt.jpg"
+"img": "images/verb_headbutt.png"
 },
 {
 "en": "hide",
 "cn": "躲藏",
-"img": "images/verb_hide.jpg"
+"img": "images/verb_hide.png"
 },
 {
 "en": "hoard",
 "cn": "囤积",
-"img": "images/verb_hoard.jpg"
+"img": "images/verb_hoard.png"
 },
 {
 "en": "hop",
 "cn": "单脚跳",
-"img": "images/verb_hop.jpg"
+"img": "images/verb_hop.png"
 },
 {
 "en": "hug",
 "cn": "拥抱",
-"img": "images/verb_hug.jpg"
+"img": "images/verb_hug.png"
 },
 {
 "en": "jump",
 "cn": "跳",
-"img": "images/verb_jump.jpg"
+"img": "images/verb_jump.png"
 },
 {
 "en": "kick",
 "cn": "踢",
-"img": "images/verb_kick.jpg"
+"img": "images/verb_kick.png"
 },
 {
 "en": "lead",
 "cn": "带领",
-"img": "images/verb_lead.jpg"
+"img": "images/verb_lead.png"
 },
 {
 "en": "lean",
 "cn": "倚靠",
-"img": "images/verb_lean.jpg"
+"img": "images/verb_lean.png"
 },
 {
 "en": "leave",
 "cn": "离开",
-"img": "images/verb_leave.jpg"
+"img": "images/verb_leave.png"
 },
 {
 "en": "lick",
 "cn": "舔",
-"img": "images/verb_lick.jpg"
+"img": "images/verb_lick.png"
 },
 {
 "en": "listen",
 "cn": "听",
-"img": "images/verb_listen.jpg"
+"img": "images/verb_listen.png"
 },
 {
 "en": "look",
 "cn": "看",
-"img": "images/verb_look.jpg"
+"img": "images/verb_look.png"
 },
 {
 "en": "measure",
 "cn": "测量",
-"img": "images/verb_measure.jpg"
+"img": "images/verb_measure.png"
 },
 {
 "en": "move",
 "cn": "移动",
-"img": "images/verb_move.jpg"
+"img": "images/verb_move.png"
 },
 {
 "en": "observe",
 "cn": "观察",
-"img": "images/verb_observe.jpg"
+"img": "images/verb_observe.png"
 },
 {
 "en": "overeat",
 "cn": "吃太多",
-"img": "images/verb_overeat.jpg"
+"img": "images/verb_overeat.png"
 },
 {
 "en": "pee",
 "cn": "尿尿",
-"img": "images/verb_pee.jpg"
+"img": "images/verb_pee.png"
 },
 {
 "en": "play",
 "cn": "玩",
-"img": "images/verb_play.jpg"
+"img": "images/verb_play.png"
 },
 {
 "en": "poke",
 "cn": "戳",
-"img": "images/verb_poke.jpg"
+"img": "images/verb_poke.png"
 },
 {
 "en": "poop",
 "cn": "拉臭臭",
-"img": "images/verb_poop.jpg"
+"img": "images/verb_poop.png"
 },
 {
 "en": "pounce",
 "cn": "扑",
-"img": "images/verb_pounce.jpg"
+"img": "images/verb_pounce.png"
 },
 {
 "en": "pout",
 "cn": "撅嘴",
-"img": "images/verb_pout.jpg"
+"img": "images/verb_pout.png"
 },
 {
 "en": "pretend",
 "cn": "假装",
-"img": "images/verb_pretend.jpg"
+"img": "images/verb_pretend.png"
 },
 {
 "en": "protect",
 "cn": "保护",
-"img": "images/verb_protect.jpg"
+"img": "images/verb_protect.png"
 },
 {
 "en": "puke",
 "cn": "呕吐",
-"img": "images/verb_puke.jpg"
+"img": "images/verb_puke.png"
 },
 {
 "en": "pull",
 "cn": "拉",
-"img": "images/verb_pull.jpg"
+"img": "images/verb_pull.png"
 },
 {
 "en": "race",
 "cn": "赛跑",
-"img": "images/verb_race.jpg"
+"img": "images/verb_race.png"
 },
 {
 "en": "raise",
 "cn": "举起",
-"img": "images/verb_raise.jpg"
+"img": "images/verb_raise.png"
 },
 {
 "en": "refuse",
 "cn": "拒绝",
-"img": "images/verb_refuse.jpg"
+"img": "images/verb_refuse.png"
 },
 {
 "en": "run",
 "cn": "跑",
-"img": "images/verb_run.jpg"
+"img": "images/verb_run.png"
 },
 {
 "en": "salute",
 "cn": "敬礼",
-"img": "images/verb_salute.jpg"
+"img": "images/verb_salute.png"
 },
 {
 "en": "scratch",
 "cn": "抓",
-"img": "images/verb_scratch.jpg"
+"img": "images/verb_scratch.png"
 },
 {
 "en": "shake",
 "cn": "摇",
-"img": "images/verb_shake.jpg"
+"img": "images/verb_shake.png"
 },
 {
 "en": "shed",
 "cn": "脱(皮)",
-"img": "images/verb_shed.jpg"
+"img": "images/verb_shed.png"
 },
 {
 "en": "show",
 "cn": "展示",
-"img": "images/verb_show.jpg"
+"img": "images/verb_show.png"
 },
 {
 "en": "sing",
 "cn": "唱歌",
-"img": "images/verb_sing.jpg"
+"img": "images/verb_sing.png"
 },
 {
 "en": "slap",
 "cn": "拍",
-"img": "images/verb_slap.jpg"
+"img": "images/verb_slap.png"
 },
 {
 "en": "sleep",
 "cn": "睡觉",
-"img": "images/verb_sleep.jpg"
+"img": "images/verb_sleep.png"
 },
 {
 "en": "slither",
 "cn": "滑行",
-"img": "images/verb_slither.jpg"
+"img": "images/verb_slither.png"
 },
 {
 "en": "slurp",
 "cn": "吸溜",
-"img": "images/verb_slurp.jpg"
+"img": "images/verb_slurp.png"
 },
 {
 "en": "smell",
 "cn": "闻",
-"img": "images/verb_smell.jpg"
+"img": "images/verb_smell.png"
 },
 {
 "en": "smile",
 "cn": "微笑",
-"img": "images/verb_smile.jpg"
+"img": "images/verb_smile.png"
 },
 {
 "en": "spit",
 "cn": "吐",
-"img": "images/verb_spit.jpg"
+"img": "images/verb_spit.png"
 },
 {
 "en": "spray",
 "cn": "喷",
-"img": "images/verb_spray.jpg"
+"img": "images/verb_spray.png"
 },
 {
 "en": "stand",
 "cn": "站",
-"img": "images/verb_stand.jpg"
+"img": "images/verb_stand.png"
 },
 {
 "en": "stare",
 "cn": "瞪",
-"img": "images/verb_stare.jpg"
+"img": "images/verb_stare.png"
 },
 {
 "en": "stretch",
 "cn": "伸展",
-"img": "images/verb_stretch.jpg"
+"img": "images/verb_stretch.png"
 },
 {
 "en": "stroke",
 "cn": "抚摸",
-"img": "images/verb_stroke.jpg"
+"img": "images/verb_stroke.png"
 },
 {
 "en": "stuff",
 "cn": "塞满",
-"img": "images/verb_stuff.jpg"
+"img": "images/verb_stuff.png"
 },
 {
 "en": "sulk",
 "cn": "生闷气",
-"img": "images/verb_sulk.jpg"
+"img": "images/verb_sulk.png"
 },
 {
 "en": "swim",
 "cn": "游泳",
-"img": "images/verb_swim.jpg"
+"img": "images/verb_swim.png"
 },
 {
 "en": "teach",
 "cn": "教",
-"img": "images/verb_teach.jpg"
+"img": "images/verb_teach.png"
 },
 {
 "en": "tease",
 "cn": "逗弄",
-"img": "images/verb_tease.jpg"
+"img": "images/verb_tease.png"
 },
 {
 "en": "think",
 "cn": "想",
-"img": "images/verb_think.jpg"
+"img": "images/verb_think.png"
 },
 {
 "en": "waddle",
 "cn": "摇摇摆摆走",
-"img": "images/verb_waddle.jpg"
+"img": "images/verb_waddle.png"
 },
 {
 "en": "warm",
 "cn": "取暖",
-"img": "images/verb_warm.jpg"
+"img": "images/verb_warm.png"
 },
 {
 "en": "warn",
 "cn": "警告",
-"img": "images/verb_warn.jpg"
+"img": "images/verb_warn.png"
 },
 {
 "en": "wash",
 "cn": "洗",
-"img": "images/verb_wash.jpg"
+"img": "images/verb_wash.png"
 },
 {
 "en": "weigh",
 "cn": "称重",
-"img": "images/verb_weigh.jpg"
+"img": "images/verb_weigh.png"
 },
 {
 "en": "whistle",
 "cn": "吹口哨",
-"img": "images/verb_whistle.jpg"
+"img": "images/verb_whistle.png"
 },
 {
 "en": "wiggle",
 "cn": "扭动",
-"img": "images/verb_wiggle.jpg"
+"img": "images/verb_wiggle.png"
 },
 {
 "en": "yawn",
 "cn": "打哈欠",
-"img": "images/verb_yawn.jpg"
+"img": "images/verb_yawn.png"
 }
 ]
 }
@@ -3384,6 +3439,7 @@ function renderQA(data) {
       if(q.tip) h += '<div class="tip-box">💡 ' + q.tip + '</div>';
       h += '</div>';
       if(q.tags && q.tags.length) { h += '<div class="tags">'; for(var t = 0; t < q.tags.length; t++) h += '<span class="tag">' + q.tags[t] + '</span>'; h += '</div>'; }
+      if(q._userEntry) h += '<button class="btn-delete-entry" data-idx="' + (q._userIdx || '') + '" style="background:none;border:1px solid #fca5a5;color:#ef4444;padding:3px 10px;border-radius:8px;font-size:0.72rem;cursor:pointer;margin-top:6px">🗑️ 删除此条</button>';
       h += '<div class="date">' + (q.date || '') + '</div></div>';
     }
     h += '</div>';
@@ -3505,208 +3561,208 @@ applyFilters();
 
 // ===== 随机组句 Data =====
 const nounsData = [
-        { word: "chick", phonetic: "[tʃɪk]", grammar: "n. [C] 小鸡[ 复数 chicks   ]", imgPath: "images/noun_chick.jpg" },
-        { word: "duck", phonetic: "[dʌk]", grammar: "n. [C] 鸭子[ 复数 ducks]", imgPath: "images/noun_duck.jpg" },
-        { word: "lion", phonetic: "[ˈlaɪən]", grammar: "n. [C] 狮子[ 复数 lions]", imgPath: "images/noun_lion.jpg" },
-        { word: "tiger", phonetic: "[ˈtaɪɡər]", grammar: "n. [C] 老虎[ 复数 tigers]", imgPath: "images/noun_tiger.jpg" },
-        { word: "monkey", phonetic: "[ˈmʌŋki]", grammar: "n. [C] 猴子[ 复数 monkeys ]", imgPath: "images/noun_monkey.jpg" },
-        { word: "panda", phonetic: "[ˈpændə]", grammar: "n. [C] 熊猫[ 复数 pandas ]", imgPath: "images/noun_panda.jpg" },
-        { word: "pig", phonetic: "[pɪɡ]", grammar: "n. [C] 猪[ 复数 pigs]", imgPath: "images/noun_pig.jpg" },
-        { word: "elephant", phonetic: "[ˈelɪfənt]", grammar: "n. [C] 大象[ 复数 elephants ]", imgPath: "images/noun_elephant.jpg" },
-        { word: "sheep", phonetic: "[ʃiːp]", grammar: "n. [C] 绵羊[ 复数 sheep   ]", imgPath: "images/noun_sheep.jpg" },
-        { word: "rabbit", phonetic: "[ˈræbɪt]", grammar: "n. [C] 兔子[ 复数 rabbits]", imgPath: "images/noun_rabbit.jpg" },
-        { word: "dog", phonetic: "[dɒɡ]", grammar: "n. [C] 狗", imgPath: "images/noun_dog.jpg" },
-        { word: "deer", phonetic: "[dɪər]", grammar: "n. [C] 鹿", imgPath: "images/noun_deer.jpg" },
-        { word: "cat", phonetic: "[kæt]", grammar: "n. [C] 猫", imgPath: "images/noun_cat.jpg" },
-        { word: "fox", phonetic: "[fɒks]", grammar: "n. [C] 狐狸", imgPath: "images/noun_fox.jpg" },
-        { word: "penguin", phonetic: "[ˈpeŋɡwɪn]", grammar: "n. [C] 企鹅", imgPath: "images/noun_penguin.jpg" },
-        { word: "hen", phonetic: "[hen]", grammar: "n. [C] 母鸡", imgPath: "images/noun_hen.jpg" },
-        { word: "horse", phonetic: "[hɔːs]", grammar: "n. [C] 马", imgPath: "images/noun_horse.jpg" },
-        { word: "donkey", phonetic: "[ˈdɒŋki]", grammar: "n. [C] 驴", imgPath: "images/noun_donkey.jpg" },
-        { word: "bull", phonetic: "[bʊl]", grammar: "n. [C] 公牛", imgPath: "images/noun_bull.jpg" },
-        { word: "gorilla", phonetic: "[ɡəˈrɪlə]", grammar: "n. [C] 大猩猩", imgPath: "images/noun_gorilla.jpg" },
-        { word: "owl", phonetic: "[aʊl]", grammar: "n. [C] 猫头鹰", imgPath: "images/noun_owl.jpg" },
-        { word: "cow", phonetic: "[kaʊ]", grammar: "n. [C] 奶牛", imgPath: "images/noun_cow.jpg" },
-        { word: "apple", phonetic: "[ˈæpl]", grammar: "n. [C] 苹果", imgPath: "images/noun_apple.jpg" },
-        { word: "orange", phonetic: "[ˈɒrɪndʒ]", grammar: "n. [C/U] 橙子", imgPath: "images/noun_orange.jpg" },
-        { word: "watermelon", phonetic: "[ˈwɔːtəmelən]", grammar: "n. [C/U] 西瓜", imgPath: "images/noun_watermelon.jpg" },
-        { word: "grape", phonetic: "[ɡreɪp]", grammar: "n. [C] 葡萄", imgPath: "images/noun_grape.jpg" },
-        { word: "banana", phonetic: "[bəˈnɑːnə]", grammar: "n. [C] 香蕉", imgPath: "images/noun_banana.jpg" },
-        { word: "pear", phonetic: "[peər]", grammar: "n. [C] 梨", imgPath: "images/noun_pear.jpg" },
-        { word: "coconut", phonetic: "[ˈkəʊkənʌt]", grammar: "n. [C] 椰子", imgPath: "images/noun_coconut.jpg" },
-        { word: "vegetable", phonetic: "[ˈvedʒtəbl]", grammar: "n. [C] 蔬菜", imgPath: "images/noun_vegetable.jpg" },
-        { word: "carrot", phonetic: "[ˈkærət]", grammar: "n. [C] 胡萝卜", imgPath: "images/noun_carrot.jpg" },
-        { word: "tomato", phonetic: "[təˈmɑːtəʊ]", grammar: "n. [C/U] 番茄", imgPath: "images/noun_tomato.jpg" },
-        { word: "pea", phonetic: "[piː]", grammar: "n. [C] 豌豆", imgPath: "images/noun_pea.jpg" },
-        { word: "potato", phonetic: "[pəˈteɪtəʊ]", grammar: "n. [C/U] 土豆", imgPath: "images/noun_potato.jpg" },
-        { word: "fish", phonetic: "[fɪʃ]", grammar: "n. [C/U] 鱼", imgPath: "images/noun_fish.jpg" },
-        { word: "egg", phonetic: "[eɡ]", grammar: "n. [C/U] 鸡蛋", imgPath: "images/noun_egg.jpg" },
-        { word: "hamburger", phonetic: "[ˈhæmbɜːɡər]", grammar: "n. [C] 汉堡", imgPath: "images/noun_hamburger.jpg" },
-        { word: "noodles", phonetic: "[ˈnuːdlz]", grammar: "n. pl. 面条;英语里面条永远用复数 noodles", imgPath: "images/noun_noodles.jpg" },
-        { word: "candy", phonetic: "[ˈkændi]", grammar: "n. [C/U] 糖果", imgPath: "images/noun_candy.jpg" },
-        { word: "juice", phonetic: "[dʒuːs]", grammar: "n. [U] 果汁", imgPath: "images/noun_juice.jpg" },
-        { word: "mom", phonetic: "[mɒm]", grammar: "n. 妈妈", imgPath: "images/noun_mom.jpg" },
-        { word: "dad", phonetic: "[dæd]", grammar: "n. 爸爸", imgPath: "images/noun_dad.jpg" },
-        { word: "grandma", phonetic: "[ˈɡrænmɑː]", grammar: "n. 奶奶", imgPath: "images/noun_grandma.jpg" },
-        { word: "grandpa", phonetic: "[ˈɡrænpɑː]", grammar: "n. 爷爷", imgPath: "images/noun_grandpa.jpg" },
-        { word: "girl", phonetic: "[ɡɜːl]", grammar: "n. [C] 女孩", imgPath: "images/noun_girl.jpg" },
-        { word: "boy", phonetic: "[bɔɪ]", grammar: "n. [C] 男孩", imgPath: "images/noun_boy.jpg" },
-        { word: "baby", phonetic: "[ˈbeɪbi]", grammar: "n. [C] 婴儿", imgPath: "images/noun_baby.jpg" },
-        { word: "robot", phonetic: "[ˈrəʊbɒt]", grammar: "n. [C] 机器人", imgPath: "images/noun_robot.jpg" },
-        { word: "heart", phonetic: "[hɑːt]", grammar: "n. 心脏", imgPath: "images/noun_heart.jpg" },
-        { word: "mouth", phonetic: "[maʊθ]", grammar: "n. [C] 嘴巴", imgPath: "images/noun_mouth.jpg" },
-        { word: "hand", phonetic: "[hænd]", grammar: "n. [C] 手", imgPath: "images/noun_hand.jpg" },
-        { word: "foot", phonetic: "[fʊt]", grammar: "n. [C] 脚", imgPath: "images/noun_foot.jpg" },
-        { word: "leg", phonetic: "[leɡ]", grammar: "n. [C] 腿", imgPath: "images/noun_leg.jpg" },
-        { word: "arm", phonetic: "[ɑːm]", grammar: "n. [C] 手臂", imgPath: "images/noun_arm.jpg" },
-        { word: "building", phonetic: "[ˈbɪldɪŋ]", grammar: "n. [C] 建筑", imgPath: "images/noun_building.jpg" },
-        { word: "bed", phonetic: "[bed]", grammar: "n. [C] 床", imgPath: "images/noun_bed.jpg" },
-        { word: "desk", phonetic: "[desk]", grammar: "n. [C] 书桌", imgPath: "images/noun_desk.jpg" },
-        { word: "table", phonetic: "[ˈteɪbl]", grammar: "n. [C] 桌子", imgPath: "images/noun_table.jpg" },
-        { word: "door", phonetic: "[dɔːr]", grammar: "n. [C] 门", imgPath: "images/noun_door.jpg" },
-        { word: "window", phonetic: "[ˈwɪndəʊ]", grammar: "n. [C] 窗户", imgPath: "images/noun_window.jpg" },
-        { word: "sofa", phonetic: "[ˈsəʊfə]", grammar: "n. [C] 沙发", imgPath: "images/noun_sofa.jpg" },
-        { word: "piano", phonetic: "[piˈænəʊ]", grammar: "n. [C] 钢琴", imgPath: "images/noun_piano.jpg" },
-        { word: "TV", phonetic: "[ˌtiː ˈviː]", grammar: "n. 电视", imgPath: "images/noun_tv.jpg" },
-        { word: "freezer", phonetic: "[ˈfriːzər]", grammar: "n. [C] 冰柜", imgPath: "images/noun_freezer.jpg" },
-        { word: "newspaper", phonetic: "[ˈnjuːzpeɪpər]", grammar: "n. [C] 报纸", imgPath: "images/noun_newspaper.jpg" },
-        { word: "envelope", phonetic: "[ˈenvələʊp]", grammar: "n. [C] 信封", imgPath: "images/noun_envelope.jpg" },
-        { word: "pencil", phonetic: "[ˈpensl]", grammar: "n. [C] 铅笔", imgPath: "images/noun_pencil.jpg" },
-        { word: "book", phonetic: "[bʊk]", grammar: "n. [C] 书", imgPath: "images/noun_book.jpg" },
-        { word: "ink", phonetic: "[ɪŋk]", grammar: "n. [U] 墨水", imgPath: "images/noun_ink.jpg" },
-        { word: "cup", phonetic: "[kʌp]", grammar: "n. [C] 杯子", imgPath: "images/noun_cup.jpg" },
-        { word: "lock", phonetic: "[lɒk]", grammar: "n. [C] 锁", imgPath: "images/noun_lock.jpg" },
-        { word: "key", phonetic: "[kiː]", grammar: "n. [C] 钥匙", imgPath: "images/noun_key.jpg" },
-        { word: "hammer", phonetic: "[ˈhæmər]", grammar: "n. [C] 锤子", imgPath: "images/noun_hammer.jpg" },
-        { word: "clock", phonetic: "[klɒk]", grammar: "n. [C] 时钟", imgPath: "images/noun_clock.jpg" },
-        { word: "jacket", phonetic: "[ˈdʒækɪt]", grammar: "n. [C] 夹克", imgPath: "images/noun_jacket.jpg" },
-        { word: "jeans", phonetic: "[dʒiːnz]", grammar: "n. pl. 牛仔裤", imgPath: "images/noun_jeans.jpg" },
-        { word: "dress", phonetic: "[dres]", grammar: "n. [C] 连衣裙", imgPath: "images/noun_dress.jpg" },
-        { word: "vest", phonetic: "[vest]", grammar: "n. [C] 背心", imgPath: "images/noun_vest.jpg" },
-        { word: "T-shirt", phonetic: "[ˈtiː ʃɜːt]", grammar: "n. [C] T恤", imgPath: "images/noun_tshirt.jpg" },
-        { word: "sock", phonetic: "[sɒk]", grammar: "n. [C] 袜子", imgPath: "images/noun_sock.jpg" },
-        { word: "hat", phonetic: "[hæt]", grammar: "n. [C] 帽子", imgPath: "images/noun_hat.jpg" },
-        { word: "cap", phonetic: "[kæp]", grammar: "n. [C] 鸭舌帽", imgPath: "images/noun_cap.jpg" },
-        { word: "glasses", phonetic: "[ˈɡlɑːsɪz]", grammar: "n. pl. 眼镜", imgPath: "images/noun_glasses.jpg" },
-        { word: "sunglasses", phonetic: "[ˈsʌnɡlɑːsɪz]", grammar: "n. pl. 墨镜", imgPath: "images/noun_sunglasses.jpg" },
-        { word: "watch", phonetic: "[wɒtʃ]", grammar: "n. [C] 手表 [ 复数 watches]", imgPath: "images/noun_watch.jpg" },
-        { word: "umbrella", phonetic: "[ʌmˈbrelə]", grammar: "n. [C] 雨伞", imgPath: "images/noun_umbrella.jpg" },
-        { word: "car", phonetic: "[kɑːr]", grammar: "n. [C] 汽车", imgPath: "images/noun_car.jpg" },
-        { word: "bus", phonetic: "[bʌs]", grammar: "n. [C] 公交车", imgPath: "images/noun_bus.jpg" },
-        { word: "van", phonetic: "[væn]", grammar: "n. [C] 货车", imgPath: "images/noun_van.jpg" },
-        { word: "traffic light", phonetic: "[ˈtræfɪk laɪt]", grammar: "n. 红绿灯", imgPath: "images/noun_trafficlight.jpg" },
-        { word: "boat", phonetic: "[bəʊt]", grammar: "n. [C] 船", imgPath: "images/noun_boat.jpg" },
-        { word: "sea", phonetic: "[siː]", grammar: "n. 海洋", imgPath: "images/noun_sea.jpg" },
-        { word: "sun", phonetic: "[sʌn]", grammar: "n. 太阳", imgPath: "images/noun_sun.jpg" },
-        { word: "moon", phonetic: "[muːn]", grammar: "n. 月亮", imgPath: "images/noun_moon.jpg" },
-        { word: "flower", phonetic: "[ˈflaʊər]", grammar: "n. [C] 花", imgPath: "images/noun_flower.jpg" },
-        { word: "grass", phonetic: "[ɡrɑːs]", grammar: "n. [U] 草", imgPath: "images/noun_grass.jpg" },
-        { word: "spring", phonetic: "[sprɪŋ]", grammar: "n. 春天", imgPath: "images/noun_spring.jpg" },
-        { word: "summer", phonetic: "[ˈsʌmər]", grammar: "n. 夏天", imgPath: "images/noun_summer.jpg" },
-        { word: "autumn", phonetic: "[ˈɔːtəm]", grammar: "n. 秋天", imgPath: "images/noun_autumn.jpg" },
-        { word: "winter", phonetic: "[ˈwɪntər]", grammar: "n. 冬天", imgPath: "images/noun_winter.jpg" }
+        { word: "chick", phonetic: "[tʃɪk]", grammar: "n. [C] 小鸡[ 复数 chicks   ]", imgPath: "images/noun_chick.png" },
+        { word: "duck", phonetic: "[dʌk]", grammar: "n. [C] 鸭子[ 复数 ducks]", imgPath: "images/noun_duck.png" },
+        { word: "lion", phonetic: "[ˈlaɪən]", grammar: "n. [C] 狮子[ 复数 lions]", imgPath: "images/noun_lion.png" },
+        { word: "tiger", phonetic: "[ˈtaɪɡər]", grammar: "n. [C] 老虎[ 复数 tigers]", imgPath: "images/noun_tiger.png" },
+        { word: "monkey", phonetic: "[ˈmʌŋki]", grammar: "n. [C] 猴子[ 复数 monkeys ]", imgPath: "images/noun_monkey.png" },
+        { word: "panda", phonetic: "[ˈpændə]", grammar: "n. [C] 熊猫[ 复数 pandas ]", imgPath: "images/noun_panda.png" },
+        { word: "pig", phonetic: "[pɪɡ]", grammar: "n. [C] 猪[ 复数 pigs]", imgPath: "images/noun_pig.png" },
+        { word: "elephant", phonetic: "[ˈelɪfənt]", grammar: "n. [C] 大象[ 复数 elephants ]", imgPath: "images/noun_elephant.png" },
+        { word: "sheep", phonetic: "[ʃiːp]", grammar: "n. [C] 绵羊[ 复数 sheep   ]", imgPath: "images/noun_sheep.png" },
+        { word: "rabbit", phonetic: "[ˈræbɪt]", grammar: "n. [C] 兔子[ 复数 rabbits]", imgPath: "images/noun_rabbit.png" },
+        { word: "dog", phonetic: "[dɒɡ]", grammar: "n. [C] 狗", imgPath: "images/noun_dog.png" },
+        { word: "deer", phonetic: "[dɪər]", grammar: "n. [C] 鹿", imgPath: "images/noun_deer.png" },
+        { word: "cat", phonetic: "[kæt]", grammar: "n. [C] 猫", imgPath: "images/noun_cat.png" },
+        { word: "fox", phonetic: "[fɒks]", grammar: "n. [C] 狐狸", imgPath: "images/noun_fox.png" },
+        { word: "penguin", phonetic: "[ˈpeŋɡwɪn]", grammar: "n. [C] 企鹅", imgPath: "images/noun_penguin.png" },
+        { word: "hen", phonetic: "[hen]", grammar: "n. [C] 母鸡", imgPath: "images/noun_hen.png" },
+        { word: "horse", phonetic: "[hɔːs]", grammar: "n. [C] 马", imgPath: "images/noun_horse.png" },
+        { word: "donkey", phonetic: "[ˈdɒŋki]", grammar: "n. [C] 驴", imgPath: "images/noun_donkey.png" },
+        { word: "bull", phonetic: "[bʊl]", grammar: "n. [C] 公牛", imgPath: "images/noun_bull.png" },
+        { word: "gorilla", phonetic: "[ɡəˈrɪlə]", grammar: "n. [C] 大猩猩", imgPath: "images/noun_gorilla.png" },
+        { word: "owl", phonetic: "[aʊl]", grammar: "n. [C] 猫头鹰", imgPath: "images/noun_owl.png" },
+        { word: "cow", phonetic: "[kaʊ]", grammar: "n. [C] 奶牛", imgPath: "images/noun_cow.png" },
+        { word: "apple", phonetic: "[ˈæpl]", grammar: "n. [C] 苹果", imgPath: "images/noun_apple.png" },
+        { word: "orange", phonetic: "[ˈɒrɪndʒ]", grammar: "n. [C/U] 橙子", imgPath: "images/noun_orange.png" },
+        { word: "watermelon", phonetic: "[ˈwɔːtəmelən]", grammar: "n. [C/U] 西瓜", imgPath: "images/noun_watermelon.png" },
+        { word: "grape", phonetic: "[ɡreɪp]", grammar: "n. [C] 葡萄", imgPath: "images/noun_grape.png" },
+        { word: "banana", phonetic: "[bəˈnɑːnə]", grammar: "n. [C] 香蕉", imgPath: "images/noun_banana.png" },
+        { word: "pear", phonetic: "[peər]", grammar: "n. [C] 梨", imgPath: "images/noun_pear.png" },
+        { word: "coconut", phonetic: "[ˈkəʊkənʌt]", grammar: "n. [C] 椰子", imgPath: "images/noun_coconut.png" },
+        { word: "vegetable", phonetic: "[ˈvedʒtəbl]", grammar: "n. [C] 蔬菜", imgPath: "images/noun_vegetable.png" },
+        { word: "carrot", phonetic: "[ˈkærət]", grammar: "n. [C] 胡萝卜", imgPath: "images/noun_carrot.png" },
+        { word: "tomato", phonetic: "[təˈmɑːtəʊ]", grammar: "n. [C/U] 番茄", imgPath: "images/noun_tomato.png" },
+        { word: "pea", phonetic: "[piː]", grammar: "n. [C] 豌豆", imgPath: "images/noun_pea.png" },
+        { word: "potato", phonetic: "[pəˈteɪtəʊ]", grammar: "n. [C/U] 土豆", imgPath: "images/noun_potato.png" },
+        { word: "fish", phonetic: "[fɪʃ]", grammar: "n. [C/U] 鱼", imgPath: "images/noun_fish.png" },
+        { word: "egg", phonetic: "[eɡ]", grammar: "n. [C/U] 鸡蛋", imgPath: "images/noun_egg.png" },
+        { word: "hamburger", phonetic: "[ˈhæmbɜːɡər]", grammar: "n. [C] 汉堡", imgPath: "images/noun_hamburger.png" },
+        { word: "noodles", phonetic: "[ˈnuːdlz]", grammar: "n. pl. 面条;英语里面条永远用复数 noodles", imgPath: "images/noun_noodles.png" },
+        { word: "candy", phonetic: "[ˈkændi]", grammar: "n. [C/U] 糖果", imgPath: "images/noun_candy.png" },
+        { word: "juice", phonetic: "[dʒuːs]", grammar: "n. [U] 果汁", imgPath: "images/noun_juice.png" },
+        { word: "mom", phonetic: "[mɒm]", grammar: "n. 妈妈", imgPath: "images/noun_mom.png" },
+        { word: "dad", phonetic: "[dæd]", grammar: "n. 爸爸", imgPath: "images/noun_dad.png" },
+        { word: "grandma", phonetic: "[ˈɡrænmɑː]", grammar: "n. 奶奶", imgPath: "images/noun_grandma.png" },
+        { word: "grandpa", phonetic: "[ˈɡrænpɑː]", grammar: "n. 爷爷", imgPath: "images/noun_grandpa.png" },
+        { word: "girl", phonetic: "[ɡɜːl]", grammar: "n. [C] 女孩", imgPath: "images/noun_girl.png" },
+        { word: "boy", phonetic: "[bɔɪ]", grammar: "n. [C] 男孩", imgPath: "images/noun_boy.png" },
+        { word: "baby", phonetic: "[ˈbeɪbi]", grammar: "n. [C] 婴儿", imgPath: "images/noun_baby.png" },
+        { word: "robot", phonetic: "[ˈrəʊbɒt]", grammar: "n. [C] 机器人", imgPath: "images/noun_robot.png" },
+        { word: "heart", phonetic: "[hɑːt]", grammar: "n. 心脏", imgPath: "images/noun_heart.png" },
+        { word: "mouth", phonetic: "[maʊθ]", grammar: "n. [C] 嘴巴", imgPath: "images/noun_mouth.png" },
+        { word: "hand", phonetic: "[hænd]", grammar: "n. [C] 手", imgPath: "images/noun_hand.png" },
+        { word: "foot", phonetic: "[fʊt]", grammar: "n. [C] 脚", imgPath: "images/noun_foot.png" },
+        { word: "leg", phonetic: "[leɡ]", grammar: "n. [C] 腿", imgPath: "images/noun_leg.png" },
+        { word: "arm", phonetic: "[ɑːm]", grammar: "n. [C] 手臂", imgPath: "images/noun_arm.png" },
+        { word: "building", phonetic: "[ˈbɪldɪŋ]", grammar: "n. [C] 建筑", imgPath: "images/noun_building.png" },
+        { word: "bed", phonetic: "[bed]", grammar: "n. [C] 床", imgPath: "images/noun_bed.png" },
+        { word: "desk", phonetic: "[desk]", grammar: "n. [C] 书桌", imgPath: "images/noun_desk.png" },
+        { word: "table", phonetic: "[ˈteɪbl]", grammar: "n. [C] 桌子", imgPath: "images/noun_table.png" },
+        { word: "door", phonetic: "[dɔːr]", grammar: "n. [C] 门", imgPath: "images/noun_door.png" },
+        { word: "window", phonetic: "[ˈwɪndəʊ]", grammar: "n. [C] 窗户", imgPath: "images/noun_window.png" },
+        { word: "sofa", phonetic: "[ˈsəʊfə]", grammar: "n. [C] 沙发", imgPath: "images/noun_sofa.png" },
+        { word: "piano", phonetic: "[piˈænəʊ]", grammar: "n. [C] 钢琴", imgPath: "images/noun_piano.png" },
+        { word: "TV", phonetic: "[ˌtiː ˈviː]", grammar: "n. 电视", imgPath: "images/noun_tv.png" },
+        { word: "freezer", phonetic: "[ˈfriːzər]", grammar: "n. [C] 冰柜", imgPath: "images/noun_freezer.png" },
+        { word: "newspaper", phonetic: "[ˈnjuːzpeɪpər]", grammar: "n. [C] 报纸", imgPath: "images/noun_newspaper.png" },
+        { word: "envelope", phonetic: "[ˈenvələʊp]", grammar: "n. [C] 信封", imgPath: "images/noun_envelope.png" },
+        { word: "pencil", phonetic: "[ˈpensl]", grammar: "n. [C] 铅笔", imgPath: "images/noun_pencil.png" },
+        { word: "book", phonetic: "[bʊk]", grammar: "n. [C] 书", imgPath: "images/noun_book.png" },
+        { word: "ink", phonetic: "[ɪŋk]", grammar: "n. [U] 墨水", imgPath: "images/noun_ink.png" },
+        { word: "cup", phonetic: "[kʌp]", grammar: "n. [C] 杯子", imgPath: "images/noun_cup.png" },
+        { word: "lock", phonetic: "[lɒk]", grammar: "n. [C] 锁", imgPath: "images/noun_lock.png" },
+        { word: "key", phonetic: "[kiː]", grammar: "n. [C] 钥匙", imgPath: "images/noun_key.png" },
+        { word: "hammer", phonetic: "[ˈhæmər]", grammar: "n. [C] 锤子", imgPath: "images/noun_hammer.png" },
+        { word: "clock", phonetic: "[klɒk]", grammar: "n. [C] 时钟", imgPath: "images/noun_clock.png" },
+        { word: "jacket", phonetic: "[ˈdʒækɪt]", grammar: "n. [C] 夹克", imgPath: "images/noun_jacket.png" },
+        { word: "jeans", phonetic: "[dʒiːnz]", grammar: "n. pl. 牛仔裤", imgPath: "images/noun_jeans.png" },
+        { word: "dress", phonetic: "[dres]", grammar: "n. [C] 连衣裙", imgPath: "images/noun_dress.png" },
+        { word: "vest", phonetic: "[vest]", grammar: "n. [C] 背心", imgPath: "images/noun_vest.png" },
+        { word: "T-shirt", phonetic: "[ˈtiː ʃɜːt]", grammar: "n. [C] T恤", imgPath: "images/noun_tshirt.png" },
+        { word: "sock", phonetic: "[sɒk]", grammar: "n. [C] 袜子", imgPath: "images/noun_sock.png" },
+        { word: "hat", phonetic: "[hæt]", grammar: "n. [C] 帽子", imgPath: "images/noun_hat.png" },
+        { word: "cap", phonetic: "[kæp]", grammar: "n. [C] 鸭舌帽", imgPath: "images/noun_cap.png" },
+        { word: "glasses", phonetic: "[ˈɡlɑːsɪz]", grammar: "n. pl. 眼镜", imgPath: "images/noun_glasses.png" },
+        { word: "sunglasses", phonetic: "[ˈsʌnɡlɑːsɪz]", grammar: "n. pl. 墨镜", imgPath: "images/noun_sunglasses.png" },
+        { word: "watch", phonetic: "[wɒtʃ]", grammar: "n. [C] 手表 [ 复数 watches]", imgPath: "images/noun_watch.png" },
+        { word: "umbrella", phonetic: "[ʌmˈbrelə]", grammar: "n. [C] 雨伞", imgPath: "images/noun_umbrella.png" },
+        { word: "car", phonetic: "[kɑːr]", grammar: "n. [C] 汽车", imgPath: "images/noun_car.png" },
+        { word: "bus", phonetic: "[bʌs]", grammar: "n. [C] 公交车", imgPath: "images/noun_bus.png" },
+        { word: "van", phonetic: "[væn]", grammar: "n. [C] 货车", imgPath: "images/noun_van.png" },
+        { word: "traffic light", phonetic: "[ˈtræfɪk laɪt]", grammar: "n. 红绿灯", imgPath: "images/noun_trafficlight.png" },
+        { word: "boat", phonetic: "[bəʊt]", grammar: "n. [C] 船", imgPath: "images/noun_boat.png" },
+        { word: "sea", phonetic: "[siː]", grammar: "n. 海洋", imgPath: "images/noun_sea.png" },
+        { word: "sun", phonetic: "[sʌn]", grammar: "n. 太阳", imgPath: "images/noun_sun.png" },
+        { word: "moon", phonetic: "[muːn]", grammar: "n. 月亮", imgPath: "images/noun_moon.png" },
+        { word: "flower", phonetic: "[ˈflaʊər]", grammar: "n. [C] 花", imgPath: "images/noun_flower.png" },
+        { word: "grass", phonetic: "[ɡrɑːs]", grammar: "n. [U] 草", imgPath: "images/noun_grass.png" },
+        { word: "spring", phonetic: "[sprɪŋ]", grammar: "n. 春天", imgPath: "images/noun_spring.png" },
+        { word: "summer", phonetic: "[ˈsʌmər]", grammar: "n. 夏天", imgPath: "images/noun_summer.png" },
+        { word: "autumn", phonetic: "[ˈɔːtəm]", grammar: "n. 秋天", imgPath: "images/noun_autumn.png" },
+        { word: "winter", phonetic: "[ˈwɪntər]", grammar: "n. 冬天", imgPath: "images/noun_winter.png" }
     ];
 const verbsData = [
-        { word: "annoy", phonetic: "[əˈnɔɪ]", past: "annoyed", pastPart: "annoyed", imgPath: "images/verb_annoy.jpg" },
-        { word: "approach", phonetic: "[əˈprəʊtʃ]", past: "approached", pastPart: "approached", imgPath: "images/verb_approach.jpg" },
-        { word: "attack", phonetic: "[əˈtæk]", past: "attacked", pastPart: "attacked", imgPath: "images/verb_attack.jpg" },
-        { word: "bite", phonetic: "[baɪt]", past: "bit", pastPart: "bitten", imgPath: "images/verb_bite.jpg" },
-        { word: "break", phonetic: "[breɪk]", past: "broke", pastPart: "broken", imgPath: "images/verb_break.jpg" },
-        { word: "brush", phonetic: "[brʌʃ]", past: "brushed", pastPart: "brushed", imgPath: "images/verb_brush.jpg" },
-        { word: "build", phonetic: "[bɪld]", past: "built", pastPart: "built", imgPath: "images/verb_build.jpg" },
-        { word: "carry", phonetic: "[ˈkæri]", past: "carried", pastPart: "carried", imgPath: "images/verb_carry.jpg" },
-        { word: "catch", phonetic: "[kætʃ]", past: "caught", pastPart: "caught", imgPath: "images/verb_catch.jpg" },
-        { word: "charge", phonetic: "[tʃɑːdʒ]", past: "charged", pastPart: "charged", imgPath: "images/verb_charge.jpg" },
-        { word: "chase", phonetic: "[tʃeɪs]", past: "chased", pastPart: "chased", imgPath: "images/verb_chase.jpg" },
-        { word: "clean", phonetic: "[kliːn]", past: "cleaned", pastPart: "cleaned", imgPath: "images/verb_clean.jpg" },
-        { word: "climb", phonetic: "[klaɪm]", past: "climbed", pastPart: "climbed", imgPath: "images/verb_climb.jpg" },
-        { word: "compare", phonetic: "[kəmˈpeər]", past: "compared", pastPart: "compared", imgPath: "images/verb_compare.jpg" },
-        { word: "cook", phonetic: "[kʊk]", past: "cooked", pastPart: "cooked", imgPath: "images/verb_cook.jpg" },
-        { word: "cover", phonetic: "[ˈkʌvər]", past: "covered", pastPart: "covered", imgPath: "images/verb_cover.jpg" },
-        { word: "dance", phonetic: "[dɑːns]", past: "danced", pastPart: "danced", imgPath: "images/verb_dance.jpg" },
-        { word: "defeat", phonetic: "[dɪˈfiːt]", past: "defeated", pastPart: "defeated", imgPath: "images/verb_defeat.jpg" },
-        { word: "dig", phonetic: "[dɪɡ]", past: "dug", pastPart: "dug", imgPath: "images/verb_dig.jpg" },
-        { word: "dive", phonetic: "[daɪv]", past: "dived", pastPart: "dived", imgPath: "images/verb_dive.jpg" },
-        { word: "drink", phonetic: "[drɪŋk]", past: "drank", pastPart: "drunk", imgPath: "images/verb_drink.jpg" },
-        { word: "escape", phonetic: "[ɪˈskeɪp]", past: "escaped", pastPart: "escaped", imgPath: "images/verb_escape.jpg" },
-        { word: "fart", phonetic: "[fɑːt]", past: "farted", pastPart: "farted", imgPath: "images/verb_fart.jpg" },
-        { word: "feed", phonetic: "[fiːd]", past: "fed", pastPart: "fed", imgPath: "images/verb_feed.jpg" },
-        { word: "feel", phonetic: "[fiːl]", past: "felt", pastPart: "felt", imgPath: "images/verb_feel.jpg" },
-        { word: "fight", phonetic: "[faɪt]", past: "fought", pastPart: "fought", imgPath: "images/verb_fight.jpg" },
-        { word: "float", phonetic: "[fləʊt]", past: "floated", pastPart: "floated", imgPath: "images/verb_float.jpg" },
-        { word: "fly", phonetic: "[flaɪ]", past: "flew", pastPart: "flown", imgPath: "images/verb_fly.jpg" },
-        { word: "follow", phonetic: "[ˈfɒləʊ]", past: "followed", pastPart: "followed", imgPath: "images/verb_follow.jpg" },
-        { word: "gasp", phonetic: "[ɡɑːsp]", past: "gasped", pastPart: "gasped", imgPath: "images/verb_gasp.jpg" },
-        { word: "give", phonetic: "[ɡɪv]", past: "gave", pastPart: "given", imgPath: "images/verb_give.jpg" },
-        { word: "grin", phonetic: "[ɡrɪn]", past: "grinned", pastPart: "grinned", imgPath: "images/verb_grin.jpg" },
-        { word: "growl", phonetic: "[ɡraʊl]", past: "growled", pastPart: "growled", imgPath: "images/verb_growl.jpg" },
-        { word: "hang", phonetic: "[hæŋ]", past: "hung", pastPart: "hung", imgPath: "images/verb_hang.jpg" },
-        { word: "hatch", phonetic: "[hætʃ]", past: "hatched", pastPart: "hatched", imgPath: "images/verb_hatch.jpg" },
-        { word: "hate", phonetic: "[heɪt]", past: "hated", pastPart: "hated", imgPath: "images/verb_hate.jpg" },
-        { word: "have", phonetic: "[hæv]", past: "had", pastPart: "had", imgPath: "images/verb_have.jpg" },
-        { word: "head-butt", phonetic: "[hed bʌt]", past: "head-butted", pastPart: "head-butted", imgPath: "images/verb_headbutt.jpg" },
-        { word: "hide", phonetic: "[haɪd]", past: "hid", pastPart: "hidden", imgPath: "images/verb_hide.jpg" },
-        { word: "hoard", phonetic: "[hɔːd]", past: "hoarded", pastPart: "hoarded", imgPath: "images/verb_hoard.jpg" },
-        { word: "hop", phonetic: "[hɒp]", past: "hopped", pastPart: "hopped", imgPath: "images/verb_hop.jpg" },
-        { word: "hug", phonetic: "[hʌɡ]", past: "hugged", pastPart: "hugged", imgPath: "images/verb_hug.jpg" },
-        { word: "jump", phonetic: "[dʒʌmp]", past: "jumped", pastPart: "jumped", imgPath: "images/verb_jump.jpg" },
-        { word: "kick", phonetic: "[kɪk]", past: "kicked", pastPart: "kicked", imgPath: "images/verb_kick.jpg" },
-        { word: "lead", phonetic: "[liːd]", past: "led", pastPart: "led", imgPath: "images/verb_lead.jpg" },
-        { word: "lean", phonetic: "[liːn]", past: "leaned", pastPart: "leaned", imgPath: "images/verb_lean.jpg" },
-        { word: "leave", phonetic: "[liːv]", past: "left", pastPart: "left", imgPath: "images/verb_leave.jpg" },
-        { word: "lick", phonetic: "[lɪk]", past: "licked", pastPart: "licked", imgPath: "images/verb_lick.jpg" },
-        { word: "listen", phonetic: "[ˈlɪsn]", past: "listened", pastPart: "listened", imgPath: "images/verb_listen.jpg" },
-        { word: "look", phonetic: "[lʊk]", past: "looked", pastPart: "looked", imgPath: "images/verb_look.jpg" },
-        { word: "measure", phonetic: "[ˈmeʒər]", past: "measured", pastPart: "measured", imgPath: "images/verb_measure.jpg" },
-        { word: "move", phonetic: "[muːv]", past: "moved", pastPart: "moved", imgPath: "images/verb_move.jpg" },
-        { word: "observe", phonetic: "[əbˈzɜːv]", past: "observed", pastPart: "observed", imgPath: "images/verb_observe.jpg" },
-        { word: "overeat", phonetic: "[ˌəʊvərˈiːt]", past: "overate", pastPart: "overeaten", imgPath: "images/verb_overeat.jpg" },
-        { word: "pee", phonetic: "[piː]", past: "peed", pastPart: "peed", imgPath: "images/verb_pee.jpg" },
-        { word: "play", phonetic: "[pleɪ]", past: "played", pastPart: "played", imgPath: "images/verb_play.jpg" },
-        { word: "poke", phonetic: "[pəʊk]", past: "poked", pastPart: "poked", imgPath: "images/verb_poke.jpg" },
-        { word: "poop", phonetic: "[puːp]", past: "pooped", pastPart: "pooped", imgPath: "images/verb_poop.jpg" },
-        { word: "pounce", phonetic: "[paʊns]", past: "pounced", pastPart: "pounced", imgPath: "images/verb_pounce.jpg" },
-        { word: "pout", phonetic: "[paʊt]", past: "pouted", pastPart: "pouted", imgPath: "images/verb_pout.jpg" },
-        { word: "pretend", phonetic: "[prɪˈtend]", past: "pretended", pastPart: "pretended", imgPath: "images/verb_pretend.jpg" },
-        { word: "protect", phonetic: "[prəˈtekt]", past: "protected", pastPart: "protected", imgPath: "images/verb_protect.jpg" },
-        { word: "puke", phonetic: "[pjuːk]", past: "puked", pastPart: "puked", imgPath: "images/verb_puke.jpg" },
-        { word: "pull", phonetic: "[pʊl]", past: "pulled", pastPart: "pulled", imgPath: "images/verb_pull.jpg" },
-        { word: "race", phonetic: "[reɪs]", past: "raced", pastPart: "raced", imgPath: "images/verb_race.jpg" },
-        { word: "raise", phonetic: "[reɪz]", past: "raised", pastPart: "raised", imgPath: "images/verb_raise.jpg" },
-        { word: "refuse", phonetic: "[rɪˈfjuːz]", past: "refused", pastPart: "refused", imgPath: "images/verb_refuse.jpg" },
-        { word: "run", phonetic: "[rʌn]", past: "ran", pastPart: "run", imgPath: "images/verb_run.jpg" },
-        { word: "scratch", phonetic: "[skrætʃ]", past: "scratched", pastPart: "scratched", imgPath: "images/verb_scratch.jpg" },
-        { word: "salute", phonetic: "[səˈluːt]", past: "saluted", pastPart: "saluted", imgPath: "images/verb_salute.jpg" },
-        { word: "shake", phonetic: "[ʃeɪk]", past: "shook", pastPart: "shaken", imgPath: "images/verb_shake.jpg" },
-        { word: "shed", phonetic: "[ʃed]", past: "shed", pastPart: "shed", imgPath: "images/verb_shed.jpg" },
-        { word: "show", phonetic: "[ʃəʊ]", past: "showed", pastPart: "shown", imgPath: "images/verb_show.jpg" },
-        { word: "sing", phonetic: "[sɪŋ]", past: "sang", pastPart: "sung", imgPath: "images/verb_sing.jpg" },
-        { word: "slap", phonetic: "[slæp]", past: "slapped", pastPart: "slapped", imgPath: "images/verb_slap.jpg" },
-        { word: "sleep", phonetic: "[sliːp]", past: "slept", pastPart: "slept", imgPath: "images/verb_sleep.jpg" },
-        { word: "slither", phonetic: "[ˈslɪðər]", past: "slithered", pastPart: "slithered", imgPath: "images/verb_slither.jpg" },
-        { word: "slurp", phonetic: "[slɜːp]", past: "slurped", pastPart: "slurped", imgPath: "images/verb_slurp.jpg" },
-        { word: "smell", phonetic: "[smel]", past: "smelled", pastPart: "smelled", imgPath: "images/verb_smell.jpg" },
-        { word: "smile", phonetic: "[smaɪl]", past: "smiled", pastPart: "smiled", imgPath: "images/verb_smile.jpg" },
-        { word: "spit", phonetic: "[spɪt]", past: "spat", pastPart: "spat", imgPath: "images/verb_spit.jpg" },
-        { word: "spray", phonetic: "[spreɪ]", past: "sprayed", pastPart: "sprayed", imgPath: "images/verb_spray.jpg" },
-        { word: "stand", phonetic: "[stænd]", past: "stood", pastPart: "stood", imgPath: "images/verb_stand.jpg" },
-        { word: "stare", phonetic: "[steər]", past: "stared", pastPart: "stared", imgPath: "images/verb_stare.jpg" },
-        { word: "stretch", phonetic: "[stretʃ]", past: "stretched", pastPart: "stretched", imgPath: "images/verb_stretch.jpg" },
-        { word: "stroke", phonetic: "[strəʊk]", past: "stroked", pastPart: "stroked", imgPath: "images/verb_stroke.jpg" },
-        { word: "stuff", phonetic: "[stʌf]", past: "stuffed", pastPart: "stuffed", imgPath: "images/verb_stuff.jpg" },
-        { word: "sulk", phonetic: "[sʌlk]", past: "sulked", pastPart: "sulked", imgPath: "images/verb_sulk.jpg" },
-        { word: "swim", phonetic: "[swɪm]", past: "swam", pastPart: "swum", imgPath: "images/verb_swim.jpg" },
-        { word: "teach", phonetic: "[tiːtʃ]", past: "taught", pastPart: "taught", imgPath: "images/verb_teach.jpg" },
-        { word: "tease", phonetic: "[tiːz]", past: "teased", pastPart: "teased", imgPath: "images/verb_tease.jpg" },
-        { word: "think", phonetic: "[θɪŋk]", past: "thought", pastPart: "thought", imgPath: "images/verb_think.jpg" },
-        { word: "waddle", phonetic: "[ˈwɒdl]", past: "waddled", pastPart: "waddled", imgPath: "images/verb_waddle.jpg" },
-        { word: "warm", phonetic: "[wɔːm]", past: "warmed", pastPart: "warmed", imgPath: "images/verb_warm.jpg" },
-        { word: "warn", phonetic: "[wɔːn]", past: "warned", pastPart: "warned", imgPath: "images/verb_warn.jpg" },
-        { word: "wash", phonetic: "[wɒʃ]", past: "washed", pastPart: "washed", imgPath: "images/verb_wash.jpg" },
-        { word: "weigh", phonetic: "[weɪ]", past: "weighed", pastPart: "weighed", imgPath: "images/verb_weigh.jpg" },
-        { word: "whistle", phonetic: "[ˈwɪsl]", past: "whistled", pastPart: "whistled", imgPath: "images/verb_whistle.jpg" },
-        { word: "wiggle", phonetic: "[ˈwɪɡl]", past: "wiggled", pastPart: "wiggled", imgPath: "images/verb_wiggle.jpg" },
-        { word: "yawn", phonetic: "[jɔːn]", past: "yawned", pastPart: "yawned", imgPath: "images/verb_yawn.jpg" }
+        { word: "annoy", phonetic: "[əˈnɔɪ]", past: "annoyed", pastPart: "annoyed", imgPath: "images/verb_annoy.png" },
+        { word: "approach", phonetic: "[əˈprəʊtʃ]", past: "approached", pastPart: "approached", imgPath: "images/verb_approach.png" },
+        { word: "attack", phonetic: "[əˈtæk]", past: "attacked", pastPart: "attacked", imgPath: "images/verb_attack.png" },
+        { word: "bite", phonetic: "[baɪt]", past: "bit", pastPart: "bitten", imgPath: "images/verb_bite.png" },
+        { word: "break", phonetic: "[breɪk]", past: "broke", pastPart: "broken", imgPath: "images/verb_break.png" },
+        { word: "brush", phonetic: "[brʌʃ]", past: "brushed", pastPart: "brushed", imgPath: "images/verb_brush.png" },
+        { word: "build", phonetic: "[bɪld]", past: "built", pastPart: "built", imgPath: "images/verb_build.png" },
+        { word: "carry", phonetic: "[ˈkæri]", past: "carried", pastPart: "carried", imgPath: "images/verb_carry.png" },
+        { word: "catch", phonetic: "[kætʃ]", past: "caught", pastPart: "caught", imgPath: "images/verb_catch.png" },
+        { word: "charge", phonetic: "[tʃɑːdʒ]", past: "charged", pastPart: "charged", imgPath: "images/verb_charge.png" },
+        { word: "chase", phonetic: "[tʃeɪs]", past: "chased", pastPart: "chased", imgPath: "images/verb_chase.png" },
+        { word: "clean", phonetic: "[kliːn]", past: "cleaned", pastPart: "cleaned", imgPath: "images/verb_clean.png" },
+        { word: "climb", phonetic: "[klaɪm]", past: "climbed", pastPart: "climbed", imgPath: "images/verb_climb.png" },
+        { word: "compare", phonetic: "[kəmˈpeər]", past: "compared", pastPart: "compared", imgPath: "images/verb_compare.png" },
+        { word: "cook", phonetic: "[kʊk]", past: "cooked", pastPart: "cooked", imgPath: "images/verb_cook.png" },
+        { word: "cover", phonetic: "[ˈkʌvər]", past: "covered", pastPart: "covered", imgPath: "images/verb_cover.png" },
+        { word: "dance", phonetic: "[dɑːns]", past: "danced", pastPart: "danced", imgPath: "images/verb_dance.png" },
+        { word: "defeat", phonetic: "[dɪˈfiːt]", past: "defeated", pastPart: "defeated", imgPath: "images/verb_defeat.png" },
+        { word: "dig", phonetic: "[dɪɡ]", past: "dug", pastPart: "dug", imgPath: "images/verb_dig.png" },
+        { word: "dive", phonetic: "[daɪv]", past: "dived", pastPart: "dived", imgPath: "images/verb_dive.png" },
+        { word: "drink", phonetic: "[drɪŋk]", past: "drank", pastPart: "drunk", imgPath: "images/verb_drink.png" },
+        { word: "escape", phonetic: "[ɪˈskeɪp]", past: "escaped", pastPart: "escaped", imgPath: "images/verb_escape.png" },
+        { word: "fart", phonetic: "[fɑːt]", past: "farted", pastPart: "farted", imgPath: "images/verb_fart.png" },
+        { word: "feed", phonetic: "[fiːd]", past: "fed", pastPart: "fed", imgPath: "images/verb_feed.png" },
+        { word: "feel", phonetic: "[fiːl]", past: "felt", pastPart: "felt", imgPath: "images/verb_feel.png" },
+        { word: "fight", phonetic: "[faɪt]", past: "fought", pastPart: "fought", imgPath: "images/verb_fight.png" },
+        { word: "float", phonetic: "[fləʊt]", past: "floated", pastPart: "floated", imgPath: "images/verb_float.png" },
+        { word: "fly", phonetic: "[flaɪ]", past: "flew", pastPart: "flown", imgPath: "images/verb_fly.png" },
+        { word: "follow", phonetic: "[ˈfɒləʊ]", past: "followed", pastPart: "followed", imgPath: "images/verb_follow.png" },
+        { word: "gasp", phonetic: "[ɡɑːsp]", past: "gasped", pastPart: "gasped", imgPath: "images/verb_gasp.png" },
+        { word: "give", phonetic: "[ɡɪv]", past: "gave", pastPart: "given", imgPath: "images/verb_give.png" },
+        { word: "grin", phonetic: "[ɡrɪn]", past: "grinned", pastPart: "grinned", imgPath: "images/verb_grin.png" },
+        { word: "growl", phonetic: "[ɡraʊl]", past: "growled", pastPart: "growled", imgPath: "images/verb_growl.png" },
+        { word: "hang", phonetic: "[hæŋ]", past: "hung", pastPart: "hung", imgPath: "images/verb_hang.png" },
+        { word: "hatch", phonetic: "[hætʃ]", past: "hatched", pastPart: "hatched", imgPath: "images/verb_hatch.png" },
+        { word: "hate", phonetic: "[heɪt]", past: "hated", pastPart: "hated", imgPath: "images/verb_hate.png" },
+        { word: "have", phonetic: "[hæv]", past: "had", pastPart: "had", imgPath: "images/verb_have.png" },
+        { word: "head-butt", phonetic: "[hed bʌt]", past: "head-butted", pastPart: "head-butted", imgPath: "images/verb_headbutt.png" },
+        { word: "hide", phonetic: "[haɪd]", past: "hid", pastPart: "hidden", imgPath: "images/verb_hide.png" },
+        { word: "hoard", phonetic: "[hɔːd]", past: "hoarded", pastPart: "hoarded", imgPath: "images/verb_hoard.png" },
+        { word: "hop", phonetic: "[hɒp]", past: "hopped", pastPart: "hopped", imgPath: "images/verb_hop.png" },
+        { word: "hug", phonetic: "[hʌɡ]", past: "hugged", pastPart: "hugged", imgPath: "images/verb_hug.png" },
+        { word: "jump", phonetic: "[dʒʌmp]", past: "jumped", pastPart: "jumped", imgPath: "images/verb_jump.png" },
+        { word: "kick", phonetic: "[kɪk]", past: "kicked", pastPart: "kicked", imgPath: "images/verb_kick.png" },
+        { word: "lead", phonetic: "[liːd]", past: "led", pastPart: "led", imgPath: "images/verb_lead.png" },
+        { word: "lean", phonetic: "[liːn]", past: "leaned", pastPart: "leaned", imgPath: "images/verb_lean.png" },
+        { word: "leave", phonetic: "[liːv]", past: "left", pastPart: "left", imgPath: "images/verb_leave.png" },
+        { word: "lick", phonetic: "[lɪk]", past: "licked", pastPart: "licked", imgPath: "images/verb_lick.png" },
+        { word: "listen", phonetic: "[ˈlɪsn]", past: "listened", pastPart: "listened", imgPath: "images/verb_listen.png" },
+        { word: "look", phonetic: "[lʊk]", past: "looked", pastPart: "looked", imgPath: "images/verb_look.png" },
+        { word: "measure", phonetic: "[ˈmeʒər]", past: "measured", pastPart: "measured", imgPath: "images/verb_measure.png" },
+        { word: "move", phonetic: "[muːv]", past: "moved", pastPart: "moved", imgPath: "images/verb_move.png" },
+        { word: "observe", phonetic: "[əbˈzɜːv]", past: "observed", pastPart: "observed", imgPath: "images/verb_observe.png" },
+        { word: "overeat", phonetic: "[ˌəʊvərˈiːt]", past: "overate", pastPart: "overeaten", imgPath: "images/verb_overeat.png" },
+        { word: "pee", phonetic: "[piː]", past: "peed", pastPart: "peed", imgPath: "images/verb_pee.png" },
+        { word: "play", phonetic: "[pleɪ]", past: "played", pastPart: "played", imgPath: "images/verb_play.png" },
+        { word: "poke", phonetic: "[pəʊk]", past: "poked", pastPart: "poked", imgPath: "images/verb_poke.png" },
+        { word: "poop", phonetic: "[puːp]", past: "pooped", pastPart: "pooped", imgPath: "images/verb_poop.png" },
+        { word: "pounce", phonetic: "[paʊns]", past: "pounced", pastPart: "pounced", imgPath: "images/verb_pounce.png" },
+        { word: "pout", phonetic: "[paʊt]", past: "pouted", pastPart: "pouted", imgPath: "images/verb_pout.png" },
+        { word: "pretend", phonetic: "[prɪˈtend]", past: "pretended", pastPart: "pretended", imgPath: "images/verb_pretend.png" },
+        { word: "protect", phonetic: "[prəˈtekt]", past: "protected", pastPart: "protected", imgPath: "images/verb_protect.png" },
+        { word: "puke", phonetic: "[pjuːk]", past: "puked", pastPart: "puked", imgPath: "images/verb_puke.png" },
+        { word: "pull", phonetic: "[pʊl]", past: "pulled", pastPart: "pulled", imgPath: "images/verb_pull.png" },
+        { word: "race", phonetic: "[reɪs]", past: "raced", pastPart: "raced", imgPath: "images/verb_race.png" },
+        { word: "raise", phonetic: "[reɪz]", past: "raised", pastPart: "raised", imgPath: "images/verb_raise.png" },
+        { word: "refuse", phonetic: "[rɪˈfjuːz]", past: "refused", pastPart: "refused", imgPath: "images/verb_refuse.png" },
+        { word: "run", phonetic: "[rʌn]", past: "ran", pastPart: "run", imgPath: "images/verb_run.png" },
+        { word: "scratch", phonetic: "[skrætʃ]", past: "scratched", pastPart: "scratched", imgPath: "images/verb_scratch.png" },
+        { word: "salute", phonetic: "[səˈluːt]", past: "saluted", pastPart: "saluted", imgPath: "images/verb_salute.png" },
+        { word: "shake", phonetic: "[ʃeɪk]", past: "shook", pastPart: "shaken", imgPath: "images/verb_shake.png" },
+        { word: "shed", phonetic: "[ʃed]", past: "shed", pastPart: "shed", imgPath: "images/verb_shed.png" },
+        { word: "show", phonetic: "[ʃəʊ]", past: "showed", pastPart: "shown", imgPath: "images/verb_show.png" },
+        { word: "sing", phonetic: "[sɪŋ]", past: "sang", pastPart: "sung", imgPath: "images/verb_sing.png" },
+        { word: "slap", phonetic: "[slæp]", past: "slapped", pastPart: "slapped", imgPath: "images/verb_slap.png" },
+        { word: "sleep", phonetic: "[sliːp]", past: "slept", pastPart: "slept", imgPath: "images/verb_sleep.png" },
+        { word: "slither", phonetic: "[ˈslɪðər]", past: "slithered", pastPart: "slithered", imgPath: "images/verb_slither.png" },
+        { word: "slurp", phonetic: "[slɜːp]", past: "slurped", pastPart: "slurped", imgPath: "images/verb_slurp.png" },
+        { word: "smell", phonetic: "[smel]", past: "smelled", pastPart: "smelled", imgPath: "images/verb_smell.png" },
+        { word: "smile", phonetic: "[smaɪl]", past: "smiled", pastPart: "smiled", imgPath: "images/verb_smile.png" },
+        { word: "spit", phonetic: "[spɪt]", past: "spat", pastPart: "spat", imgPath: "images/verb_spit.png" },
+        { word: "spray", phonetic: "[spreɪ]", past: "sprayed", pastPart: "sprayed", imgPath: "images/verb_spray.png" },
+        { word: "stand", phonetic: "[stænd]", past: "stood", pastPart: "stood", imgPath: "images/verb_stand.png" },
+        { word: "stare", phonetic: "[steər]", past: "stared", pastPart: "stared", imgPath: "images/verb_stare.png" },
+        { word: "stretch", phonetic: "[stretʃ]", past: "stretched", pastPart: "stretched", imgPath: "images/verb_stretch.png" },
+        { word: "stroke", phonetic: "[strəʊk]", past: "stroked", pastPart: "stroked", imgPath: "images/verb_stroke.png" },
+        { word: "stuff", phonetic: "[stʌf]", past: "stuffed", pastPart: "stuffed", imgPath: "images/verb_stuff.png" },
+        { word: "sulk", phonetic: "[sʌlk]", past: "sulked", pastPart: "sulked", imgPath: "images/verb_sulk.png" },
+        { word: "swim", phonetic: "[swɪm]", past: "swam", pastPart: "swum", imgPath: "images/verb_swim.png" },
+        { word: "teach", phonetic: "[tiːtʃ]", past: "taught", pastPart: "taught", imgPath: "images/verb_teach.png" },
+        { word: "tease", phonetic: "[tiːz]", past: "teased", pastPart: "teased", imgPath: "images/verb_tease.png" },
+        { word: "think", phonetic: "[θɪŋk]", past: "thought", pastPart: "thought", imgPath: "images/verb_think.png" },
+        { word: "waddle", phonetic: "[ˈwɒdl]", past: "waddled", pastPart: "waddled", imgPath: "images/verb_waddle.png" },
+        { word: "warm", phonetic: "[wɔːm]", past: "warmed", pastPart: "warmed", imgPath: "images/verb_warm.png" },
+        { word: "warn", phonetic: "[wɔːn]", past: "warned", pastPart: "warned", imgPath: "images/verb_warn.png" },
+        { word: "wash", phonetic: "[wɒʃ]", past: "washed", pastPart: "washed", imgPath: "images/verb_wash.png" },
+        { word: "weigh", phonetic: "[weɪ]", past: "weighed", pastPart: "weighed", imgPath: "images/verb_weigh.png" },
+        { word: "whistle", phonetic: "[ˈwɪsl]", past: "whistled", pastPart: "whistled", imgPath: "images/verb_whistle.png" },
+        { word: "wiggle", phonetic: "[ˈwɪɡl]", past: "wiggled", pastPart: "wiggled", imgPath: "images/verb_wiggle.png" },
+        { word: "yawn", phonetic: "[jɔːn]", past: "yawned", pastPart: "yawned", imgPath: "images/verb_yawn.png" }
     ];
 const aSentences = [
         "[A01] It's a", "[A02] This is", "[A03] That is", "[A04] What is red?", "[A05] What is blue?", "[A06] It's a yellow pear.",
@@ -4062,6 +4118,99 @@ document.addEventListener('keydown', function(e) {
   window.addEventListener('scroll', function() {
     clearTimeout(st);
     st = setTimeout(function() { if(panel.classList.contains('open')) highlightActive(); }, 150);
+  });
+})();
+// ===== User Entry Storage (localStorage) =====
+(function() {
+  var STORAGE_KEY = 'babyEnglishQA_userEntries';
+  var toggle = document.getElementById('addEntryToggle');
+  var panel = document.getElementById('addEntryPanel');
+  var saveBtn = document.getElementById('addEntrySave');
+  var cancelBtn = document.getElementById('addEntryCancel');
+  var countEl = document.getElementById('userEntryCount');
+
+  function getEntries() {
+    try { return JSON.parse(localStorage.getItem(STORAGE_KEY)) || []; } catch(e) { return []; }
+  }
+  function saveEntries(entries) {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(entries));
+  }
+  function updateCount() {
+    var n = getEntries().length;
+    countEl.textContent = n > 0 ? '已录入 ' + n + ' 条' : '';
+  }
+
+  function mergeUserEntries() {
+    var entries = getEntries();
+    for(var i = qaData.length - 1; i >= 0; i--) {
+      if(qaData[i]._userEntry) qaData.splice(i, 1);
+    }
+    for(var i = 0; i < entries.length; i++) {
+      var e = entries[i];
+      qaData.push({
+        question: e.title,
+        answer: e.content.replace(/\n/g, '<br>'),
+        category: e.category,
+        tags: e.tags,
+        date: e.date,
+        _userEntry: true,
+        _userIdx: i
+      });
+    }
+  }
+
+  var origApply = applyFilters;
+  window.applyFilters = function() {
+    mergeUserEntries();
+    origApply();
+    updateCount();
+  };
+
+  toggle.addEventListener('click', function() {
+    panel.classList.toggle('open');
+  });
+  cancelBtn.addEventListener('click', function() {
+    panel.classList.remove('open');
+  });
+
+  saveBtn.addEventListener('click', function() {
+    var title = document.getElementById('addEntryTitle').value.trim();
+    var content = document.getElementById('addEntryContent').value.trim();
+    var category = document.getElementById('addEntryCat').value;
+    var tagsStr = document.getElementById('addEntryTags').value.trim();
+    if(!title || !content) { alert('请填写标题和内容'); return; }
+    var tags = tagsStr ? tagsStr.split(/[,，]/).map(function(t){return t.trim()}).filter(Boolean) : [];
+    var entries = getEntries();
+    entries.push({
+      title: title,
+      content: content,
+      category: category,
+      tags: tags,
+      date: new Date().toISOString().split('T')[0]
+    });
+    saveEntries(entries);
+    document.getElementById('addEntryTitle').value = '';
+    document.getElementById('addEntryContent').value = '';
+    document.getElementById('addEntryTags').value = '';
+    panel.classList.remove('open');
+    applyFilters();
+    saveBtn.textContent = '✅ 已保存';
+    setTimeout(function() { saveBtn.textContent = '💾 保存'; }, 1500);
+  });
+
+  updateCount();
+  // Delegate delete button clicks
+  document.getElementById('qa-list').addEventListener('click', function(e) {
+    var btn = e.target.closest('.btn-delete-entry');
+    if(!btn) return;
+    if(!confirm('确定删除这条记录吗？')) return;
+    var idx = parseInt(btn.dataset.idx);
+    var entries = getEntries();
+    if(idx >= 0 && idx < entries.length) {
+      entries.splice(idx, 1);
+      saveEntries(entries);
+      applyFilters();
+    }
   });
 })();
 </script>
