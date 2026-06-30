@@ -1,0 +1,4069 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>宝宝英语启蒙知识库</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto, "Helvetica Neue", sans-serif; background: #f5f3f0; color: #2d2d2d; line-height: 1.7; -webkit-font-smoothing: antialiased; }
+  .header { background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 50%, #a78bfa 100%); color: white; padding: 2.5rem 1.5rem 2rem; text-align: center; }
+  .header h1 { font-size: 1.6rem; font-weight: 700; letter-spacing: 0.5px; }
+  .header .subtitle { opacity: 0.92; font-size: 0.9rem; margin-top: 0.4rem; font-weight: 400; }
+  .header .meta { opacity: 0.65; font-size: 0.75rem; margin-top: 0.8rem; }
+  .stats { display: flex; justify-content: center; gap: 1rem; padding: 1.2rem 1rem; }
+  .stat { background: white; border-radius: 14px; padding: 0.7rem 1.3rem; box-shadow: 0 1px 4px rgba(0,0,0,0.05); text-align: center; min-width: 90px; }
+  .stat .num { font-size: 1.6rem; font-weight: 800; color: #6366f1; }
+  .stat .label { font-size: 0.75rem; color: #999; margin-top: 2px; }
+  .stat.fav-stat .num { color: #f59e0b; }
+  .container { max-width: 720px; margin: 0 auto; padding: 0 1rem 2rem; }
+  .cat-nav { display: flex; flex-wrap: wrap; gap: 6px; padding: 1rem 0; justify-content: center; position: sticky; top: 0; background: #f5f3f0; z-index: 10; }
+  .cat-btn { padding: 5px 14px; border-radius: 20px; border: 1.5px solid #e0ddd8; background: white; cursor: pointer; font-size: 0.82rem; transition: all 0.2s; white-space: nowrap; color: #666; font-weight: 500; }
+  .cat-btn:hover { border-color: #a78bfa; color: #6366f1; }
+  .cat-btn.active { border-color: transparent; background: #6366f1; color: white; box-shadow: 0 2px 8px rgba(99,102,241,0.3); }
+  .cat-btn.fav-tab.active { background: #f59e0b; border-color: transparent; box-shadow: 0 2px 8px rgba(245,158,11,0.3); }
+  .cat-btn .fav-count { display: inline-block; min-width: 16px; height: 16px; line-height: 16px; text-align: center; background: rgba(255,255,255,0.3); border-radius: 8px; font-size: 0.7rem; margin-left: 3px; padding: 0 4px; }
+  .cat-btn.fav-tab:not(.active) .fav-count { background: #fef3c7; color: #b45309; }
+  .search-box { padding: 0 0 1rem; }
+  .search-box input { width: 100%; padding: 10px 16px; border: 1.5px solid #e0ddd8; border-radius: 12px; font-size: 0.9rem; outline: none; transition: all 0.2s; background: white; }
+  .search-box input:focus { border-color: #a78bfa; box-shadow: 0 0 0 3px rgba(99,102,241,0.1); }
+  .search-box input::placeholder { color: #bbb; }
+  .category-section { margin-bottom: 1.5rem; }
+  .category-title { font-size: 1.05rem; font-weight: 700; color: #2d2d2d; padding: 0.8rem 0 0.5rem; border-bottom: 2px solid #f0eef0; display: flex; align-items: center; gap: 0.5rem; }
+  .category-title .emoji { font-size: 1.2rem; }
+  .category-title .count { font-size: 0.75rem; color: #999; font-weight: 400; }
+  .qa-card { background: white; border-radius: 16px; padding: 1.2rem; margin-bottom: 1rem; box-shadow: 0 2px 8px rgba(0,0,0,0.04); transition: box-shadow 0.2s; }
+  .qa-card:hover { box-shadow: 0 4px 16px rgba(0,0,0,0.08); }
+  .question { font-size: 1rem; font-weight: 700; color: #4338ca; margin-bottom: 0.8rem; display: flex; align-items: flex-start; gap: 0.5rem; }
+  .question .q-badge { background: #6366f1; color: white; padding: 2px 8px; border-radius: 8px; font-size: 0.75rem; font-weight: 700; flex-shrink: 0; margin-top: 2px; }
+  .answer { font-size: 0.9rem; color: #444; }
+  .section-title { font-weight: 700; color: #2d2d2d; margin: 0.8rem 0 0.4rem; padding: 0.4rem 0; border-bottom: 1px solid #f0eef0; font-size: 0.9rem; }
+  .word-list { list-style: none; display: flex; flex-direction: column; gap: 4px; }
+  .word-list li { display: flex; align-items: center; padding: 6px 10px; border-radius: 10px; transition: background 0.15s; gap: 8px; flex-wrap: wrap; }
+  .word-list li:hover { background: #f5f3ff; }
+  .word-list li.starred { background: #fffbeb; }
+  .word-img { width: 48px; height: 48px; border-radius: 10px; object-fit: cover; flex-shrink: 0; }
+  .word-list.has-img { flex-direction: row; flex-wrap: wrap; }
+  .word-list.has-img li { flex: 0 0 auto; min-width: 140px; }
+  .word-text { display: flex; align-items: baseline; gap: 6px; flex: 1; min-width: 0; }
+  .word-en { font-weight: 600; color: #4338ca; font-size: 0.9rem; }
+  .word-ipa { color: #999; font-size: 0.75rem; font-family: monospace; }
+  .word-cn { color: #666; font-size: 0.85rem; }
+  .action-btns { display: flex; gap: 4px; flex-shrink: 0; }
+  .star-btn, .speak-btn { background: none; border: none; cursor: pointer; font-size: 1rem; padding: 2px 6px; border-radius: 8px; transition: all 0.15s; line-height: 1; }
+  .star-btn:hover { background: #fef3c7; }
+  .star-btn.active { background: #fef3c7; }
+  .speak-btn:hover { background: #f5f3ff; }
+  .tip-box { background: #f0f9ff; border-left: 3px solid #0ea5e9; padding: 0.6rem 0.8rem; border-radius: 0 10px 10px 0; margin-top: 0.6rem; font-size: 0.85rem; color: #0369a1; }
+  .tags { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 0.5rem; }
+  .tag { background: #f5f3f0; color: #666; padding: 2px 8px; border-radius: 10px; font-size: 0.7rem; }
+  .date { font-size: 0.7rem; color: #bbb; margin-top: 0.5rem; }
+  .empty-state { text-align: center; padding: 3rem 1rem; color: #999; }
+  .empty-state .emoji { font-size: 2rem; margin-bottom: 0.5rem; }
+  .fav-source-label { font-size: 0.8rem; font-weight: 700; color: #6366f1; margin-bottom: 0.4rem; }
+  .fav-section-title { font-size: 0.75rem; font-weight: 600; color: #888; margin: 0.5rem 0 0.2rem; }
+  .footer { text-align: center; padding: 2rem 1rem; color: #bbb; font-size: 0.75rem; }
+
+  /* ===== 随机组句 Sentence Builder ===== */
+  #sentence-builder { display: none; }
+  #sentence-builder.active { display: block; }
+  .sb-card { background: white; border-radius: 24px; padding: 20px 24px 28px; box-shadow: 0 10px 30px rgba(0,0,0,0.08); }
+  .sb-title { font-size: 1.3rem; color: #2c553c; margin: 0 0 4px; font-weight: 700; }
+  .sb-sub { color: #5b7a5c; border-left: 4px solid #8cb36b; padding-left: 14px; margin: 0 0 20px; font-weight: 500; font-size: 0.8rem; }
+  .sb-columns { display: flex; flex-wrap: wrap; gap: 20px; }
+  .sb-col { flex: 1; min-width: 200px; display: flex; flex-direction: column; gap: 10px; }
+  .sb-select { width: 100%; padding: 8px 10px; font-size: 0.78rem; border-radius: 20px; border: 1px solid #cdddb7; background: white; font-weight: 500; cursor: pointer; font-family: inherit; }
+  .sb-label { font-size: 0.78rem; font-weight: 700; color: #5a7350; margin-bottom: 2px; }
+  .sb-word-card { flex: 1; min-width: 200px; background: #fefaf0; border-radius: 24px; box-shadow: 0 4px 12px rgba(0,0,0,0.08); border: 1px solid #ece3cf; aspect-ratio: 1/1; display: flex; flex-direction: column; cursor: pointer; overflow: hidden; position: relative; transition: 0.1s; }
+  .sb-word-card:hover { background: #f8f3e2; transform: scale(0.97); }
+  .sb-word-card:active { background: #efe6cf; }
+  .sb-img-wrap { flex: 1; display: flex; align-items: center; justify-content: center; background: #2c3e2a; overflow: hidden; min-height: 0; }
+  .sb-img-wrap img { width: 100%; height: 100%; object-fit: fill; display: block; }
+  .sb-img-placeholder { width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; background: #d9d0b5; color: #8b7a62; font-size: 0.7rem; text-align: center; padding: 10px; }
+  .sb-info-bar { background: rgba(0,0,0,0.4); backdrop-filter: blur(8px); padding: 6px 8px; text-align: center; color: white; font-size: 0.65rem; }
+  .sb-phonetic { font-family: monospace; font-size: 0.78rem; font-weight: 500; margin-bottom: 2px; }
+  .sb-grammar { font-size: 0.62rem; opacity: 0.9; word-break: break-word; }
+  .sb-counter { font-size: 0.65rem; color: #8cb36b; text-align: center; margin-top: 6px; font-weight: 600; }
+  .sb-progress { position: absolute; bottom: 0; left: 0; height: 4px; background: #8cb36b; width: 0%; transition: width 0.2s; z-index: 10; }
+  .sb-speak-btn { display: block; margin: 6px auto 0; padding: 7px 20px; border-radius: 20px; border: 1px solid #8cb36b; background: #eef3e6; color: #2c553c; font-size: 0.78rem; font-weight: 600; cursor: pointer; transition: 0.15s; }
+  .sb-speak-btn:hover { background: #8cb36b; color: white; }
+  .sb-speak-icon { background: none; border: none; cursor: pointer; font-size: 1.1rem; padding: 0 4px; vertical-align: middle; opacity: 0.7; transition: 0.15s; }
+  .sb-speak-icon:hover { opacity: 1; transform: scale(1.2); }
+  .sb-info-bar { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; justify-content: center; }
+  .sb-label { overflow: hidden; }
+  .sb-zoom { flex: 0.7; min-width: 200px; background: #f8f5ea; border-radius: 24px; padding: 16px; border: 1px solid #e0d8c4; display: flex; flex-direction: column; gap: 12px; }
+  .sb-zoom-title { font-size: 0.9rem; font-weight: 800; color: #2c553c; padding-bottom: 6px; border-bottom: 2px solid #8cb36b; text-align: center; }
+  .sb-zoom-display { background: #eef3e6; border-radius: 20px; padding: 12px; font-size: 0.7rem; color: #2d5a3b; min-height: 80px; flex: 1; line-height: 1.7; }
+  .sb-note { font-size: 0.7rem; color: #a0b892; text-align: center; margin-top: 20px; padding-top: 12px; border-top: 1px dashed #d4e0c4; line-height: 1.8; }
+  .sb-custom-select { position: relative; }
+  .sb-select-trigger { width: 100%; padding: 8px 28px 8px 12px; border: 2px solid #c4d6a8; border-radius: 12px; background: #fff; font-size: 0.8rem; color: #2c553c; cursor: pointer; box-sizing: border-box; line-height: 1.4; min-height: 36px; user-select: none; -webkit-user-select: none; }
+  .sb-select-trigger::after { content: "▾"; position: absolute; right: 12px; top: 50%; transform: translateY(-50%); font-size: 0.7rem; color: #8cb36b; pointer-events: none; }
+  .sb-select-dropdown { display: none; position: absolute; top: calc(100% + 4px); left: 0; right: 0; max-height: 260px; overflow-y: auto; background: #fff; border: 2px solid #c4d6a8; border-radius: 12px; z-index: 1000; box-shadow: 0 4px 16px rgba(0,0,0,0.12); }
+  .sb-custom-select.open .sb-select-dropdown { display: block; }
+  .sb-select-opt { padding: 8px 12px; font-size: 0.78rem; cursor: pointer; border-bottom: 1px solid #f0efe8; line-height: 1.4; transition: background 0.1s; }
+  .sb-select-opt:last-child { border-bottom: none; }
+  .sb-select-opt:active { background: #eef3e6; }
+  .sb-select-opt.practiced { font-weight: 700; color: #2c553c; }
+  .sb-select-opt.unpracticed { color: #999; }
+  @media(max-width:800px){ .sb-columns{flex-direction:column} .sb-word-card{min-width:200px;max-width:100%} .sb-zoom{min-width:auto;flex:1} }
+  /* ===== Floating Sub-TOC ===== */
+  .sub-toc-btn { position: fixed; bottom: 24px; right: 24px; width: 44px; height: 44px; border-radius: 50%; background: linear-gradient(135deg,#6366f1,#8b5cf6); color: #fff; border: none; font-size: 1.1rem; cursor: pointer; box-shadow: 0 4px 14px rgba(99,102,241,0.35); z-index: 1000; transition: transform 0.2s; display: none; align-items: center; justify-content: center; }
+  .sub-toc-btn:hover { transform: scale(1.08); }
+  .sub-toc-btn:active { transform: scale(0.95); }
+  .sub-toc-panel { position: fixed; bottom: 78px; right: 24px; width: 260px; max-height: 55vh; background: #fff; border-radius: 14px; box-shadow: 0 6px 24px rgba(0,0,0,0.13); z-index: 1000; overflow: hidden; display: none; flex-direction: column; }
+  .sub-toc-panel.open { display: flex; }
+  .sub-toc-head { padding: 10px 12px 6px; font-size: 0.8rem; font-weight: 700; color: #4338ca; border-bottom: 1px solid #f0eef0; display: flex; align-items: center; justify-content: space-between; flex-shrink: 0; }
+  .sub-toc-head button { background: none; border: none; font-size: 0.9rem; cursor: pointer; color: #999; padding: 2px 5px; border-radius: 4px; }
+  .sub-toc-head button:hover { background: #f5f3f0; }
+  .sub-toc-body { overflow-y: auto; padding: 6px 0; flex: 1; }
+  .sub-toc-item { display: block; padding: 5px 12px 5px 20px; font-size: 0.78rem; color: #5a7aa5; text-decoration: none; cursor: pointer; line-height: 1.4; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .sub-toc-item:hover { background: #f0edff; color: #4338ca; }
+  .sub-toc-item.active { background: #ede9fe; color: #4338ca; font-weight: 600; }
+  @media(max-width:480px){ .sub-toc-panel{right:8px;left:8px;width:auto;max-height:45vh;bottom:72px} .sub-toc-btn{bottom:16px;right:16px} }
+</style>
+</head>
+<body>
+<button class="sub-toc-btn" id="subTocBtn" title="目录">📑</button>
+<div class="sub-toc-panel" id="subTocPanel">
+  <div class="sub-toc-head"><span id="subTocTitle">📋 目录</span><button id="subTocClose">✕</button></div>
+  <div class="sub-toc-body" id="subTocBody"></div>
+</div>
+<div class="header">
+  <h1>👶 宝宝英语启蒙知识库</h1>
+  <div class="subtitle">跟随 Susan 教英语 · 17个月宝宝启蒙记录</div>
+  <div class="meta" id="lastUpdated"></div>
+</div>
+
+<div class="container">
+  <div class="cat-nav" id="cat-nav">
+    <button class="cat-btn active" data-cat="all">📋 全部</button>
+    <button class="cat-btn fav-tab" data-cat="favorites">⭐ 收藏 <span class="fav-count" id="fav-nav-count">0</span></button>
+    <button class="cat-btn" data-cat="songs">🎵 儿歌童谣 <span class="fav-count" data-count="songs"></span></button>
+    <button class="cat-btn" data-cat="books">📖 绘本阅读 <span class="fav-count" data-count="books"></span></button>
+    <button class="cat-btn" data-cat="daily">🗣️ 日常互动 <span class="fav-count" data-count="daily"></span></button>
+    <button class="cat-btn" data-cat="vocab">📝 词汇与表达 <span class="fav-count" data-count="vocab"></span></button>
+    <button class="cat-btn" data-cat="random">🎲 随机组句 <span class="fav-count" data-count="random"></span></button>
+    <button class="cat-btn" data-cat="cards">🃏 闪卡 <span class="fav-count" data-count="cards"></span></button>
+    <button class="cat-btn" data-cat="methods">🎯 启蒙方法 <span class="fav-count" data-count="methods"></span></button>
+    <button class="cat-btn" data-cat="phonics">🔤️ 自然拼读 <span class="fav-count" data-count="phonics"></span></button>
+    <button class="cat-btn" data-cat="confusions">❓ 常见困惑 <span class="fav-count" data-count="confusions"></span></button>
+    <button class="cat-btn" data-cat="resources">📦 资源推荐 <span class="fav-count" data-count="resources"></span></button>
+  </div>
+  <div class="search-box" id="search-box">
+    <input type="text" id="search" placeholder="🔍 搜索问题或关键词...">
+  </div>
+  <div id="qa-list"></div>
+  <div id="sentence-builder">
+    <div class="sb-card">
+      <h2 class="sb-title">📖 Susan随机组句练习</h2>
+      <div class="sb-columns">
+        <div class="sb-col">
+          <div class="sb-label">📚 A句型（51个）<button class="sb-speak-btn" id="sb-resetABtn" style="float:right;margin:0;padding:2px 8px;font-size:0.65rem;border-color:#e88;background:#fef2f2;color:#c33;border-radius:8px;cursor:pointer">🗑️</button></div>
+          <div class="sb-custom-select" id="sb-customA">
+            <select id="sb-sentenceA" class="sb-select" style="position:absolute;opacity:0;pointer-events:none;width:0;height:0;overflow:hidden"></select>
+            <div class="sb-select-trigger" tabindex="0">-- 请选择A句型 --</div>
+            <div class="sb-select-dropdown"></div>
+          </div>
+          <select id="sb-nounSelect" class="sb-select"></select>
+          <div class="sb-word-card" id="sb-nounCard">
+            <div class="sb-img-wrap" id="sb-nounImgWrap"><img id="sb-nounImg" src="" alt=""></div>
+            <div class="sb-info-bar"><div class="sb-phonetic" id="sb-nounPhonetic"></div><button class="sb-speak-icon" data-action="speak-noun">🔊</button><div class="sb-grammar" id="sb-nounGrammar"></div></div>
+            <div class="sb-counter" id="sb-nounCounter">📊 0/100</div>
+          </div>
+        </div>
+        <div class="sb-col">
+          <div class="sb-label">📚 B句型（68个）<button class="sb-speak-btn" id="sb-resetBBtn" style="float:right;margin:0;padding:2px 8px;font-size:0.65rem;border-color:#e88;background:#fef2f2;color:#c33;border-radius:8px;cursor:pointer">🗑️</button></div>
+          <div class="sb-custom-select" id="sb-customB">
+            <select id="sb-sentenceB" class="sb-select" style="position:absolute;opacity:0;pointer-events:none;width:0;height:0;overflow:hidden"></select>
+            <div class="sb-select-trigger" tabindex="0">-- 请选择B句型 --</div>
+            <div class="sb-select-dropdown"></div>
+          </div>
+          <select id="sb-verbSelect" class="sb-select"></select>
+          <div class="sb-word-card" id="sb-verbCard">
+            <div class="sb-img-wrap" id="sb-verbImgWrap"><img id="sb-verbImg" src="" alt=""></div>
+            <div class="sb-info-bar"><div class="sb-phonetic" id="sb-verbPhonetic"></div><button class="sb-speak-icon" data-action="speak-verb">🔊</button><div class="sb-grammar" id="sb-verbTenses"></div></div>
+            <div class="sb-counter" id="sb-verbCounter">📊 0/100</div>
+          </div>
+        </div>
+        <div class="sb-zoom">
+          <div class="sb-zoom-title">🔍 Zoom In 技巧</div>
+          <select id="sb-zoomSelect" class="sb-select">
+            <option value="">-- 请选择技巧 --</option>
+            <option value="加音效">🔊 加音效</option>
+            <option value="表情+动作">😊💃 表情+动作</option>
+            <option value="变大变小">🔍📏 变大变小</option>
+            <option value="加角色">🎭👑 加角色</option>
+            <option value="变颜色">🎨🌈 变颜色</option>
+            <option value="反常识">🤯🌀 反常识</option>
+            <option value="五感">👁️👂👃 五感</option>
+            <option value="四维空间">⏰🌀 四维空间</option>
+            <option value="英雄主义">🦸‍♂️🦸‍♀️ 英雄主义</option>
+          </select>
+          <div class="sb-zoom-display" id="sb-zoomDisplay">💡 选择技巧，查看教学建议</div>
+        </div>
+      </div>
+      <div class="sb-note">
+        💡 点击卡片随机刷新（100个名词 + 100个动词）<br>
+        📊 每个卡片独立计数：点击99次内不重复，第100次自动重置<br>
+        ⌨️ 快捷键：N=刷新名词，V=刷新动词
+      </div>
+    </div>
+  </div>
+</div>
+<div class="footer">💕 用爱陪伴宝宝成长 · Susan教英语知识库</div>
+
+<script>
+// ===== QA Data =====
+var qaData = [
+{
+"displayTitle": "彩虹兔欢唱童谣《A Sailor Went to Sea》·亲子共读指南",
+"sections": [
+{
+"title": "📖 基本信息",
+"words": [
+{
+"en": "彩虹兔欢唱童谣系列",
+"ipa": "",
+"cn": "可毛毛虫点读，含绘本+儿歌音频，适合1-4岁"
+},
+{
+"en": "童谣类型",
+"ipa": "",
+"cn": "经典英语童谣，节奏感强，适合边唱边做动作"
+},
+{
+"en": "这首歌讲什么",
+"ipa": "",
+"cn": "水手去航海，去看大海到底有多深、多蓝，海底能看到什么"
+}
+]
+},
+{
+"title": "🎵 歌词全文",
+"words": [
+{
+"en": "A sailor went to sea, sea, sea",
+"ipa": "",
+"cn": "一个水手去航海，航海，航海"
+},
+{
+"en": "To see what he could see, see, see",
+"ipa": "",
+"cn": "去看他能看到什么，什么，什么"
+},
+{
+"en": "But all that he could see, see, see",
+"ipa": "",
+"cn": "但他所能看到的一切，一切，一切"
+},
+{
+"en": "Was the bottom of the deep blue sea, sea, sea!",
+"ipa": "",
+"cn": "就是深蓝色大海的底部！"
+}
+]
+},
+{
+"title": "📝 核心词汇",
+"words": [
+{
+"en": "sailor",
+"ipa": "/ˈseɪlər/",
+"cn": "水手"
+},
+{
+"en": "sea",
+"ipa": "/siː/",
+"cn": "大海"
+},
+{
+"en": "see",
+"ipa": "/siː/",
+"cn": "看见"
+},
+{
+"en": "deep",
+"ipa": "/diːp/",
+"cn": "深的"
+},
+{
+"en": "blue",
+"ipa": "/bluː/",
+"cn": "蓝色的"
+},
+{
+"en": "bottom",
+"ipa": "/ˈbɒtəm/",
+"cn": "底部"
+},
+{
+"en": "swimming",
+"ipa": "/ˈswɪmɪŋ/",
+"cn": "游泳"
+}
+]
+},
+{
+"title": "🐠 画面指认·海洋动物",
+"words": [
+{
+"en": "dolphin",
+"ipa": "/ˈdɒlfɪn/",
+"cn": "海豚"
+},
+{
+"en": "jellyfish",
+"ipa": "/ˈdʒelifɪʃ/",
+"cn": "水母"
+},
+{
+"en": "crab",
+"ipa": "/kræb/",
+"cn": "螃蟹"
+},
+{
+"en": "seahorse",
+"ipa": "/ˈsiːhɔːrs/",
+"cn": "海马"
+},
+{
+"en": "seastar",
+"ipa": "/ˈsiːstɑːr/",
+"cn": "海星（彩虹兔用seastar，不是starfish）"
+},
+{
+"en": "eel",
+"ipa": "/iːl/",
+"cn": "鳗鱼"
+},
+{
+"en": "octopus",
+"ipa": "/ˈɒktəpəs/",
+"cn": "章鱼"
+}
+]
+},
+{
+"title": "🦔 画面指认·海底生物",
+"words": [
+{
+"en": "urchin",
+"ipa": "/ˈɜːrtʃɪn/",
+"cn": "海胆"
+},
+{
+"en": "seaweed",
+"ipa": "/ˈsiːwiːd/",
+"cn": "海草"
+}
+]
+},
+{
+"title": "🎒 画面指认·物品装备",
+"words": [
+{
+"en": "diving suit",
+"ipa": "/ˈdaɪvɪŋ suːt/",
+"cn": "潜水服"
+},
+{
+"en": "goggles",
+"ipa": "/ˈɡɒɡlz/",
+"cn": "游泳镜"
+},
+{
+"en": "telescope",
+"ipa": "/ˈtelɪskoʊp/",
+"cn": "望远镜"
+}
+]
+},
+{
+"title": "🎬 封面怎么讲",
+"words": [
+{
+"en": "Look! A sailor!",
+"ipa": "",
+"cn": "指着封面水手，让宝宝看"
+},
+{
+"en": "A sailor went to sea!",
+"ipa": "",
+"cn": "用夸张的语气读出标题"
+},
+{
+"en": "Can you say 'sea'?",
+"ipa": "",
+"cn": "引导宝宝发音"
+}
+]
+},
+{
+"title": "🎢 逐页画面互动",
+"words": [
+{
+"en": "What can you see?",
+"ipa": "",
+"cn": "每翻一页都问，指着图中动物让宝宝找"
+},
+{
+"en": "I see a dolphin!",
+"ipa": "",
+"cn": "你先示范，指着海豚说"
+},
+{
+"en": "Where is the crab?",
+"ipa": "",
+"cn": "让宝宝找螃蟹在哪"
+},
+{
+"en": "Look at the jellyfish! It's swimming!",
+"ipa": "",
+"cn": "指水母，做游泳动作"
+},
+{
+"en": "What is the crab doing?",
+"ipa": "",
+"cn": "问螃蟹在干嘛，引导观察"
+}
+]
+},
+{
+"title": "🤸 TPR动作配合",
+"words": [
+{
+"en": "swimming",
+"ipa": "",
+"cn": "双手做划水动作"
+},
+{
+"en": "deep",
+"ipa": "",
+"cn": "手臂往下压，表示很深"
+},
+{
+"en": "see",
+"ipa": "",
+"cn": "双手放在眼睛上做望远镜状"
+},
+{
+"en": "sea, sea, sea",
+"ipa": "",
+"cn": "配合歌曲节奏，手做波浪动作左右摆动"
+}
+]
+}
+],
+"answer": "<div style=\"padding:0.6rem 0\"><b>🔄 亲子共读流程：</b><br>1. <b>先听儿歌</b> → 放点读笔音频或扫码听，让宝宝感受节奏（读绘本前先听2-3遍）<br>2. <b>翻书指认</b> → 边翻页边指图中动物，说 <i>Look, a dolphin!</i><br>3. <b>唱唱跳跳</b> → 播放儿歌，边唱边做TPR动作，让宝宝参与<br>4. <b>问答互动</b> → <i>What can you see?</i> 让宝宝指</div><div style=\"padding:0.6rem 0;border-top:1px dashed #eee\"><b>💡 17个月宝宝实操建议：</b><br>1. 先指后说：先指着图中的动物，停顿2秒等宝宝反应，再说英文<br>2. 每次只聚焦3-4个核心词：第一周 dolphin/crab/jellyfish 就够了<br>3. 画面指认 > 歌词背诵：17个月宝宝重点是认识这些海洋动物，不是背歌词<br>4. TPR动作配合：swimming做划水、deep往下压、see做望远镜，动作比语言先输出<br>5. 这首歌节奏感很强，可以边走边拍手给宝宝唱，当背景输入</div>",
+"tip": "彩虹兔版和Super Simple Songs版的动物种类不同！彩虹兔有dolphin/eel/urchin/seastar，SSS版是fish/octopus/shark。注意区分，不要混用。彩虹兔用seastar而非starfish。",
+"category": "books",
+"tags": [
+"A Sailor Went to Sea",
+"彩虹兔",
+"欢唱童谣",
+"绘本",
+"海洋动物",
+"童谣词汇",
+"TPR"
+],
+"date": "2026-06-16"
+},
+{
+"displayTitle": "睡觉场景亲子英语口语",
+"sections": [
+{
+"title": "🛏 准备睡觉",
+"words": [
+{
+"en": "It's bedtime.",
+"ipa": "",
+"cn": "该睡了"
+},
+{
+"en": "Let's clean up.",
+"ipa": "",
+"cn": "收玩具"
+},
+{
+"en": "Time to sleep.",
+"ipa": "",
+"cn": "该睡了"
+},
+{
+"en": "Let's go to bed.",
+"ipa": "",
+"cn": "去睡觉"
+}
+]
+},
+{
+"title": "🧴 洗漱换衣",
+"words": [
+{
+"en": "Let's wash your hands.",
+"ipa": "",
+"cn": "洗手"
+},
+{
+"en": "Let's change your diaper.",
+"ipa": "",
+"cn": "换尿不湿"
+},
+{
+"en": "All clean!",
+"ipa": "",
+"cn": "干净了"
+},
+{
+"en": "Let's put on your pajamas.",
+"ipa": "",
+"cn": "穿睡衣"
+},
+{
+"en": "Arms up!",
+"ipa": "",
+"cn": "举手"
+},
+{
+"en": "There we go!",
+"ipa": "",
+"cn": "好啦"
+}
+]
+},
+{
+"title": "🌙 躺下关灯",
+"words": [
+{
+"en": "Lie down, please.",
+"ipa": "",
+"cn": "躺下"
+},
+{
+"en": "Let's cover you up.",
+"ipa": "",
+"cn": "盖被子"
+},
+{
+"en": "Let's turn off the light.",
+"ipa": "",
+"cn": "关灯"
+},
+{
+"en": "Lights out.",
+"ipa": "",
+"cn": "灯关了"
+}
+]
+},
+{
+"title": "😴 哄睡安抚",
+"words": [
+{
+"en": "Shh...be quiet.",
+"ipa": "",
+"cn": "嘘"
+},
+{
+"en": "Go to sleep, little one.",
+"ipa": "",
+"cn": "睡吧宝贝"
+},
+{
+"en": "Mommy's here.",
+"ipa": "",
+"cn": "妈妈在"
+},
+{
+"en": "It's okay.",
+"ipa": "",
+"cn": "没事的"
+},
+{
+"en": "Close your eyes.",
+"ipa": "",
+"cn": "闭眼"
+},
+{
+"en": "Night night.",
+"ipa": "",
+"cn": "晚安"
+},
+{
+"en": "Sweet dreams.",
+"ipa": "",
+"cn": "好梦"
+}
+]
+},
+{
+"title": "😢 哭闹时",
+"words": [
+{
+"en": "What's wrong?",
+"ipa": "",
+"cn": "怎么了"
+},
+{
+"en": "Don't be scared.",
+"ipa": "",
+"cn": "别怕"
+},
+{
+"en": "Do you need a hug?",
+"ipa": "",
+"cn": "要抱抱吗"
+}
+]
+}
+],
+"tip": "每天先记5句：It's bedtime → Let's wash your hands → Let's put on your pajamas → Lie down please → Night night, sweet dreams!",
+"category": "daily",
+"tags": [
+"睡觉场景",
+"亲子口语",
+"bedtime",
+"哄睡"
+],
+"date": "2026-06-16"
+},
+{
+"displayTitle": "跟爸爸说拜拜·送别场景亲子口语",
+"sections": [
+{
+"title": "👋 爸爸要出门时",
+"words": [
+{
+"en": "Daddy's leaving.",
+"ipa": "",
+"cn": "爸爸要走了"
+},
+{
+"en": "Daddy's going to work.",
+"ipa": "",
+"cn": "爸爸去上班啦"
+},
+{
+"en": "Say bye-bye to Daddy.",
+"ipa": "",
+"cn": "跟爸爸说拜拜"
+},
+{
+"en": "Wave bye-bye!",
+"ipa": "",
+"cn": "挥手拜拜！"
+},
+{
+"en": "Give Daddy a kiss.",
+"ipa": "",
+"cn": "亲爸爸一下"
+},
+{
+"en": "Give Daddy a hug.",
+"ipa": "",
+"cn": "抱抱爸爸"
+},
+{
+"en": "Blow Daddy a kiss.",
+"ipa": "",
+"cn": "给爸爸飞吻"
+},
+{
+"en": "See you later!",
+"ipa": "",
+"cn": "回头见！"
+},
+{
+"en": "Be a good boy/girl!",
+"ipa": "",
+"cn": "要乖乖哦"
+}
+]
+},
+{
+"title": "🗣️ 你可以直接跟宝宝说",
+"words": [
+{
+"en": "Look, Daddy's putting on his shoes.",
+"ipa": "",
+"cn": "看，爸爸在穿鞋"
+},
+{
+"en": "Let's wave bye-bye to Daddy!",
+"ipa": "",
+"cn": "我们跟爸爸挥手拜拜！"
+},
+{
+"en": "Can you give Daddy a kiss?",
+"ipa": "",
+"cn": "能不能亲爸爸一下？"
+},
+{
+"en": "Daddy will be back!",
+"ipa": "",
+"cn": "爸爸会回来的哦"
+}
+]
+}
+],
+"tip": "配合动作很重要！拿着宝宝小手挥手、引导飞吻，边做边说英文，宝宝很快能把\"bye-bye\"和挥手联系起来。每天送爸爸出门都是绝佳的英语输入机会～",
+"category": "daily",
+"tags": [
+"送别场景",
+"bye-bye",
+"亲子口语",
+"日常互动"
+],
+"date": "2026-06-17"
+},
+{
+"displayTitle": "荡秋千·游乐场亲子口语",
+"sections": [
+{
+"title": "🎠 在秋千上（推宝宝时说）",
+"words": [
+{
+"en": "Here we go!",
+"ipa": "",
+"cn": "来啦！"
+},
+{
+"en": "Ready?",
+"ipa": "/ˈrɛdi/",
+"cn": "准备好了吗？"
+},
+{
+"en": "One, two, three...go!",
+"ipa": "",
+"cn": "一二三…走！"
+},
+{
+"en": "Up you go!",
+"ipa": "",
+"cn": "上去咯！"
+},
+{
+"en": "Wheee!",
+"ipa": "/wiː/",
+"cn": "哇哦～"
+},
+{
+"en": "Higher! Higher!",
+"ipa": "/ˈhaɪər/",
+"cn": "再高点！再高点！"
+},
+{
+"en": "Are you having fun?",
+"ipa": "",
+"cn": "好玩吗？"
+},
+{
+"en": "Hold on tight!",
+"ipa": "",
+"cn": "抓紧哦！"
+},
+{
+"en": "Do you want more?",
+"ipa": "",
+"cn": "还要吗？"
+}
+]
+},
+{
+"title": "🗣️ 引导宝宝配合动作",
+"words": [
+{
+"en": "Kick your legs!",
+"ipa": "",
+"cn": "踢腿！"
+},
+{
+"en": "Pump your legs.",
+"ipa": "",
+"cn": "用力蹬腿。"
+},
+{
+"en": "Lean back.",
+"ipa": "",
+"cn": "往后仰。"
+}
+]
+},
+{
+"title": "💬 日常对话",
+"words": [
+{
+"en": "Do you want to swing?",
+"ipa": "",
+"cn": "想荡秋千吗？"
+},
+{
+"en": "Let's go to the playground.",
+"ipa": "",
+"cn": "我们去游乐场吧。"
+},
+{
+"en": "It's your turn.",
+"ipa": "",
+"cn": "轮到你啦。"
+},
+{
+"en": "You look so happy!",
+"ipa": "",
+"cn": "你看起来好开心！"
+},
+{
+"en": "Time's up!",
+"ipa": "",
+"cn": "时间到啦！"
+},
+{
+"en": "Let's try the slide next.",
+"ipa": "",
+"cn": "下一个玩滑梯吧。"
+}
+]
+}
+],
+"tip": "荡秋千时宝宝情绪高涨，是输入的黄金时机！一边推一边重复，每次只聚焦2-3个核心词。\"Wheee!\"配合你的笑声最有感染力。注意先轻轻推，观察宝宝反应，害怕时说\"It's okay, Mommy's right here.\"",
+"category": "daily",
+"tags": [
+"荡秋千",
+"游乐场",
+"亲子口语",
+"swing"
+],
+"date": "2026-06-17"
+},
+{
+"displayTitle": "This is 还是 These are？食物名词单复数用法",
+"sections": [
+{
+"title": "✅ This is（单数 / 不可数名词）",
+"words": [
+{
+"en": "This is rice.",
+"ipa": "",
+"cn": "这是米饭。"
+},
+{
+"en": "This is water.",
+"ipa": "",
+"cn": "这是水。"
+},
+{
+"en": "This is bread.",
+"ipa": "/brɛd/",
+"cn": "这是面包。"
+},
+{
+"en": "This is milk.",
+"ipa": "/mɪlk/",
+"cn": "这是牛奶。"
+},
+{
+"en": "This is soup.",
+"ipa": "/suːp/",
+"cn": "这是汤。"
+},
+{
+"en": "This is an egg.",
+"ipa": "",
+"cn": "这是一个鸡蛋。"
+},
+{
+"en": "This is a banana.",
+"ipa": "",
+"cn": "这是一个香蕉。"
+}
+]
+},
+{
+"title": "✅ These are（复数名词）",
+"words": [
+{
+"en": "These are noodles.",
+"ipa": "",
+"cn": "这是面条。"
+},
+{
+"en": "These are strawberries.",
+"ipa": "/ˈstrɔbəriz/",
+"cn": "这些是草莓。"
+},
+{
+"en": "These are cookies.",
+"ipa": "/ˈkʊkiz/",
+"cn": "这些是饼干。"
+},
+{
+"en": "These are French fries.",
+"ipa": "",
+"cn": "这些是薯条。"
+},
+{
+"en": "These are crackers.",
+"ipa": "",
+"cn": "这些是脆饼。"
+},
+{
+"en": "These are grapes.",
+"ipa": "",
+"cn": "这些是葡萄。"
+},
+{
+"en": "These are oranges.",
+"ipa": "",
+"cn": "这些是橘子。"
+}
+]
+}
+],
+"tip": "noodles、cookies、strawberries 这类词本身就是复数形式，不能说\"This is noodles\"，要说\"These are noodles\"。rice、water、bread 是不可数名词，用\"This is\"就好。跟宝宝吃饭时指着食物说，不用解释语法，你输入正确即可。",
+"category": "vocab",
+"tags": [
+"This is",
+"These are",
+"单复数",
+"食物名词",
+"语法"
+],
+"date": "2026-06-17"
+},
+{
+"displayTitle": "《古力小超人》第1册 Hello·亲子共读指南",
+"sections": [
+{
+"title": "📖 基本信息",
+"words": [
+{
+"en": "Gyuri the Superhero",
+"ipa": "",
+"cn": "彩虹兔系列，全12册，作者Nicole Gabor，北京语言大学出版社，20页，可毛毛虫点读"
+},
+{
+"en": "Hello, I'm...",
+"ipa": "",
+"cn": "核心句型1：你好，我是..."
+},
+{
+"en": "I love...",
+"ipa": "",
+"cn": "核心句型2：我喜欢..."
+},
+{
+"en": "适读年龄",
+"ipa": "",
+"cn": "2-6岁（1岁多也可引入）"
+}
+]
+},
+{
+"title": "📝 核心词汇",
+"words": [
+{
+"en": "Hello",
+"ipa": "/həˈloʊ/",
+"cn": "你好"
+},
+{
+"en": "I'm",
+"ipa": "/aɪm/",
+"cn": "我是"
+},
+{
+"en": "I love",
+"ipa": "/aɪ lʌv/",
+"cn": "我喜欢"
+},
+{
+"en": "fishing",
+"ipa": "/ˈfɪʃɪŋ/",
+"cn": "钓鱼"
+},
+{
+"en": "cooking",
+"ipa": "/ˈkʊkɪŋ/",
+"cn": "做饭"
+},
+{
+"en": "dancing",
+"ipa": "/ˈdænsɪŋ/",
+"cn": "跳舞"
+},
+{
+"en": "slide",
+"ipa": "/slaɪd/",
+"cn": "滑梯"
+},
+{
+"en": "super",
+"ipa": "/ˈsuːpər/",
+"cn": "超级"
+}
+]
+},
+{
+"title": "🎬 封面怎么讲",
+"words": [
+{
+"en": "Hello!",
+"ipa": "",
+"cn": "挥手说你好"
+},
+{
+"en": "Look, it's Guli!",
+"ipa": "",
+"cn": "指着古力说：看，这是古力！"
+},
+{
+"en": "Super Guli!",
+"ipa": "",
+"cn": "指着超人形象，夸张表情"
+}
+]
+},
+{
+"title": "🎣 fishing页·钓鱼",
+"words": [
+{
+"en": "Hello! I'm Guli. I love fishing!",
+"ipa": "",
+"cn": "完整朗读，语速慢、夸张"
+},
+{
+"en": "Look, fishing!",
+"ipa": "",
+"cn": "指着鱼竿"
+},
+{
+"en": "TPR",
+"ipa": "",
+"cn": "做钓鱼动作，手臂一甩"
+}
+]
+},
+{
+"title": "🍳 cooking页·做饭（Bella）",
+"words": [
+{
+"en": "Hello! I'm Bella. I love cooking!",
+"ipa": "",
+"cn": "完整朗读"
+},
+{
+"en": "Cooking!",
+"ipa": "",
+"cn": "指着锅"
+},
+{
+"en": "Mmm, yummy!",
+"ipa": "",
+"cn": "假装尝味道，配合表情"
+},
+{
+"en": "TPR",
+"ipa": "",
+"cn": "假装翻炒的动作，宝宝很喜欢模仿"
+}
+]
+},
+{
+"title": "💃 dancing页·跳舞",
+"words": [
+{
+"en": "Hello! I love dancing!",
+"ipa": "",
+"cn": "完整朗读"
+},
+{
+"en": "Dance, dance, dance!",
+"ipa": "",
+"cn": "边说边站起来跳舞转圈"
+}
+]
+},
+{
+"title": "🛝 slide页·滑梯（搞笑！）",
+"words": [
+{
+"en": "Stuck on the slide!",
+"ipa": "",
+"cn": "三个小动物卡在滑梯上，很搞笑"
+},
+{
+"en": "Bang! Bang! Bang!",
+"ipa": "",
+"cn": "配合音效，宝宝喜欢模仿"
+}
+]
+}
+],
+"answer": "<div style=\"padding:0.6rem 0\"><b>🔄 每一页的带读流程（循环复习）：</b><br>1. <b>先观察</b>（3秒）→ 让宝宝自己看图<br>2. <b>你读句子</b> → 语速慢、夸张、有感情<br>3. <b>指认互动</b> → 指着图中对应元素<br>4. <b>TPR表演</b> → 一起做动作</div><div style=\"padding:0.6rem 0;border-top:1px dashed #eee\"><b>💡 17个月宝宝实操建议：</b><br>1. 不要逐字翻译，用动作和表情让宝宝理解意思<br>2. 每次聚焦1-2个词，比如今天只强调fishing，明天cooking<br>3. 读多次后可以玩角色扮演——妈妈演Bella说I love cooking，让宝宝演Guli<br>4. 核心句型重复度高，宝宝容易跟着开口<br>5. 配合B站搜索\"古力小超人 Hello\"有绘本动画版本，看完动画再看书效果更好</div>",
+"tip": "每个活动场景（fishing/cooking/dancing）都可以在日常生活中找到对应。比如吃饭时说I love cooking，去公园说I love the slide，把绘本内容延伸到生活里。",
+"category": "books",
+"tags": [
+"古力小超人",
+"Hello",
+"绘本",
+"彩虹兔",
+"亲子共读",
+"fishing",
+"cooking",
+"dancing"
+],
+"date": "2026-06-17"
+},
+{
+"displayTitle": "Super Simple Songs·Hello!（问候儿歌）",
+"sections": [
+{
+"title": "🎵 歌词全文",
+"words": [
+{
+"en": "Hello, hello, hello, how are you?",
+"cn": "你好你好你好，你好吗？"
+},
+{
+"en": "I'm good, I'm great, I'm wonderful!",
+"cn": "我很好，我超棒，我太棒了！"
+},
+{
+"en": "Hello, hello, hello, hello, hello, hello, how are you?",
+"cn": "你好你好你好，你好吗？"
+},
+{
+"en": "I'm good, I'm great, I'm wonderful!",
+"cn": "我很好，我超棒，我太棒了！"
+}
+]
+},
+{
+"title": "📝 核心词汇",
+"words": [
+{
+"en": "hello",
+"ipa": "/həˈloʊ/",
+"cn": "你好"
+},
+{
+"en": "how are you",
+"cn": "你好吗"
+},
+{
+"en": "good",
+"ipa": "/ɡʊd/",
+"cn": "好的/很好"
+},
+{
+"en": "great",
+"ipa": "/ɡreɪt/",
+"cn": "很棒的"
+},
+{
+"en": "wonderful",
+"ipa": "/ˈwʌndərfl/",
+"cn": "太棒了"
+}
+]
+},
+{
+"title": "🤸 TPR动作配合",
+"words": [
+{
+"en": "Hello!",
+"cn": "挥手打招呼"
+},
+{
+"en": "How are you?",
+"cn": "双手摊开，疑问表情"
+},
+{
+"en": "I'm good",
+"cn": "竖大拇指"
+},
+{
+"en": "I'm great",
+"cn": "双手竖两个大拇指"
+},
+{
+"en": "I'm wonderful!",
+"cn": "双手举高，夸张表情"
+}
+]
+}
+],
+"answer": "<b>🎵 在线听：</b><a href='https://www.youtube.com/watch?v=hD36Ggh5mOE' target='_blank' style='color:#6366f1'>YouTube Hello!</a> | 搜B站\"SSS Hello\"也有<br><br><b>💡 17个月实操：</b>每天早上跟宝宝唱Hello!挥手。问How are you?竖大拇指。起床时唱最适合，宝宝很快就能挥手回应",
+"tip": "可以改词：换成宝宝名字唱Hello [宝宝名], how are you?",
+"category": "songs",
+"tags": [
+"SSS",
+"Hello",
+"问候",
+"TPR"
+],
+"date": "2026-06-17"
+},
+{
+"displayTitle": "Super Simple Songs·Make A Circle（围圈儿歌）",
+"sections": [
+{
+"title": "🎵 歌词全文",
+"words": [
+{
+"en": "Make a circle, big, big, big",
+"cn": "围成圈，大大的圈"
+},
+{
+"en": "Small, small, small, big, big, big",
+"cn": "小小的圈，大大的圈"
+},
+{
+"en": "Make a circle, round, round, round",
+"cn": "围成圈，圆圆的圈"
+},
+{
+"en": "Round and round, round and round",
+"cn": "转圈圈，转圈圈"
+},
+{
+"en": "Hello, hello, hello!",
+"cn": "你好！"
+}
+]
+},
+{
+"title": "📝 核心词汇",
+"words": [
+{
+"en": "circle",
+"ipa": "/ˈsɜːrkl/",
+"cn": "圆圈"
+},
+{
+"en": "big",
+"ipa": "/bɪɡ/",
+"cn": "大的"
+},
+{
+"en": "small",
+"ipa": "/smɔːl/",
+"cn": "小的"
+},
+{
+"en": "round",
+"ipa": "/raʊnd/",
+"cn": "圆的/转圈"
+}
+]
+},
+{
+"title": "🤸 TPR动作配合",
+"words": [
+{
+"en": "big",
+"cn": "手臂张开表示大"
+},
+{
+"en": "small",
+"cn": "双手靠近表示小"
+},
+{
+"en": "round",
+"cn": "拉着手转圈"
+}
+]
+}
+],
+"answer": "<b>🎵 在线听：</b><a href='https://www.youtube.com/watch?v=ALcL3MuU4xQ' target='_blank' style='color:#6366f1'>YouTube Make A Circle</a><br><br><b>💡 17个月实操：</b>拉着宝宝手围圈走。big张开手臂，small缩起来。旋律是London Bridge，很好记",
+"tip": "反义词big/small对比是很好的认知训练，边唱边比划，宝宝很快理解。",
+"category": "songs",
+"tags": [
+"SSS",
+"Make A Circle",
+"big",
+"small",
+"TPR"
+],
+"date": "2026-06-17"
+},
+{
+"displayTitle": "Super Simple Songs·Walking Walking（运动儿歌）",
+"sections": [
+{
+"title": "🎵 歌词全文",
+"words": [
+{
+"en": "Walking, walking, walking, walking",
+"cn": "走走走，走"
+},
+{
+"en": "Hop, hop, hop, hop, hop, hop",
+"cn": "跳跳跳"
+},
+{
+"en": "Running, running, running, running",
+"cn": "跑跑跑"
+},
+{
+"en": "Now let's stop, now let's stop!",
+"cn": "停下来！停下来！"
+},
+{
+"en": "Tiptoe, tiptoe, tiptoe, tiptoe",
+"cn": "踮脚走"
+},
+{
+"en": "Jump, jump, jump, jump, jump, jump",
+"cn": "跳跳跳"
+},
+{
+"en": "Swimming, swimming, swimming, swimming",
+"cn": "游游泳"
+},
+{
+"en": "Now let's sleep, now let's sleep!",
+"cn": "睡觉啦！"
+}
+]
+},
+{
+"title": "📝 核心词汇",
+"words": [
+{
+"en": "walking",
+"ipa": "/ˈwɔːkɪŋ/",
+"cn": "走"
+},
+{
+"en": "hopping",
+"ipa": "/ˈhɒpɪŋ/",
+"cn": "单脚跳"
+},
+{
+"en": "running",
+"ipa": "/ˈrʌnɪŋ/",
+"cn": "跑"
+},
+{
+"en": "jumping",
+"ipa": "/ˈdʒʌmpɪŋ/",
+"cn": "跳"
+},
+{
+"en": "swimming",
+"ipa": "/ˈswɪmɪŋ/",
+"cn": "游泳"
+},
+{
+"en": "stop",
+"ipa": "/stɒp/",
+"cn": "停"
+},
+{
+"en": "sleep",
+"ipa": "/sliːp/",
+"cn": "睡觉"
+}
+]
+},
+{
+"title": "🤸 TPR动作配合",
+"words": [
+{
+"en": "walking",
+"cn": "原地踏步"
+},
+{
+"en": "hopping",
+"cn": "单脚跳"
+},
+{
+"en": "running",
+"cn": "原地快跑"
+},
+{
+"en": "swimming",
+"cn": "双手划水"
+},
+{
+"en": "stop",
+"cn": "定住不动"
+},
+{
+"en": "sleep",
+"cn": "闭眼双手合十放耳边"
+}
+]
+}
+],
+"answer": "<b>🎵 在线听：</b><a href='https://www.youtube.com/watch?v=j24_xH5uvdA' target='_blank' style='color:#6366f1'>YouTube Walking Walking</a><br><br><b>💡 17个月实操：</b>TPR之王！边唱边带宝宝做动作。说到stop定住不动，说到sleep假装睡觉。先只做walking和stop，熟悉后慢慢加",
+"tip": "运动类动词最适合通过这首歌输入，每天户外活动时都可以唱。",
+"category": "songs",
+"tags": [
+"SSS",
+"Walking",
+"TPR",
+"动词",
+"运动"
+],
+"date": "2026-06-17"
+},
+{
+"displayTitle": "Super Simple Songs·Head Shoulders Knees And Toes（身体部位儿歌）",
+"sections": [
+{
+"title": "🎵 歌词全文",
+"words": [
+{
+"en": "Head, shoulders, knees, and toes, knees and toes",
+"cn": "头、肩膀、膝盖和脚趾"
+},
+{
+"en": "Eyes and ears and mouth and nose",
+"cn": "眼睛、耳朵、嘴巴和鼻子"
+}
+]
+},
+{
+"title": "📝 核心词汇（身体部位）",
+"words": [
+{
+"en": "head",
+"ipa": "/hed/",
+"cn": "头"
+},
+{
+"en": "shoulders",
+"ipa": "/ˈʃoʊldərz/",
+"cn": "肩膀"
+},
+{
+"en": "knees",
+"ipa": "/niːz/",
+"cn": "膝盖"
+},
+{
+"en": "toes",
+"ipa": "/toʊz/",
+"cn": "脚趾"
+},
+{
+"en": "eyes",
+"ipa": "/aɪz/",
+"cn": "眼睛"
+},
+{
+"en": "ears",
+"ipa": "/ɪrz/",
+"cn": "耳朵"
+},
+{
+"en": "mouth",
+"ipa": "/maʊθ/",
+"cn": "嘴巴"
+},
+{
+"en": "nose",
+"ipa": "/noʊz/",
+"cn": "鼻子"
+}
+]
+},
+{
+"title": "🤸 TPR动作配合",
+"words": [
+{
+"en": "head",
+"cn": "摸头"
+},
+{
+"en": "shoulders",
+"cn": "摸肩膀"
+},
+{
+"en": "knees",
+"cn": "摸膝盖"
+},
+{
+"en": "toes",
+"cn": "摸脚趾"
+}
+]
+}
+],
+"answer": "<b>🎵 在线听：</b><a href='https://www.youtube.com/watch?v=iPeQe8OUiYo' target='_blank' style='color:#6366f1'>YouTube Head Shoulders Knees And Toes</a><br><br><b>💡 17个月实操：</b>身体部位启蒙第一首！唱到哪个词摸哪个部位。洗澡时唱最自然。先只学head/eyes/nose，熟练后加knees/toes",
+"tip": "SSS有慢速版，17个月宝宝先用慢速版。也有只保留head/eyes/nose的精简版。",
+"category": "songs",
+"tags": [
+"SSS",
+"Head Shoulders",
+"身体部位",
+"TPR",
+"洗澡"
+],
+"date": "2026-06-17"
+},
+{
+"displayTitle": "Super Simple Songs·Baby Shark（鲨鱼家族儿歌）",
+"sections": [
+{
+"title": "🎵 歌词全文",
+"words": [
+{
+"en": "Baby shark, doo doo doo doo doo doo",
+"cn": "小鲨鱼，嘟嘟嘟"
+},
+{
+"en": "Baby shark!",
+"cn": "小鲨鱼！"
+},
+{
+"en": "Mommy shark, doo doo doo doo doo doo",
+"cn": "妈妈鲨鱼，嘟嘟嘟"
+},
+{
+"en": "Daddy shark, doo doo doo doo doo doo",
+"cn": "爸爸鲨鱼，嘟嘟嘟"
+},
+{
+"en": "Grandma shark, doo doo doo doo doo doo",
+"cn": "奶奶鲨鱼，嘟嘟嘟"
+},
+{
+"en": "Grandpa shark, doo doo doo doo doo doo",
+"cn": "爷爷鲨鱼，嘟嘟嘟"
+},
+{
+"en": "Run away, safe at last!",
+"cn": "快跑！安全了！"
+}
+]
+},
+{
+"title": "📝 核心词汇",
+"words": [
+{
+"en": "baby",
+"ipa": "/ˈbeɪbi/",
+"cn": "宝宝/小的"
+},
+{
+"en": "mommy",
+"ipa": "/ˈmɒmi/",
+"cn": "妈妈"
+},
+{
+"en": "daddy",
+"ipa": "/ˈdædi/",
+"cn": "爸爸"
+},
+{
+"en": "grandma",
+"ipa": "/ˈɡrænmɑː/",
+"cn": "奶奶/外婆"
+},
+{
+"en": "grandpa",
+"ipa": "/ˈɡrænpɑː/",
+"cn": "爷爷/外公"
+},
+{
+"en": "shark",
+"ipa": "/ʃɑːrk/",
+"cn": "鲨鱼"
+},
+{
+"en": "run away",
+"cn": "快跑"
+}
+]
+},
+{
+"title": "🤸 TPR动作配合",
+"words": [
+{
+"en": "Baby shark",
+"cn": "一只手张开合拢模仿小嘴"
+},
+{
+"en": "Mommy shark",
+"cn": "两只手张开合拢模仿大嘴"
+},
+{
+"en": "Run away",
+"cn": "原地快跑"
+},
+{
+"en": "Safe at last",
+"cn": "双手抱住自己"
+}
+]
+}
+],
+"answer": "<b>🎵 在线听：</b><a href='https://www.youtube.com/watch?v=XqZsoesa55w' target='_blank' style='color:#6366f1'>YouTube Baby Shark</a><br><br><b>💡 17个月实操：</b>宝宝最爱的SSS之一！双手模仿鲨鱼嘴巴张合，节奏超洗脑，听两遍宝宝就能跟着拍手。顺便输入家庭成员词汇",
+"tip": "帮宝宝建立家庭成员概念：baby/mommy/daddy/grandma/grandpa。",
+"category": "songs",
+"tags": [
+"SSS",
+"Baby Shark",
+"鲨鱼",
+"家庭成员",
+"TPR"
+],
+"date": "2026-06-17"
+},
+{
+"displayTitle": "Super Simple Songs·One Little Finger（手指儿歌）",
+"sections": [
+{
+"title": "🎵 歌词全文",
+"words": [
+{
+"en": "One little finger, one little finger, one little finger",
+"cn": "一根小手指"
+},
+{
+"en": "Tap, tap, tap",
+"cn": "点一点"
+},
+{
+"en": "Point your finger up",
+"cn": "手指指向上"
+},
+{
+"en": "Point your finger down",
+"cn": "手指指向下"
+},
+{
+"en": "Put it on your head!",
+"cn": "放到头上！"
+},
+{
+"en": "Put it on your knee!",
+"cn": "放到膝盖上！"
+},
+{
+"en": "Put it on your nose!",
+"cn": "放到鼻子上！"
+},
+{
+"en": "Put it on your chin!",
+"cn": "放到下巴上！"
+}
+]
+},
+{
+"title": "📝 核心词汇",
+"words": [
+{
+"en": "finger",
+"ipa": "/ˈfɪŋɡər/",
+"cn": "手指"
+},
+{
+"en": "tap",
+"ipa": "/tæp/",
+"cn": "轻点"
+},
+{
+"en": "point",
+"ipa": "/pɔɪnt/",
+"cn": "指"
+},
+{
+"en": "up",
+"ipa": "/ʌp/",
+"cn": "向上"
+},
+{
+"en": "down",
+"ipa": "/daʊn/",
+"cn": "向下"
+},
+{
+"en": "chin",
+"ipa": "/tʃɪn/",
+"cn": "下巴"
+}
+]
+},
+{
+"title": "🤸 TPR动作配合",
+"words": [
+{
+"en": "tap tap tap",
+"cn": "食指轻点"
+},
+{
+"en": "point up",
+"cn": "手指指天花板"
+},
+{
+"en": "point down",
+"cn": "手指指地面"
+},
+{
+"en": "on your chin",
+"cn": "手指按在宝宝下巴上（超可爱）"
+}
+]
+}
+],
+"answer": "<b>🎵 在线听：</b><a href='https://www.youtube.com/watch?v=h3y2bKOfEzw' target='_blank' style='color:#6366f1'>YouTube One Little Finger</a><br><br><b>💡 17个月实操：</b>拿出食指做tap tap tap，point up/down，最后手指放到宝宝头上、膝盖上、鼻子上、下巴上。宝宝特别喜欢chin那一下！",
+"tip": "可以改成Put it on Mommy's nose跟宝宝互动。",
+"category": "songs",
+"tags": [
+"SSS",
+"One Little Finger",
+"手指",
+"身体部位",
+"TPR"
+],
+"date": "2026-06-17"
+},
+{
+"displayTitle": "Super Simple Songs·If You're Happy And You Know It（情绪儿歌）",
+"sections": [
+{
+"title": "🎵 歌词全文",
+"words": [
+{
+"en": "If you're happy and you know it, clap your hands!",
+"cn": "如果你很开心，拍拍手！"
+},
+{
+"en": "If you're happy and you know it, and you really want to show it",
+"cn": "如果你很开心，想表现出来"
+},
+{
+"en": "If you're happy and you know it, clap your hands!",
+"cn": "如果你很开心，拍拍手！"
+},
+{
+"en": "...stomp your feet!",
+"cn": "...跺跺脚！"
+},
+{
+"en": "...shout Hooray!",
+"cn": "...喊万岁！"
+}
+]
+},
+{
+"title": "📝 核心词汇",
+"words": [
+{
+"en": "happy",
+"ipa": "/ˈhæpi/",
+"cn": "开心的"
+},
+{
+"en": "clap",
+"ipa": "/klæp/",
+"cn": "拍手"
+},
+{
+"en": "stomp",
+"ipa": "/stɒmp/",
+"cn": "跺脚"
+},
+{
+"en": "shout",
+"ipa": "/ʃaʊt/",
+"cn": "喊"
+},
+{
+"en": "hooray",
+"ipa": "/hʊˈreɪ/",
+"cn": "万岁/好耶"
+}
+]
+},
+{
+"title": "🤸 TPR动作配合",
+"words": [
+{
+"en": "clap your hands",
+"cn": "拍拍手"
+},
+{
+"en": "stomp your feet",
+"cn": "跺跺脚"
+},
+{
+"en": "shout Hooray",
+"cn": "双手举高喊Hooray!"
+}
+]
+}
+],
+"answer": "<b>🎵 在线听：</b><a href='https://www.youtube.com/watch?v=l4WNz5SBRdI' target='_blank' style='color:#6366f1'>YouTube If You're Happy</a><br><br><b>💡 17个月实操：</b>情绪认知经典儿歌！clap your hands宝宝很容易学会，说到Hooray举高双手宝宝会特别兴奋",
+"tip": "帮助宝宝理解happy的情绪和表达方式，17个月宝宝开始有明显的情绪表达了。",
+"category": "songs",
+"tags": [
+"SSS",
+"If You're Happy",
+"情绪",
+"clap",
+"TPR"
+],
+"date": "2026-06-17"
+},
+{
+"displayTitle": "Super Simple Songs·Twinkle Twinkle Little Star（经典摇篮曲）",
+"sections": [
+{
+"title": "🎵 歌词全文",
+"words": [
+{
+"en": "Twinkle, twinkle, little star",
+"cn": "一闪一闪小星星"
+},
+{
+"en": "How I wonder what you are",
+"cn": "我想知道你是什么"
+},
+{
+"en": "Up above the world so high",
+"cn": "高高挂在天上"
+},
+{
+"en": "Like a diamond in the sky",
+"cn": "像天空中的一颗钻石"
+},
+{
+"en": "Twinkle, twinkle, little star",
+"cn": "一闪一闪小星星"
+},
+{
+"en": "How I wonder what you are",
+"cn": "我想知道你是什么"
+}
+]
+},
+{
+"title": "📝 核心词汇",
+"words": [
+{
+"en": "twinkle",
+"ipa": "/ˈtwɪŋkl/",
+"cn": "闪烁"
+},
+{
+"en": "star",
+"ipa": "/stɑːr/",
+"cn": "星星"
+},
+{
+"en": "wonder",
+"ipa": "/ˈwʌndər/",
+"cn": "好奇/想知道"
+},
+{
+"en": "world",
+"ipa": "/wɜːrld/",
+"cn": "世界"
+},
+{
+"en": "diamond",
+"ipa": "/ˈdaɪmənd/",
+"cn": "钻石"
+},
+{
+"en": "sky",
+"ipa": "/skaɪ/",
+"cn": "天空"
+}
+]
+},
+{
+"title": "🤸 TPR动作配合",
+"words": [
+{
+"en": "twinkle",
+"cn": "手指张开合拢模仿星星闪烁"
+},
+{
+"en": "up above",
+"cn": "双手举高指向天空"
+},
+{
+"en": "diamond",
+"cn": "双手指尖碰指尖做成钻石形"
+}
+]
+}
+],
+"answer": "<b>🎵 在线听：</b><a href='https://www.youtube.com/watch?v=yCjJykrp9RE' target='_blank' style='color:#6366f1'>YouTube Twinkle Twinkle</a><br><br><b>💡 17个月实操：</b>最适合睡前唱！中文版一闪一闪亮晶晶宝宝肯定已经会了，英文版旋律一样。关灯后指着窗外唱，手指做星星闪烁。温柔慢唱，作为睡前仪式的一部分",
+"tip": "旋律全世界通用，中英文版一样，宝宝通过熟悉的旋律更容易接受英文版。",
+"category": "songs",
+"tags": [
+"SSS",
+"Twinkle Twinkle",
+"星星",
+"睡前",
+"经典"
+],
+"date": "2026-06-17"
+},
+{
+"displayTitle": "随机组句闪卡·名词100（带图片）",
+"sections": [
+{
+"title": "📦 名词闪卡（100张）",
+"words": [
+{
+"en": "apple",
+"cn": "苹果",
+"img": "images/noun_apple.jpg"
+},
+{
+"en": "arm",
+"cn": "手臂",
+"img": "images/noun_arm.jpg"
+},
+{
+"en": "autumn",
+"cn": "秋天",
+"img": "images/noun_autumn.jpg"
+},
+{
+"en": "baby",
+"cn": "宝宝",
+"img": "images/noun_baby.jpg"
+},
+{
+"en": "banana",
+"cn": "香蕉",
+"img": "images/noun_banana.jpg"
+},
+{
+"en": "bed",
+"cn": "床",
+"img": "images/noun_bed.jpg"
+},
+{
+"en": "boat",
+"cn": "船",
+"img": "images/noun_boat.jpg"
+},
+{
+"en": "book",
+"cn": "书",
+"img": "images/noun_book.jpg"
+},
+{
+"en": "boy",
+"cn": "男孩",
+"img": "images/noun_boy.jpg"
+},
+{
+"en": "building",
+"cn": "建筑",
+"img": "images/noun_building.jpg"
+},
+{
+"en": "bull",
+"cn": "公牛",
+"img": "images/noun_bull.jpg"
+},
+{
+"en": "bus",
+"cn": "公交车",
+"img": "images/noun_bus.jpg"
+},
+{
+"en": "candy",
+"cn": "糖果",
+"img": "images/noun_candy.jpg"
+},
+{
+"en": "cap",
+"cn": "帽子",
+"img": "images/noun_cap.jpg"
+},
+{
+"en": "car",
+"cn": "汽车",
+"img": "images/noun_car.jpg"
+},
+{
+"en": "carrot",
+"cn": "胡萝卜",
+"img": "images/noun_carrot.jpg"
+},
+{
+"en": "cat",
+"cn": "猫",
+"img": "images/noun_cat.jpg"
+},
+{
+"en": "chick",
+"cn": "小鸡",
+"img": "images/noun_chick.jpg"
+},
+{
+"en": "clock",
+"cn": "时钟",
+"img": "images/noun_clock.jpg"
+},
+{
+"en": "coconut",
+"cn": "椰子",
+"img": "images/noun_coconut.jpg"
+},
+{
+"en": "cow",
+"cn": "奶牛",
+"img": "images/noun_cow.jpg"
+},
+{
+"en": "cup",
+"cn": "杯子",
+"img": "images/noun_cup.jpg"
+},
+{
+"en": "dad",
+"cn": "爸爸",
+"img": "images/noun_dad.jpg"
+},
+{
+"en": "deer",
+"cn": "鹿",
+"img": "images/noun_deer.jpg"
+},
+{
+"en": "desk",
+"cn": "书桌",
+"img": "images/noun_desk.jpg"
+},
+{
+"en": "dog",
+"cn": "狗",
+"img": "images/noun_dog.jpg"
+},
+{
+"en": "donkey",
+"cn": "驴",
+"img": "images/noun_donkey.jpg"
+},
+{
+"en": "door",
+"cn": "门",
+"img": "images/noun_door.jpg"
+},
+{
+"en": "dress",
+"cn": "裙子",
+"img": "images/noun_dress.jpg"
+},
+{
+"en": "duck",
+"cn": "鸭子",
+"img": "images/noun_duck.jpg"
+},
+{
+"en": "egg",
+"cn": "鸡蛋",
+"img": "images/noun_egg.jpg"
+},
+{
+"en": "elephant",
+"cn": "大象",
+"img": "images/noun_elephant.jpg"
+},
+{
+"en": "envelope",
+"cn": "信封",
+"img": "images/noun_envelope.jpg"
+},
+{
+"en": "fish",
+"cn": "鱼",
+"img": "images/noun_fish.jpg"
+},
+{
+"en": "flower",
+"cn": "花",
+"img": "images/noun_flower.jpg"
+},
+{
+"en": "foot",
+"cn": "脚",
+"img": "images/noun_foot.jpg"
+},
+{
+"en": "fox",
+"cn": "狐狸",
+"img": "images/noun_fox.jpg"
+},
+{
+"en": "freezer",
+"cn": "冰箱",
+"img": "images/noun_freezer.jpg"
+},
+{
+"en": "girl",
+"cn": "女孩",
+"img": "images/noun_girl.jpg"
+},
+{
+"en": "glasses",
+"cn": "眼镜",
+"img": "images/noun_glasses.jpg"
+},
+{
+"en": "gorilla",
+"cn": "大猩猩",
+"img": "images/noun_gorilla.jpg"
+},
+{
+"en": "grandma",
+"cn": "奶奶",
+"img": "images/noun_grandma.jpg"
+},
+{
+"en": "grandpa",
+"cn": "爷爷",
+"img": "images/noun_grandpa.jpg"
+},
+{
+"en": "grape",
+"cn": "葡萄",
+"img": "images/noun_grape.jpg"
+},
+{
+"en": "grass",
+"cn": "草",
+"img": "images/noun_grass.jpg"
+},
+{
+"en": "hamburger",
+"cn": "汉堡",
+"img": "images/noun_hamburger.jpg"
+},
+{
+"en": "hammer",
+"cn": "锤子",
+"img": "images/noun_hammer.jpg"
+},
+{
+"en": "hand",
+"cn": "手",
+"img": "images/noun_hand.jpg"
+},
+{
+"en": "hat",
+"cn": "帽子",
+"img": "images/noun_hat.jpg"
+},
+{
+"en": "heart",
+"cn": "心",
+"img": "images/noun_heart.jpg"
+},
+{
+"en": "hen",
+"cn": "母鸡",
+"img": "images/noun_hen.jpg"
+},
+{
+"en": "horse",
+"cn": "马",
+"img": "images/noun_horse.jpg"
+},
+{
+"en": "ink",
+"cn": "墨水",
+"img": "images/noun_ink.jpg"
+},
+{
+"en": "jacket",
+"cn": "夹克",
+"img": "images/noun_jacket.jpg"
+},
+{
+"en": "jeans",
+"cn": "牛仔裤",
+"img": "images/noun_jeans.jpg"
+},
+{
+"en": "juice",
+"cn": "果汁",
+"img": "images/noun_juice.jpg"
+},
+{
+"en": "key",
+"cn": "钥匙",
+"img": "images/noun_key.jpg"
+},
+{
+"en": "leg",
+"cn": "腿",
+"img": "images/noun_leg.jpg"
+},
+{
+"en": "lion",
+"cn": "狮子",
+"img": "images/noun_lion.jpg"
+},
+{
+"en": "lock",
+"cn": "锁",
+"img": "images/noun_lock.jpg"
+},
+{
+"en": "mom",
+"cn": "妈妈",
+"img": "images/noun_mom.jpg"
+},
+{
+"en": "monkey",
+"cn": "猴子",
+"img": "images/noun_monkey.jpg"
+},
+{
+"en": "moon",
+"cn": "月亮",
+"img": "images/noun_moon.jpg"
+},
+{
+"en": "mouth",
+"cn": "嘴巴",
+"img": "images/noun_mouth.jpg"
+},
+{
+"en": "newspaper",
+"cn": "报纸",
+"img": "images/noun_newspaper.jpg"
+},
+{
+"en": "noodles",
+"cn": "面条",
+"img": "images/noun_noodles.jpg"
+},
+{
+"en": "orange",
+"cn": "橙子",
+"img": "images/noun_orange.jpg"
+},
+{
+"en": "owl",
+"cn": "猫头鹰",
+"img": "images/noun_owl.jpg"
+},
+{
+"en": "panda",
+"cn": "熊猫",
+"img": "images/noun_panda.jpg"
+},
+{
+"en": "pea",
+"cn": "豌豆",
+"img": "images/noun_pea.jpg"
+},
+{
+"en": "pear",
+"cn": "梨",
+"img": "images/noun_pear.jpg"
+},
+{
+"en": "pencil",
+"cn": "铅笔",
+"img": "images/noun_pencil.jpg"
+},
+{
+"en": "penguin",
+"cn": "企鹅",
+"img": "images/noun_penguin.jpg"
+},
+{
+"en": "piano",
+"cn": "钢琴",
+"img": "images/noun_piano.jpg"
+},
+{
+"en": "pig",
+"cn": "猪",
+"img": "images/noun_pig.jpg"
+},
+{
+"en": "potato",
+"cn": "土豆",
+"img": "images/noun_potato.jpg"
+},
+{
+"en": "rabbit",
+"cn": "兔子",
+"img": "images/noun_rabbit.jpg"
+},
+{
+"en": "robot",
+"cn": "机器人",
+"img": "images/noun_robot.jpg"
+},
+{
+"en": "sea",
+"cn": "大海",
+"img": "images/noun_sea.jpg"
+},
+{
+"en": "sheep",
+"cn": "羊",
+"img": "images/noun_sheep.jpg"
+},
+{
+"en": "sock",
+"cn": "袜子",
+"img": "images/noun_sock.jpg"
+},
+{
+"en": "sofa",
+"cn": "沙发",
+"img": "images/noun_sofa.jpg"
+},
+{
+"en": "spring",
+"cn": "春天",
+"img": "images/noun_spring.jpg"
+},
+{
+"en": "summer",
+"cn": "夏天",
+"img": "images/noun_summer.jpg"
+},
+{
+"en": "sun",
+"cn": "太阳",
+"img": "images/noun_sun.jpg"
+},
+{
+"en": "sunglasses",
+"cn": "太阳镜",
+"img": "images/noun_sunglasses.jpg"
+},
+{
+"en": "table",
+"cn": "桌子",
+"img": "images/noun_table.jpg"
+},
+{
+"en": "tiger",
+"cn": "老虎",
+"img": "images/noun_tiger.jpg"
+},
+{
+"en": "tomato",
+"cn": "番茄",
+"img": "images/noun_tomato.jpg"
+},
+{
+"en": "trafficlight",
+"cn": "红绿灯",
+"img": "images/noun_trafficlight.jpg"
+},
+{
+"en": "tshirt",
+"cn": "T恤",
+"img": "images/noun_tshirt.jpg"
+},
+{
+"en": "tv",
+"cn": "电视",
+"img": "images/noun_tv.jpg"
+},
+{
+"en": "umbrella",
+"cn": "雨伞",
+"img": "images/noun_umbrella.jpg"
+},
+{
+"en": "van",
+"cn": "面包车",
+"img": "images/noun_van.jpg"
+},
+{
+"en": "vegetable",
+"cn": "蔬菜",
+"img": "images/noun_vegetable.jpg"
+},
+{
+"en": "vest",
+"cn": "背心",
+"img": "images/noun_vest.jpg"
+},
+{
+"en": "watch",
+"cn": "手表",
+"img": "images/noun_watch.jpg"
+},
+{
+"en": "watermelon",
+"cn": "西瓜",
+"img": "images/noun_watermelon.jpg"
+},
+{
+"en": "window",
+"cn": "窗户",
+"img": "images/noun_window.jpg"
+},
+{
+"en": "winter",
+"cn": "冬天",
+"img": "images/noun_winter.jpg"
+}
+]
+}
+],
+"answer": "<div style='padding:0.6rem 0'><b>💡 使用说明：</b>这100张名词闪卡用于Susan体系的<b>名词指认法</b>和<b>随机组句</b>训练。每张卡可点击🔊听发音，配合图片帮助宝宝建立音和图像的对应。</div>",
+"tip": "17个月宝宝：每次只引入1-2个名词，用闪卡做指认对应。先不要求说句子，说出单词就是胜利。",
+"category": "cards",
+"tags": [
+"随机组句",
+"闪卡",
+"名词",
+"指认对应"
+],
+"date": "2026-06-17"
+},
+{
+"displayTitle": "随机组句闪卡·动词100（带图片）",
+"sections": [
+{
+"title": "🏃 动词闪卡（100张）",
+"words": [
+{
+"en": "annoy",
+"cn": "惹恼",
+"img": "images/verb_annoy.jpg"
+},
+{
+"en": "approach",
+"cn": "靠近",
+"img": "images/verb_approach.jpg"
+},
+{
+"en": "attack",
+"cn": "攻击",
+"img": "images/verb_attack.jpg"
+},
+{
+"en": "bite",
+"cn": "咬",
+"img": "images/verb_bite.jpg"
+},
+{
+"en": "break",
+"cn": "打破",
+"img": "images/verb_break.jpg"
+},
+{
+"en": "brush",
+"cn": "刷",
+"img": "images/verb_brush.jpg"
+},
+{
+"en": "build",
+"cn": "建造",
+"img": "images/verb_build.jpg"
+},
+{
+"en": "carry",
+"cn": "搬运",
+"img": "images/verb_carry.jpg"
+},
+{
+"en": "catch",
+"cn": "抓住",
+"img": "images/verb_catch.jpg"
+},
+{
+"en": "charge",
+"cn": "冲",
+"img": "images/verb_charge.jpg"
+},
+{
+"en": "chase",
+"cn": "追赶",
+"img": "images/verb_chase.jpg"
+},
+{
+"en": "clean",
+"cn": "干净的",
+"img": "images/verb_clean.jpg"
+},
+{
+"en": "climb",
+"cn": "攀爬",
+"img": "images/verb_climb.jpg"
+},
+{
+"en": "compare",
+"cn": "比较",
+"img": "images/verb_compare.jpg"
+},
+{
+"en": "cook",
+"cn": "做饭",
+"img": "images/verb_cook.jpg"
+},
+{
+"en": "cover",
+"cn": "覆盖",
+"img": "images/verb_cover.jpg"
+},
+{
+"en": "dance",
+"cn": "跳舞",
+"img": "images/verb_dance.jpg"
+},
+{
+"en": "defeat",
+"cn": "击败",
+"img": "images/verb_defeat.jpg"
+},
+{
+"en": "dig",
+"cn": "挖",
+"img": "images/verb_dig.jpg"
+},
+{
+"en": "dive",
+"cn": "潜水",
+"img": "images/verb_dive.jpg"
+},
+{
+"en": "drink",
+"cn": "喝",
+"img": "images/verb_drink.jpg"
+},
+{
+"en": "escape",
+"cn": "逃跑",
+"img": "images/verb_escape.jpg"
+},
+{
+"en": "fart",
+"cn": "放屁",
+"img": "images/verb_fart.jpg"
+},
+{
+"en": "feed",
+"cn": "喂食",
+"img": "images/verb_feed.jpg"
+},
+{
+"en": "feel",
+"cn": "感觉",
+"img": "images/verb_feel.jpg"
+},
+{
+"en": "fight",
+"cn": "打架",
+"img": "images/verb_fight.jpg"
+},
+{
+"en": "float",
+"cn": "漂浮",
+"img": "images/verb_float.jpg"
+},
+{
+"en": "fly",
+"cn": "飞",
+"img": "images/verb_fly.jpg"
+},
+{
+"en": "follow",
+"cn": "跟随",
+"img": "images/verb_follow.jpg"
+},
+{
+"en": "gasp",
+"cn": "喘气",
+"img": "images/verb_gasp.jpg"
+},
+{
+"en": "give",
+"cn": "给",
+"img": "images/verb_give.jpg"
+},
+{
+"en": "grin",
+"cn": "咧嘴笑",
+"img": "images/verb_grin.jpg"
+},
+{
+"en": "growl",
+"cn": "咆哮",
+"img": "images/verb_growl.jpg"
+},
+{
+"en": "hang",
+"cn": "挂",
+"img": "images/verb_hang.jpg"
+},
+{
+"en": "hatch",
+"cn": "孵化",
+"img": "images/verb_hatch.jpg"
+},
+{
+"en": "hate",
+"cn": "讨厌",
+"img": "images/verb_hate.jpg"
+},
+{
+"en": "have",
+"cn": "有",
+"img": "images/verb_have.jpg"
+},
+{
+"en": "headbutt",
+"cn": "顶头",
+"img": "images/verb_headbutt.jpg"
+},
+{
+"en": "hide",
+"cn": "躲藏",
+"img": "images/verb_hide.jpg"
+},
+{
+"en": "hoard",
+"cn": "囤积",
+"img": "images/verb_hoard.jpg"
+},
+{
+"en": "hop",
+"cn": "单脚跳",
+"img": "images/verb_hop.jpg"
+},
+{
+"en": "hug",
+"cn": "拥抱",
+"img": "images/verb_hug.jpg"
+},
+{
+"en": "jump",
+"cn": "跳",
+"img": "images/verb_jump.jpg"
+},
+{
+"en": "kick",
+"cn": "踢",
+"img": "images/verb_kick.jpg"
+},
+{
+"en": "lead",
+"cn": "带领",
+"img": "images/verb_lead.jpg"
+},
+{
+"en": "lean",
+"cn": "倚靠",
+"img": "images/verb_lean.jpg"
+},
+{
+"en": "leave",
+"cn": "离开",
+"img": "images/verb_leave.jpg"
+},
+{
+"en": "lick",
+"cn": "舔",
+"img": "images/verb_lick.jpg"
+},
+{
+"en": "listen",
+"cn": "听",
+"img": "images/verb_listen.jpg"
+},
+{
+"en": "look",
+"cn": "看",
+"img": "images/verb_look.jpg"
+},
+{
+"en": "measure",
+"cn": "测量",
+"img": "images/verb_measure.jpg"
+},
+{
+"en": "move",
+"cn": "移动",
+"img": "images/verb_move.jpg"
+},
+{
+"en": "observe",
+"cn": "观察",
+"img": "images/verb_observe.jpg"
+},
+{
+"en": "overeat",
+"cn": "吃太多",
+"img": "images/verb_overeat.jpg"
+},
+{
+"en": "pee",
+"cn": "尿尿",
+"img": "images/verb_pee.jpg"
+},
+{
+"en": "play",
+"cn": "玩",
+"img": "images/verb_play.jpg"
+},
+{
+"en": "poke",
+"cn": "戳",
+"img": "images/verb_poke.jpg"
+},
+{
+"en": "poop",
+"cn": "拉臭臭",
+"img": "images/verb_poop.jpg"
+},
+{
+"en": "pounce",
+"cn": "扑",
+"img": "images/verb_pounce.jpg"
+},
+{
+"en": "pout",
+"cn": "撅嘴",
+"img": "images/verb_pout.jpg"
+},
+{
+"en": "pretend",
+"cn": "假装",
+"img": "images/verb_pretend.jpg"
+},
+{
+"en": "protect",
+"cn": "保护",
+"img": "images/verb_protect.jpg"
+},
+{
+"en": "puke",
+"cn": "呕吐",
+"img": "images/verb_puke.jpg"
+},
+{
+"en": "pull",
+"cn": "拉",
+"img": "images/verb_pull.jpg"
+},
+{
+"en": "race",
+"cn": "赛跑",
+"img": "images/verb_race.jpg"
+},
+{
+"en": "raise",
+"cn": "举起",
+"img": "images/verb_raise.jpg"
+},
+{
+"en": "refuse",
+"cn": "拒绝",
+"img": "images/verb_refuse.jpg"
+},
+{
+"en": "run",
+"cn": "跑",
+"img": "images/verb_run.jpg"
+},
+{
+"en": "salute",
+"cn": "敬礼",
+"img": "images/verb_salute.jpg"
+},
+{
+"en": "scratch",
+"cn": "抓",
+"img": "images/verb_scratch.jpg"
+},
+{
+"en": "shake",
+"cn": "摇",
+"img": "images/verb_shake.jpg"
+},
+{
+"en": "shed",
+"cn": "脱(皮)",
+"img": "images/verb_shed.jpg"
+},
+{
+"en": "show",
+"cn": "展示",
+"img": "images/verb_show.jpg"
+},
+{
+"en": "sing",
+"cn": "唱歌",
+"img": "images/verb_sing.jpg"
+},
+{
+"en": "slap",
+"cn": "拍",
+"img": "images/verb_slap.jpg"
+},
+{
+"en": "sleep",
+"cn": "睡觉",
+"img": "images/verb_sleep.jpg"
+},
+{
+"en": "slither",
+"cn": "滑行",
+"img": "images/verb_slither.jpg"
+},
+{
+"en": "slurp",
+"cn": "吸溜",
+"img": "images/verb_slurp.jpg"
+},
+{
+"en": "smell",
+"cn": "闻",
+"img": "images/verb_smell.jpg"
+},
+{
+"en": "smile",
+"cn": "微笑",
+"img": "images/verb_smile.jpg"
+},
+{
+"en": "spit",
+"cn": "吐",
+"img": "images/verb_spit.jpg"
+},
+{
+"en": "spray",
+"cn": "喷",
+"img": "images/verb_spray.jpg"
+},
+{
+"en": "stand",
+"cn": "站",
+"img": "images/verb_stand.jpg"
+},
+{
+"en": "stare",
+"cn": "瞪",
+"img": "images/verb_stare.jpg"
+},
+{
+"en": "stretch",
+"cn": "伸展",
+"img": "images/verb_stretch.jpg"
+},
+{
+"en": "stroke",
+"cn": "抚摸",
+"img": "images/verb_stroke.jpg"
+},
+{
+"en": "stuff",
+"cn": "塞满",
+"img": "images/verb_stuff.jpg"
+},
+{
+"en": "sulk",
+"cn": "生闷气",
+"img": "images/verb_sulk.jpg"
+},
+{
+"en": "swim",
+"cn": "游泳",
+"img": "images/verb_swim.jpg"
+},
+{
+"en": "teach",
+"cn": "教",
+"img": "images/verb_teach.jpg"
+},
+{
+"en": "tease",
+"cn": "逗弄",
+"img": "images/verb_tease.jpg"
+},
+{
+"en": "think",
+"cn": "想",
+"img": "images/verb_think.jpg"
+},
+{
+"en": "waddle",
+"cn": "摇摇摆摆走",
+"img": "images/verb_waddle.jpg"
+},
+{
+"en": "warm",
+"cn": "取暖",
+"img": "images/verb_warm.jpg"
+},
+{
+"en": "warn",
+"cn": "警告",
+"img": "images/verb_warn.jpg"
+},
+{
+"en": "wash",
+"cn": "洗",
+"img": "images/verb_wash.jpg"
+},
+{
+"en": "weigh",
+"cn": "称重",
+"img": "images/verb_weigh.jpg"
+},
+{
+"en": "whistle",
+"cn": "吹口哨",
+"img": "images/verb_whistle.jpg"
+},
+{
+"en": "wiggle",
+"cn": "扭动",
+"img": "images/verb_wiggle.jpg"
+},
+{
+"en": "yawn",
+"cn": "打哈欠",
+"img": "images/verb_yawn.jpg"
+}
+]
+}
+],
+"answer": "<div style='padding:0.6rem 0'><b>💡 使用说明：</b>这100张动词闪卡用于Susan体系的<b>动词TPR</b>和<b>随机组句</b>训练。动词是句子的核心——有了动词才有句子。边表演边说，效果最好。</div>",
+"tip": "17个月宝宝：先从最生活化的动词开始（eat/sleep/drink/play/dance/jump/run/swim），用TPR表演出来。",
+"category": "cards",
+"tags": [
+"随机组句",
+"闪卡",
+"动词",
+"TPR"
+],
+"date": "2026-06-17"
+},
+{
+"displayTitle": "1000 Useful Words·食物主题",
+"sections": [
+{
+"title": "🥬 Vegetables 蔬菜",
+"words": [
+{"en": "olives", "ipa": "/ˈɒlɪvz/", "cn": "橄榄"},
+{"en": "tomato", "ipa": "/təˈmɑːtəʊ/", "cn": "番茄"},
+{"en": "lettuce", "ipa": "/ˈletɪs/", "cn": "生菜"},
+{"en": "celery", "ipa": "/ˈseləri/", "cn": "芹菜"},
+{"en": "cucumber", "ipa": "/ˈkjuːkʌmbər/", "cn": "黄瓜"},
+{"en": "broccoli", "ipa": "/ˈbrɒkəli/", "cn": "西兰花"},
+{"en": "peas", "ipa": "/piːz/", "cn": "豌豆"},
+{"en": "cabbage", "ipa": "/ˈkæbɪdʒ/", "cn": "卷心菜"},
+{"en": "pumpkin", "ipa": "/ˈpʌmpkɪn/", "cn": "南瓜"},
+{"en": "carrot", "ipa": "/ˈkærət/", "cn": "胡萝卜"},
+{"en": "cauliflower", "ipa": "/ˈkɒlɪflaʊər/", "cn": "花椰菜"},
+{"en": "onions", "ipa": "/ˈʌnjənz/", "cn": "洋葱"},
+{"en": "red pepper", "ipa": "/red ˈpepər/", "cn": "红椒"},
+{"en": "green beans", "ipa": "/ɡriːn biːnz/", "cn": "四季豆"},
+{"en": "potatoes", "ipa": "/pəˈteɪtəʊz/", "cn": "土豆"}
+]
+},
+{
+"title": "🍎 Fruit 水果",
+"words": [
+{"en": "lemon", "ipa": "/ˈlemən/", "cn": "柠檬"},
+{"en": "apple", "ipa": "/ˈæpl/", "cn": "苹果"},
+{"en": "banana", "ipa": "/bəˈnɑːnə/", "cn": "香蕉"},
+{"en": "grapes", "ipa": "/ɡreɪps/", "cn": "葡萄"},
+{"en": "pineapple", "ipa": "/ˈpaɪnæpl/", "cn": "菠萝"},
+{"en": "strawberries", "ipa": "/ˈstrɔːbəriz/", "cn": "草莓"},
+{"en": "orange", "ipa": "/ˈɒrɪndʒ/", "cn": "橙子"},
+{"en": "watermelon", "ipa": "/ˈwɔːtərmelən/", "cn": "西瓜"}
+]
+},
+{
+"title": "🧁 Treats 甜点零食",
+"words": [
+{"en": "pastries", "ipa": "/ˈpeɪstriz/", "cn": "糕点"},
+{"en": "cupcakes", "ipa": "/ˈkʌpkeɪks/", "cn": "杯子蛋糕"},
+{"en": "ice cream", "ipa": "/aɪs kriːm/", "cn": "冰淇淋"},
+{"en": "biscuits", "ipa": "/ˈbɪskɪts/", "cn": "饼干"}
+]
+},
+{
+"title": "☕ Drinks 饮品",
+"words": [
+{"en": "water", "ipa": "/ˈwɔːtər/", "cn": "水"},
+{"en": "juice", "ipa": "/dʒuːs/", "cn": "果汁"},
+{"en": "milk", "ipa": "/mɪlk/", "cn": "牛奶"},
+{"en": "coffee", "ipa": "/ˈkɒfi/", "cn": "咖啡"},
+{"en": "tea", "ipa": "/tiː/", "cn": "茶"}
+]
+},
+{
+"title": "🫙 In the Cupboard 橱柜干货",
+"words": [
+{"en": "spices", "ipa": "/ˈspaɪsɪz/", "cn": "香料"},
+{"en": "nuts", "ipa": "/nʌts/", "cn": "坚果"},
+{"en": "sugar", "ipa": "/ˈʃʊɡər/", "cn": "糖"},
+{"en": "flour", "ipa": "/ˈflaʊər/", "cn": "面粉"},
+{"en": "oil", "ipa": "/ɔɪl/", "cn": "油"},
+{"en": "bread", "ipa": "/bred/", "cn": "面包"},
+{"en": "honey", "ipa": "/ˈhʌni/", "cn": "蜂蜜"},
+{"en": "pasta", "ipa": "/ˈpæstə/", "cn": "意面"},
+{"en": "noodles", "ipa": "/ˈnuːdlz/", "cn": "面条"},
+{"en": "rice", "ipa": "/raɪs/", "cn": "米饭"},
+{"en": "cereal", "ipa": "/ˈsɪəriəl/", "cn": "麦片"}
+]
+},
+{
+"title": "🧀 In the Fridge 冰箱食材",
+"words": [
+{"en": "cheese", "ipa": "/tʃiːz/", "cn": "奶酪"},
+{"en": "chicken", "ipa": "/ˈtʃɪkɪn/", "cn": "鸡肉"},
+{"en": "fish", "ipa": "/fɪʃ/", "cn": "鱼"},
+{"en": "yoghurt", "ipa": "/ˈjɒɡərt/", "cn": "酸奶"},
+{"en": "sausages", "ipa": "/ˈsɒsɪdʒɪz/", "cn": "香肠"},
+{"en": "eggs", "ipa": "/eɡz/", "cn": "鸡蛋"},
+{"en": "butter", "ipa": "/ˈbʌtər/", "cn": "黄油"}
+]
+},
+{
+"title": "🍕 Lunch 午餐成品",
+"words": [
+{"en": "sandwich", "ipa": "/ˈsænwɪtʃ/", "cn": "三明治"},
+{"en": "pizza", "ipa": "/ˈpiːtsə/", "cn": "披萨"},
+{"en": "hamburger", "ipa": "/ˈhæmbɜːɡər/", "cn": "汉堡"},
+{"en": "omelette", "ipa": "/ˈɒmələt/", "cn": "煎蛋卷"}
+]
+}
+],
+"tip": "这54个食物单词非常适合在日常生活中指认学习：逛超市时找蔬菜水果、做饭时指橱柜冰箱里的食材、吃饭时说食物名称。边吃边说效果最好！",
+"category": "vocab",
+"tags": [
+"1000 useful words",
+"食物",
+"蔬菜",
+"水果",
+"日常生活"
+],
+"date": "2026-06-30"
+},
+{
+"displayTitle": "1000 Useful Words·房屋与家居",
+"sections": [
+{
+"title": "🏠 房屋外部 Outside",
+"words": [
+{"en": "chimney", "ipa": "/ˈtʃɪmni/", "cn": "烟囱"},
+{"en": "roof", "ipa": "/ruːf/", "cn": "屋顶"},
+{"en": "steps", "ipa": "/steps/", "cn": "台阶"},
+{"en": "doormat", "ipa": "/ˈdɔːmæt/", "cn": "门垫"},
+{"en": "door", "ipa": "/dɔːr/", "cn": "门"}
+]
+},
+{
+"title": "🚿 Bathroom 浴室",
+"words": [
+{"en": "bathroom", "ipa": "/ˈbɑːθruːm/", "cn": "浴室"},
+{"en": "toilet", "ipa": "/ˈtɔɪlɪt/", "cn": "马桶"},
+{"en": "toilet roll", "ipa": "/ˈtɔɪlɪt rəʊl/", "cn": "卷纸"},
+{"en": "sink", "ipa": "/sɪŋk/", "cn": "洗手台"},
+{"en": "mirror", "ipa": "/ˈmɪrər/", "cn": "镜子"},
+{"en": "towel", "ipa": "/ˈtaʊəl/", "cn": "毛巾"},
+{"en": "light", "ipa": "/laɪt/", "cn": "灯"},
+{"en": "tap", "ipa": "/tæp/", "cn": "水龙头"},
+{"en": "bath", "ipa": "/bɑːθ/", "cn": "浴缸"},
+{"en": "shower", "ipa": "/ˈʃaʊər/", "cn": "淋浴"}
+]
+},
+{
+"title": "🛋️ Living Room 客厅",
+"words": [
+{"en": "living room", "ipa": "/ˈlɪvɪŋ ruːm/", "cn": "客厅"},
+{"en": "television", "ipa": "/ˈtelɪvɪʒn/", "cn": "电视"},
+{"en": "bookcase", "ipa": "/ˈbʊkkeɪs/", "cn": "书架"},
+{"en": "picture", "ipa": "/ˈpɪktʃər/", "cn": "画/照片"},
+{"en": "cushion", "ipa": "/ˈkʊʃn/", "cn": "靠垫"},
+{"en": "sofa", "ipa": "/ˈsəʊfə/", "cn": "沙发"},
+{"en": "pot plant", "ipa": "/pɒt plɑːnt/", "cn": "盆栽"},
+{"en": "side table", "ipa": "/saɪd ˈteɪbl/", "cn": "边桌"}
+]
+},
+{
+"title": "🛏️ Bedroom 卧室",
+"words": [
+{"en": "bedroom", "ipa": "/ˈbedruːm/", "cn": "卧室"},
+{"en": "wardrobe", "ipa": "/ˈwɔːdrəʊb/", "cn": "衣柜"},
+{"en": "toys", "ipa": "/tɔɪz/", "cn": "玩具"},
+{"en": "window", "ipa": "/ˈwɪndəʊ/", "cn": "窗户"},
+{"en": "curtain", "ipa": "/ˈkɜːtn/", "cn": "窗帘"},
+{"en": "lamp", "ipa": "/læmp/", "cn": "台灯"},
+{"en": "books", "ipa": "/bʊks/", "cn": "书"},
+{"en": "beanbag", "ipa": "/ˈbiːnbæɡ/", "cn": "懒人沙发"},
+{"en": "mat", "ipa": "/mæt/", "cn": "垫子"},
+{"en": "bedside table", "ipa": "/ˈbedsaɪd ˈteɪbl/", "cn": "床头柜"},
+{"en": "alarm clock", "ipa": "/əˈlɑːm klɒk/", "cn": "闹钟"},
+{"en": "bed", "ipa": "/bed/", "cn": "床"},
+{"en": "pillow", "ipa": "/ˈpɪləʊ/", "cn": "枕头"},
+{"en": "floor", "ipa": "/flɔːr/", "cn": "地板"}
+]
+},
+{
+"title": "🍳 Kitchen 厨房",
+"words": [
+{"en": "kitchen", "ipa": "/ˈkɪtʃɪn/", "cn": "厨房"},
+{"en": "clock", "ipa": "/klɒk/", "cn": "时钟"},
+{"en": "table", "ipa": "/ˈteɪbl/", "cn": "桌子"},
+{"en": "chair", "ipa": "/tʃeər/", "cn": "椅子"},
+{"en": "cupboards", "ipa": "/ˈkʌbədz/", "cn": "橱柜"},
+{"en": "fridge", "ipa": "/frɪdʒ/", "cn": "冰箱"},
+{"en": "washing machine", "ipa": "/ˈwɒʃɪŋ məˈʃiːn/", "cn": "洗衣机"},
+{"en": "cooker", "ipa": "/ˈkʊkər/", "cn": "灶台"},
+{"en": "phone", "ipa": "/fəʊn/", "cn": "电话"}
+]
+}
+],
+"tip": "这46个家居单词在家里随时可以指认：洗澡时说bath/shower/tap，在客厅找sofa/cushion/lamp，卧室里指bed/pillow/alarm clock。边指边说，宝宝自然就记住了！",
+"category": "vocab",
+"tags": [
+"1000 useful words",
+"家居",
+"房屋",
+"房间",
+"日常生活"
+],
+"date": "2026-06-30"
+},
+{
+"displayTitle": "1000 Useful Words·玩具与活动",
+"sections": [
+{
+"title": "👑 Dressing Up 装扮",
+"words": [
+{"en": "firefighter helmet", "ipa": "/ˈfaɪəfaɪtə ˈhelmɪt/", "cn": "消防头盔"},
+{"en": "firefighter costume", "ipa": "/ˈfaɪəfaɪtə ˈkɒstjuːm/", "cn": "消防服"},
+{"en": "tiara", "ipa": "/tiˈɑːrə/", "cn": "皇冠"},
+{"en": "princess costume", "ipa": "/prɪnˈses ˈkɒstjuːm/", "cn": "公主裙"}
+]
+},
+{
+"title": "🎈 Toys 玩具",
+"words": [
+{"en": "balloons", "ipa": "/bəˈluːnz/", "cn": "气球"},
+{"en": "kite", "ipa": "/kaɪt/", "cn": "风筝"},
+{"en": "teepee", "ipa": "/ˈtiːpiː/", "cn": "帐篷"},
+{"en": "doll", "ipa": "/dɒl/", "cn": "玩偶"},
+{"en": "ball", "ipa": "/bɔːl/", "cn": "球"},
+{"en": "tambourine", "ipa": "/ˌtæmbəˈriːn/", "cn": "铃鼓"},
+{"en": "toy box", "ipa": "/tɔɪ bɒks/", "cn": "玩具箱"}
+]
+},
+{
+"title": "🧸 Toy Collections 玩具套装",
+"words": [
+{"en": "doll's house", "ipa": "/dɒlz haʊs/", "cn": "玩偶屋"},
+{"en": "train set", "ipa": "/treɪn set/", "cn": "火车套装"},
+{"en": "train track", "ipa": "/treɪn træk/", "cn": "火车轨道"},
+{"en": "train", "ipa": "/treɪn/", "cn": "小火车"},
+{"en": "rocking horse", "ipa": "/ˈrɒkɪŋ hɔːs/", "cn": "摇摇马"},
+{"en": "fire engine", "ipa": "/ˈfaɪə ˈendʒɪn/", "cn": "消防车"},
+{"en": "marbles", "ipa": "/ˈmɑːblz/", "cn": "弹珠"},
+{"en": "building blocks", "ipa": "/ˈbɪldɪŋ blɒks/", "cn": "积木"},
+{"en": "drum", "ipa": "/drʌm/", "cn": "鼓"},
+{"en": "drumstick", "ipa": "/ˈdrʌmstɪk/", "cn": "鼓槌"},
+{"en": "tea set", "ipa": "/tiː set/", "cn": "茶具套装"},
+{"en": "jigsaw puzzle", "ipa": "/ˈdʒɪɡsɔː ˈpʌzl/", "cn": "拼图"},
+{"en": "modelling clay", "ipa": "/ˈmɒdəlɪŋ kleɪ/", "cn": "橡皮泥"},
+{"en": "bath duck", "ipa": "/bɑːθ dʌk/", "cn": "洗澡小黄鸭"},
+{"en": "robot", "ipa": "/ˈrəʊbɒt/", "cn": "机器人"},
+{"en": "spinning top", "ipa": "/ˈspɪnɪŋ tɒp/", "cn": "陀螺"},
+{"en": "dinosaurs", "ipa": "/ˈdaɪnəsɔːz/", "cn": "恐龙"},
+{"en": "trumpet", "ipa": "/ˈtrʌmpɪt/", "cn": "小号"},
+{"en": "xylophone", "ipa": "/ˈzaɪləfəʊn/", "cn": "木琴"},
+{"en": "beater", "ipa": "/ˈbiːtər/", "cn": "敲击棒"},
+{"en": "rabbit", "ipa": "/ˈræbɪt/", "cn": "兔子"},
+{"en": "car", "ipa": "/kɑːr/", "cn": "小汽车"},
+{"en": "teddy bear", "ipa": "/ˈtɛdi beər/", "cn": "泰迪熊"}
+]
+},
+{
+"title": "🎨 Art Supplies 文具与手工",
+"words": [
+{"en": "pencils", "ipa": "/ˈpenslz/", "cn": "铅笔"},
+{"en": "pens", "ipa": "/penz/", "cn": "彩笔"},
+{"en": "paper", "ipa": "/ˈpeɪpər/", "cn": "画纸"},
+{"en": "paintbrushes", "ipa": "/ˈpeɪntbrʌʃɪz/", "cn": "画笔"},
+{"en": "paints", "ipa": "/peɪnts/", "cn": "颜料"}
+]
+},
+{
+"title": "✋ Things to Do 活动",
+"words": [
+{"en": "books", "ipa": "/bʊks/", "cn": "书籍"},
+{"en": "read a book", "ipa": "/riːd ə bʊk/", "cn": "读书"},
+{"en": "draw pictures", "ipa": "/drɔː ˈpɪktʃəz/", "cn": "画画"},
+{"en": "play with a toy", "ipa": "/pleɪ wɪð ə tɔɪ/", "cn": "玩玩具"},
+{"en": "play music", "ipa": "/pleɪ ˈmjuːzɪk/", "cn": "演奏音乐"},
+{"en": "dress up", "ipa": "/dres ʌp/", "cn": "装扮"}
+]
+}
+],
+"tip": "玩具房是宝宝最熟悉的空间！玩的时候边说单词效果最好：积木building blocks、拼图jigsaw puzzle、画画draw pictures都是高频场景。装扮游戏dress up可以结合消防服和公主裙来练习。",
+"category": "vocab",
+"tags": [
+"1000 useful words",
+"玩具",
+"装扮",
+"文具",
+"活动"
+],
+"date": "2026-06-30"
+},
+{
+"displayTitle": "1000 Useful Words·厨房活动与器具",
+"sections": [
+{
+"title": "🍳 In the Kitchen 厨房活动",
+"words": [
+{"en": "prepare food", "ipa": "/prɪˈpeər fuːd/", "cn": "准备食物"},
+{"en": "cook meals", "ipa": "/kʊk miːlz/", "cn": "做饭"},
+{"en": "bake cakes and treats", "ipa": "/beɪk keɪks ænd triːts/", "cn": "烤蛋糕和甜点"},
+{"en": "wash up", "ipa": "/wɒʃ ʌp/", "cn": "洗碗"},
+{"en": "clean", "ipa": "/kliːn/", "cn": "打扫"},
+{"en": "lay the table", "ipa": "/leɪ ðə ˈteɪbl/", "cn": "摆餐具"},
+{"en": "eat", "ipa": "/iːt/", "cn": "吃"},
+{"en": "drink", "ipa": "/drɪŋk/", "cn": "喝"}
+]
+},
+{
+"title": "🍽️ Kitchen Items 厨房器具",
+"words": [
+{"en": "glass", "ipa": "/ɡlɑːs/", "cn": "玻璃杯"},
+{"en": "jug", "ipa": "/dʒʌɡ/", "cn": "壶/罐"},
+{"en": "cup and saucer", "ipa": "/kʌp ænd ˈsɔːsər/", "cn": "杯碟套装"},
+{"en": "wooden spoon", "ipa": "/ˈwʊdn spuːn/", "cn": "木勺"},
+{"en": "whisk", "ipa": "/wɪsk/", "cn": "打蛋器"},
+{"en": "herbs", "ipa": "/hɜːbz/", "cn": "香草"},
+{"en": "sharp knife", "ipa": "/ʃɑːp naɪf/", "cn": "锋利的刀"},
+{"en": "chopping board", "ipa": "/ˈtʃɒpɪŋ bɔːd/", "cn": "砧板"},
+{"en": "mug", "ipa": "/mʌɡ/", "cn": "马克杯"},
+{"en": "toaster", "ipa": "/ˈtəʊstər/", "cn": "烤面包机"},
+{"en": "frying pan", "ipa": "/ˈfraɪɪŋ pæn/", "cn": "平底锅"},
+{"en": "mixing bowl", "ipa": "/ˈmɪksɪŋ bəʊl/", "cn": "搅拌碗"},
+{"en": "grater", "ipa": "/ˈɡreɪtər/", "cn": "擦丝器"},
+{"en": "saucepan", "ipa": "/ˈsɔːspən/", "cn": "汤锅"},
+{"en": "cookie cutters", "ipa": "/ˈkʊki ˈkʌtəz/", "cn": "饼干模具"},
+{"en": "scales", "ipa": "/skeɪlz/", "cn": "秤"},
+{"en": "storage jars", "ipa": "/ˈstɔːrɪdʒ dʒɑːz/", "cn": "储物罐"},
+{"en": "rolling pin", "ipa": "/ˈrəʊlɪŋ pɪn/", "cn": "擀面杖"},
+{"en": "vegetable peeler", "ipa": "/ˈvedʒtəbl ˈpiːlər/", "cn": "削皮器"},
+{"en": "chopsticks", "ipa": "/ˈtʃɒpstɪks/", "cn": "筷子"},
+{"en": "kettle", "ipa": "/ˈketl/", "cn": "烧水壶"},
+{"en": "washing-up liquid", "ipa": "/ˈwɒʃɪŋ ʌp ˈlɪkwɪd/", "cn": "洗洁精"},
+{"en": "sink", "ipa": "/sɪŋk/", "cn": "水槽"},
+{"en": "washing-up sponges", "ipa": "/ˈwɒʃɪŋ ʌp ˈspʌndʒɪz/", "cn": "洗碗海绵"},
+{"en": "tea towel", "ipa": "/tiː ˈtaʊəl/", "cn": "茶巾"},
+{"en": "fork", "ipa": "/fɔːk/", "cn": "叉子"},
+{"en": "knife", "ipa": "/naɪf/", "cn": "餐刀"},
+{"en": "plate", "ipa": "/pleɪt/", "cn": "盘子"},
+{"en": "spoon", "ipa": "/spuːn/", "cn": "勺子"},
+{"en": "colander", "ipa": "/ˈkɒləndər/", "cn": "漏勺"},
+{"en": "cereal bowl", "ipa": "/ˈsɪəriəl bəʊl/", "cn": "麦片碗"},
+{"en": "sieve", "ipa": "/sɪv/", "cn": "筛子"},
+{"en": "cake tin", "ipa": "/keɪk tɪn/", "cn": "蛋糕模具"},
+{"en": "bucket", "ipa": "/ˈbʌkɪt/", "cn": "水桶"},
+{"en": "dustpan and brush", "ipa": "/ˈdʌstpæn ænd brʌʃ/", "cn": "簸箕和扫帚"},
+{"en": "mop", "ipa": "/mɒp/", "cn": "拖把"}
+]
+}
+],
+"tip": "做饭时是最好的英语输入时机！让宝宝参与：wash up洗碗、mixing bowl搅拌、cutting切东西。说出每样器具的名字，边做边说，宝宝自然习得。",
+"category": "vocab",
+"tags": [
+"1000 useful words",
+"厨房",
+"器具",
+"烹饪",
+"日常生活"
+],
+"date": "2026-06-30"
+}
+];
+
+// ===== Category Config =====
+var catConfig = {
+  songs: { name: '儿歌童谣', emoji: '🎵' },
+  books: { name: '绘本阅读', emoji: '📖' },
+  daily: { name: '日常互动', emoji: '🗣' },
+  vocab: { name: '词汇与表达', emoji: '📝' },
+  methods: { name: '启蒙方法', emoji: '🎯' },
+  cards: { name: '随机组句闪卡', emoji: '🃏' },
+  phonics: { name: '自然拼读', emoji: '🔤' },
+  confusions: { name: '常见困惑', emoji: '❓' },
+  resources: { name: '资源推荐', emoji: '📦' },
+  random: { name: '随机组句', emoji: '🎲' }
+};
+
+// ===== Favorites Storage =====
+var favStorage = {
+  KEY: 'baby-qa-favs',
+  getAll: function() { try { return JSON.parse(localStorage.getItem(this.KEY)) || {}; } catch(e) { return {}; } },
+  toggle: function(k) { var f = this.getAll(); if(f[k]) delete f[k]; else f[k] = true; localStorage.setItem(this.KEY, JSON.stringify(f)); return !!f[k]; },
+  isFav: function(k) { return !!this.getAll()[k]; },
+  count: function() { return Object.keys(this.getAll()).length; },
+  getKeys: function() { return Object.keys(this.getAll()); }
+};
+
+// ===== Speak =====
+function speak(text, btn) {
+  if(!('speechSynthesis' in window)) return;
+  window.speechSynthesis.cancel();
+  // Try pre-generated audio file first (works with Bluetooth/AirPods)
+  var word = text.trim().toLowerCase();
+  var audioSrc = null;
+  if(sbCurNoun && sbCurNoun.word.toLowerCase() === word) audioSrc = 'audio/noun_' + word.replace(/ /g,'_').replace(/\//g,'_') + '.wav';
+  else if(sbCurVerb && sbCurVerb.word.toLowerCase() === word) audioSrc = 'audio/verb_' + word.replace(/ /g,'_').replace(/\//g,'_') + '.wav';
+  if(audioSrc) {
+    if(btn) { var orig = btn.textContent; btn.textContent = '⏳'; }
+    var a = new Audio(audioSrc);
+    a.onended = function() { if(btn) btn.textContent = orig; };
+    a.onerror = function() { if(btn) btn.textContent = orig; };
+    a.play();
+    return;
+  }
+  // Fallback to speechSynthesis for QA section words
+  var u = new SpeechSynthesisUtterance(text);
+  u.lang = 'en-US'; u.rate = 0.8;
+  var voices = window.speechSynthesis.getVoices();
+  for(var i = 0; i < voices.length; i++) { if(voices[i].lang.indexOf('en') === 0 && voices[i].name.indexOf('Female') > -1) { u.voice = voices[i]; break; } }
+  if(btn) { var orig = btn.textContent; btn.textContent = '⏳'; u.onend = function() { btn.textContent = orig; }; u.onerror = function() { btn.textContent = orig; }; }
+  window.speechSynthesis.speak(u);
+}
+
+function makeWordKey(q, s, w, en) { return q + '-' + s + '-' + w + '-' + en; }
+function toggleFav(key, btn) { var is = favStorage.toggle(key); btn.textContent = is ? '⭐' : '☆'; btn.className = 'star-btn' + (is ? ' active' : ''); updateFavCount(); }
+function updateFavCount() {
+  var c = favStorage.count();
+  document.getElementById('fav-nav-count').textContent = c;
+}
+
+// ===== Render QA =====
+function buildWordList(words, qIdx, sIdx, hasImg) {
+  var hasImg2 = words.some(function(w) { return !!w.img; });
+  var h = '<ul class="word-list' + (hasImg2 ? ' has-img' : '') + '">';
+  for(var j = 0; j < words.length; j++) {
+    var w = words[j], key = makeWordKey(qIdx, sIdx, j, w.en);
+    var ipa = w.ipa ? '<span class="word-ipa">' + w.ipa + '</span>' : '';
+    var safeEn = w.en.replace(/'/g, "&apos;").replace(/"/g, '&quot;');
+    var isFav = favStorage.isFav(key), sc = 'star-btn' + (isFav ? ' active' : ''), si = isFav ? '⭐' : '☆', lc = isFav ? ' starred' : '';
+    var imgHtml = '';
+    if(w.img) imgHtml = '<img class="word-img" src="' + w.img + '" alt="' + safeEn + '" loading="lazy" onerror="this.style.display=\'none\'">';
+    h += '<li class="' + lc + '">' + imgHtml + '<div class="word-text"><span class="word-en">' + w.en + '</span>' + ipa + '<span class="word-cn">' + w.cn + '</span></div><div class="action-btns"><button class="' + sc + '" data-action="fav" data-key="' + key + '" title="收藏">' + si + '</button><button class="speak-btn" data-action="speak" data-text="' + safeEn + '" title="点击发音">🔊</button></div></li>';
+  }
+  return h + '</ul>';
+}
+
+function renderQA(data) {
+  var l = document.getElementById('qa-list');
+  if(!data || data.length === 0) { l.innerHTML = '<div class="empty-state"><div class="emoji">🔍</div><p>没有找到匹配的问题</p></div>'; return; }
+  var groups = {};
+  data.forEach(function(q) { if(!groups[q.category]) groups[q.category] = []; groups[q.category].push(q); });
+  var h = '';
+  var keys = Object.keys(groups);
+  for(var k = 0; k < keys.length; k++) {
+    var cat = keys[k], items = groups[cat], conf = catConfig[cat] || { name: cat, emoji: '📌' };
+    h += '<div class="category-section" data-cat="' + cat + '"><div class="category-title"><span class="emoji">' + conf.emoji + '</span>' + conf.name + '<span class="count">' + items.length + '</span></div>';
+    for(var i = 0; i < items.length; i++) {
+      var q = items[i], qIdx = qaData.indexOf(q);
+      h += '<div class="qa-card" id="toc-' + cat + '-' + i + '"><div class="question"><span class="q-badge">Q</span>' + (q.displayTitle || q.question) + '</div><div class="answer">';
+      if(q.sections) { for(var j = 0; j < q.sections.length; j++) { h += '<div class="section-title">' + q.sections[j].title + '</div>'; h += buildWordList(q.sections[j].words, qIdx, j); } }
+      else if(q.answer) { h += q.answer; }
+      if(q.tip) h += '<div class="tip-box">💡 ' + q.tip + '</div>';
+      h += '</div>';
+      if(q.tags && q.tags.length) { h += '<div class="tags">'; for(var t = 0; t < q.tags.length; t++) h += '<span class="tag">' + q.tags[t] + '</span>'; h += '</div>'; }
+      h += '<div class="date">' + (q.date || '') + '</div></div>';
+    }
+    h += '</div>';
+  }
+  l.innerHTML = h;
+}
+
+function renderFavorites() {
+  var l = document.getElementById('qa-list'), fk = favStorage.getKeys();
+  if(fk.length === 0) { l.innerHTML = '<div class="empty-state"><div class="emoji">🌟</div><p>还没有收藏的单词<br>点击单词旁边的 ☆ 来收藏吧</p></div>'; return; }
+  var grouped = {};
+  for(var i = 0; i < fk.length; i++) {
+    var key = fk[i], p = key.split('-'), qi = parseInt(p[0]), si = parseInt(p[1]), wi = parseInt(p[2]), en = p.slice(3).join('-');
+    if(!grouped[qi]) grouped[qi] = {};
+    if(!grouped[qi][si]) grouped[qi][si] = [];
+    grouped[qi][si].push({ idx: wi, en: en });
+  }
+  var h = '';
+  var qks = Object.keys(grouped).sort(function(a,b) { return parseInt(a) - parseInt(b); });
+  for(var qi = 0; qi < qks.length; qi++) {
+    var qiN = qks[qi], q = qaData[parseInt(qiN)];
+    if(!q) continue;
+    h += '<div class="qa-card"><div class="fav-source-label">' + (q.displayTitle || q.question) + '</div>';
+    if(q.sections) {
+      for(var si = 0; si < q.sections.length; si++) {
+        if(!grouped[qiN][si]) continue;
+        var sec = q.sections[si], fws = grouped[qiN][si].sort(function(a,b) { return a.idx - b.idx; });
+        h += '<div class="fav-section-title">' + sec.title + '</div><ul class="word-list">';
+        for(var fw = 0; fw < fws.length; fw++) {
+          var w = sec.words[fws[fw].idx];
+          if(!w) continue;
+          var wKey = makeWordKey(parseInt(qiN), si, fws[fw].idx, w.en);
+          var ipa = w.ipa ? '<span class="word-ipa">' + w.ipa + '</span>' : '';
+          var safeEn = w.en.replace(/'/g, "&apos;").replace(/"/g, '&quot;');
+          h += '<li class="starred"><span class="word-en">' + w.en + '</span>' + ipa + '<span class="word-cn">' + w.cn + '</span><div class="action-btns"><button class="star-btn active" data-action="fav" data-key="' + wKey + '" title="取消收藏">⭐</button><button class="speak-btn" data-action="speak" data-text="' + safeEn + '" title="点击发音">🔊</button></div></li>';
+        }
+        h += '</ul>';
+      }
+    }
+    h += '</div>';
+  }
+  l.innerHTML = h;
+}
+
+// ===== Filtering =====
+var activeCat = 'all';
+
+function applyFilters() {
+  var sb = document.getElementById('sentence-builder');
+  var ql = document.getElementById('qa-list');
+  var sbox = document.getElementById('search-box');
+
+  if(activeCat === 'random') {
+    sb.className = 'active';
+    ql.style.display = 'none';
+    sbox.style.display = 'none';
+    return;
+  }
+  sb.className = '';
+  ql.style.display = '';
+  sbox.style.display = '';
+
+  if(activeCat === 'favorites') {
+    renderFavorites();
+    var q = document.getElementById('search').value.toLowerCase();
+    if(q) { var lis = document.querySelectorAll('#qa-list .word-list li'); for(var i = 0; i < lis.length; i++) lis[i].style.display = lis[i].textContent.toLowerCase().indexOf(q) >= 0 ? '' : 'none'; }
+    return;
+  }
+  var q = document.getElementById('search').value.toLowerCase(), f = qaData;
+  if(activeCat !== 'all') f = f.filter(function(x) { return x.category === activeCat; });
+  if(q) { f = f.filter(function(x) { var t = (x.displayTitle || x.question).toLowerCase(), aw = ''; if(x.sections) for(var i = 0; i < x.sections.length; i++) for(var j = 0; j < x.sections[i].words.length; j++) aw += x.sections[i].words[j].en + ' ' + x.sections[i].words[j].cn + ' '; return t.indexOf(q) >= 0 || aw.toLowerCase().indexOf(q) >= 0 || (x.tags && x.tags.some(function(tg) { return tg.toLowerCase().indexOf(q) >= 0; })); }); }
+  renderQA(f);
+}
+
+// ===== Event Listeners =====
+document.getElementById('cat-nav').addEventListener('click', function(e) {
+  var btn = e.target.closest('.cat-btn');
+  if(!btn) return;
+  var allBtns = document.querySelectorAll('.cat-btn');
+  for(var i = 0; i < allBtns.length; i++) allBtns[i].classList.remove('active');
+  btn.classList.add('active');
+  activeCat = btn.dataset.cat;
+  applyFilters();
+  // 显示/隐藏悬浮目录按钮
+  var stb = document.getElementById('subTocBtn');
+  stb.style.display = (activeCat !== 'all' && activeCat !== 'favorites' && activeCat !== 'random') ? 'flex' : 'none';
+  document.getElementById('subTocPanel').classList.remove('open');
+});
+
+document.getElementById('qa-list').addEventListener('click', function(e) {
+  var btn = e.target.closest('[data-action]');
+  if(!btn) return;
+  var action = btn.dataset.action;
+  if(action === 'fav') toggleFav(btn.dataset.key, btn);
+  else if(action === 'speak') speak(btn.dataset.text.replace(/&apos;/g, "'").replace(/&quot;/g, '"'), btn);
+});
+
+document.addEventListener('click', function(e) {
+  var btn = e.target.closest('[data-action="speak-noun"]');
+  if(btn && sbCurNoun) speak(sbCurNoun.word, btn);
+  var btn2 = e.target.closest('[data-action="speak-verb"]');
+  if(btn2 && sbCurVerb) speak(sbCurVerb.word, btn2);
+});
+
+document.getElementById('search').addEventListener('input', applyFilters);
+
+// ===== Speech Synthesis Init =====
+if('speechSynthesis' in window) { window.speechSynthesis.getVoices(); if(window.speechSynthesis.onvoiceschanged !== undefined) window.speechSynthesis.onvoiceschanged = function() { window.speechSynthesis.getVoices(); }; }
+
+// ===== Init =====
+(function() {
+  var counts = {};
+  qaData.forEach(function(q) { counts[q.category] = (counts[q.category] || 0) + 1; });
+  var els = document.querySelectorAll('[data-count]');
+  for(var i = 0; i < els.length; i++) { var cat = els[i].dataset.count; els[i].textContent = counts[cat] || 0; }
+})();
+updateFavCount();
+applyFilters();
+
+// ===== 随机组句 Data =====
+const nounsData = [
+        { word: "chick", phonetic: "[tʃɪk]", grammar: "n. [C] 小鸡[ 复数 chicks   ]", imgPath: "images/noun_chick.jpg" },
+        { word: "duck", phonetic: "[dʌk]", grammar: "n. [C] 鸭子[ 复数 ducks]", imgPath: "images/noun_duck.jpg" },
+        { word: "lion", phonetic: "[ˈlaɪən]", grammar: "n. [C] 狮子[ 复数 lions]", imgPath: "images/noun_lion.jpg" },
+        { word: "tiger", phonetic: "[ˈtaɪɡər]", grammar: "n. [C] 老虎[ 复数 tigers]", imgPath: "images/noun_tiger.jpg" },
+        { word: "monkey", phonetic: "[ˈmʌŋki]", grammar: "n. [C] 猴子[ 复数 monkeys ]", imgPath: "images/noun_monkey.jpg" },
+        { word: "panda", phonetic: "[ˈpændə]", grammar: "n. [C] 熊猫[ 复数 pandas ]", imgPath: "images/noun_panda.jpg" },
+        { word: "pig", phonetic: "[pɪɡ]", grammar: "n. [C] 猪[ 复数 pigs]", imgPath: "images/noun_pig.jpg" },
+        { word: "elephant", phonetic: "[ˈelɪfənt]", grammar: "n. [C] 大象[ 复数 elephants ]", imgPath: "images/noun_elephant.jpg" },
+        { word: "sheep", phonetic: "[ʃiːp]", grammar: "n. [C] 绵羊[ 复数 sheep   ]", imgPath: "images/noun_sheep.jpg" },
+        { word: "rabbit", phonetic: "[ˈræbɪt]", grammar: "n. [C] 兔子[ 复数 rabbits]", imgPath: "images/noun_rabbit.jpg" },
+        { word: "dog", phonetic: "[dɒɡ]", grammar: "n. [C] 狗", imgPath: "images/noun_dog.jpg" },
+        { word: "deer", phonetic: "[dɪər]", grammar: "n. [C] 鹿", imgPath: "images/noun_deer.jpg" },
+        { word: "cat", phonetic: "[kæt]", grammar: "n. [C] 猫", imgPath: "images/noun_cat.jpg" },
+        { word: "fox", phonetic: "[fɒks]", grammar: "n. [C] 狐狸", imgPath: "images/noun_fox.jpg" },
+        { word: "penguin", phonetic: "[ˈpeŋɡwɪn]", grammar: "n. [C] 企鹅", imgPath: "images/noun_penguin.jpg" },
+        { word: "hen", phonetic: "[hen]", grammar: "n. [C] 母鸡", imgPath: "images/noun_hen.jpg" },
+        { word: "horse", phonetic: "[hɔːs]", grammar: "n. [C] 马", imgPath: "images/noun_horse.jpg" },
+        { word: "donkey", phonetic: "[ˈdɒŋki]", grammar: "n. [C] 驴", imgPath: "images/noun_donkey.jpg" },
+        { word: "bull", phonetic: "[bʊl]", grammar: "n. [C] 公牛", imgPath: "images/noun_bull.jpg" },
+        { word: "gorilla", phonetic: "[ɡəˈrɪlə]", grammar: "n. [C] 大猩猩", imgPath: "images/noun_gorilla.jpg" },
+        { word: "owl", phonetic: "[aʊl]", grammar: "n. [C] 猫头鹰", imgPath: "images/noun_owl.jpg" },
+        { word: "cow", phonetic: "[kaʊ]", grammar: "n. [C] 奶牛", imgPath: "images/noun_cow.jpg" },
+        { word: "apple", phonetic: "[ˈæpl]", grammar: "n. [C] 苹果", imgPath: "images/noun_apple.jpg" },
+        { word: "orange", phonetic: "[ˈɒrɪndʒ]", grammar: "n. [C/U] 橙子", imgPath: "images/noun_orange.jpg" },
+        { word: "watermelon", phonetic: "[ˈwɔːtəmelən]", grammar: "n. [C/U] 西瓜", imgPath: "images/noun_watermelon.jpg" },
+        { word: "grape", phonetic: "[ɡreɪp]", grammar: "n. [C] 葡萄", imgPath: "images/noun_grape.jpg" },
+        { word: "banana", phonetic: "[bəˈnɑːnə]", grammar: "n. [C] 香蕉", imgPath: "images/noun_banana.jpg" },
+        { word: "pear", phonetic: "[peər]", grammar: "n. [C] 梨", imgPath: "images/noun_pear.jpg" },
+        { word: "coconut", phonetic: "[ˈkəʊkənʌt]", grammar: "n. [C] 椰子", imgPath: "images/noun_coconut.jpg" },
+        { word: "vegetable", phonetic: "[ˈvedʒtəbl]", grammar: "n. [C] 蔬菜", imgPath: "images/noun_vegetable.jpg" },
+        { word: "carrot", phonetic: "[ˈkærət]", grammar: "n. [C] 胡萝卜", imgPath: "images/noun_carrot.jpg" },
+        { word: "tomato", phonetic: "[təˈmɑːtəʊ]", grammar: "n. [C/U] 番茄", imgPath: "images/noun_tomato.jpg" },
+        { word: "pea", phonetic: "[piː]", grammar: "n. [C] 豌豆", imgPath: "images/noun_pea.jpg" },
+        { word: "potato", phonetic: "[pəˈteɪtəʊ]", grammar: "n. [C/U] 土豆", imgPath: "images/noun_potato.jpg" },
+        { word: "fish", phonetic: "[fɪʃ]", grammar: "n. [C/U] 鱼", imgPath: "images/noun_fish.jpg" },
+        { word: "egg", phonetic: "[eɡ]", grammar: "n. [C/U] 鸡蛋", imgPath: "images/noun_egg.jpg" },
+        { word: "hamburger", phonetic: "[ˈhæmbɜːɡər]", grammar: "n. [C] 汉堡", imgPath: "images/noun_hamburger.jpg" },
+        { word: "noodles", phonetic: "[ˈnuːdlz]", grammar: "n. pl. 面条;英语里面条永远用复数 noodles", imgPath: "images/noun_noodles.jpg" },
+        { word: "candy", phonetic: "[ˈkændi]", grammar: "n. [C/U] 糖果", imgPath: "images/noun_candy.jpg" },
+        { word: "juice", phonetic: "[dʒuːs]", grammar: "n. [U] 果汁", imgPath: "images/noun_juice.jpg" },
+        { word: "mom", phonetic: "[mɒm]", grammar: "n. 妈妈", imgPath: "images/noun_mom.jpg" },
+        { word: "dad", phonetic: "[dæd]", grammar: "n. 爸爸", imgPath: "images/noun_dad.jpg" },
+        { word: "grandma", phonetic: "[ˈɡrænmɑː]", grammar: "n. 奶奶", imgPath: "images/noun_grandma.jpg" },
+        { word: "grandpa", phonetic: "[ˈɡrænpɑː]", grammar: "n. 爷爷", imgPath: "images/noun_grandpa.jpg" },
+        { word: "girl", phonetic: "[ɡɜːl]", grammar: "n. [C] 女孩", imgPath: "images/noun_girl.jpg" },
+        { word: "boy", phonetic: "[bɔɪ]", grammar: "n. [C] 男孩", imgPath: "images/noun_boy.jpg" },
+        { word: "baby", phonetic: "[ˈbeɪbi]", grammar: "n. [C] 婴儿", imgPath: "images/noun_baby.jpg" },
+        { word: "robot", phonetic: "[ˈrəʊbɒt]", grammar: "n. [C] 机器人", imgPath: "images/noun_robot.jpg" },
+        { word: "heart", phonetic: "[hɑːt]", grammar: "n. 心脏", imgPath: "images/noun_heart.jpg" },
+        { word: "mouth", phonetic: "[maʊθ]", grammar: "n. [C] 嘴巴", imgPath: "images/noun_mouth.jpg" },
+        { word: "hand", phonetic: "[hænd]", grammar: "n. [C] 手", imgPath: "images/noun_hand.jpg" },
+        { word: "foot", phonetic: "[fʊt]", grammar: "n. [C] 脚", imgPath: "images/noun_foot.jpg" },
+        { word: "leg", phonetic: "[leɡ]", grammar: "n. [C] 腿", imgPath: "images/noun_leg.jpg" },
+        { word: "arm", phonetic: "[ɑːm]", grammar: "n. [C] 手臂", imgPath: "images/noun_arm.jpg" },
+        { word: "building", phonetic: "[ˈbɪldɪŋ]", grammar: "n. [C] 建筑", imgPath: "images/noun_building.jpg" },
+        { word: "bed", phonetic: "[bed]", grammar: "n. [C] 床", imgPath: "images/noun_bed.jpg" },
+        { word: "desk", phonetic: "[desk]", grammar: "n. [C] 书桌", imgPath: "images/noun_desk.jpg" },
+        { word: "table", phonetic: "[ˈteɪbl]", grammar: "n. [C] 桌子", imgPath: "images/noun_table.jpg" },
+        { word: "door", phonetic: "[dɔːr]", grammar: "n. [C] 门", imgPath: "images/noun_door.jpg" },
+        { word: "window", phonetic: "[ˈwɪndəʊ]", grammar: "n. [C] 窗户", imgPath: "images/noun_window.jpg" },
+        { word: "sofa", phonetic: "[ˈsəʊfə]", grammar: "n. [C] 沙发", imgPath: "images/noun_sofa.jpg" },
+        { word: "piano", phonetic: "[piˈænəʊ]", grammar: "n. [C] 钢琴", imgPath: "images/noun_piano.jpg" },
+        { word: "TV", phonetic: "[ˌtiː ˈviː]", grammar: "n. 电视", imgPath: "images/noun_tv.jpg" },
+        { word: "freezer", phonetic: "[ˈfriːzər]", grammar: "n. [C] 冰柜", imgPath: "images/noun_freezer.jpg" },
+        { word: "newspaper", phonetic: "[ˈnjuːzpeɪpər]", grammar: "n. [C] 报纸", imgPath: "images/noun_newspaper.jpg" },
+        { word: "envelope", phonetic: "[ˈenvələʊp]", grammar: "n. [C] 信封", imgPath: "images/noun_envelope.jpg" },
+        { word: "pencil", phonetic: "[ˈpensl]", grammar: "n. [C] 铅笔", imgPath: "images/noun_pencil.jpg" },
+        { word: "book", phonetic: "[bʊk]", grammar: "n. [C] 书", imgPath: "images/noun_book.jpg" },
+        { word: "ink", phonetic: "[ɪŋk]", grammar: "n. [U] 墨水", imgPath: "images/noun_ink.jpg" },
+        { word: "cup", phonetic: "[kʌp]", grammar: "n. [C] 杯子", imgPath: "images/noun_cup.jpg" },
+        { word: "lock", phonetic: "[lɒk]", grammar: "n. [C] 锁", imgPath: "images/noun_lock.jpg" },
+        { word: "key", phonetic: "[kiː]", grammar: "n. [C] 钥匙", imgPath: "images/noun_key.jpg" },
+        { word: "hammer", phonetic: "[ˈhæmər]", grammar: "n. [C] 锤子", imgPath: "images/noun_hammer.jpg" },
+        { word: "clock", phonetic: "[klɒk]", grammar: "n. [C] 时钟", imgPath: "images/noun_clock.jpg" },
+        { word: "jacket", phonetic: "[ˈdʒækɪt]", grammar: "n. [C] 夹克", imgPath: "images/noun_jacket.jpg" },
+        { word: "jeans", phonetic: "[dʒiːnz]", grammar: "n. pl. 牛仔裤", imgPath: "images/noun_jeans.jpg" },
+        { word: "dress", phonetic: "[dres]", grammar: "n. [C] 连衣裙", imgPath: "images/noun_dress.jpg" },
+        { word: "vest", phonetic: "[vest]", grammar: "n. [C] 背心", imgPath: "images/noun_vest.jpg" },
+        { word: "T-shirt", phonetic: "[ˈtiː ʃɜːt]", grammar: "n. [C] T恤", imgPath: "images/noun_tshirt.jpg" },
+        { word: "sock", phonetic: "[sɒk]", grammar: "n. [C] 袜子", imgPath: "images/noun_sock.jpg" },
+        { word: "hat", phonetic: "[hæt]", grammar: "n. [C] 帽子", imgPath: "images/noun_hat.jpg" },
+        { word: "cap", phonetic: "[kæp]", grammar: "n. [C] 鸭舌帽", imgPath: "images/noun_cap.jpg" },
+        { word: "glasses", phonetic: "[ˈɡlɑːsɪz]", grammar: "n. pl. 眼镜", imgPath: "images/noun_glasses.jpg" },
+        { word: "sunglasses", phonetic: "[ˈsʌnɡlɑːsɪz]", grammar: "n. pl. 墨镜", imgPath: "images/noun_sunglasses.jpg" },
+        { word: "watch", phonetic: "[wɒtʃ]", grammar: "n. [C] 手表 [ 复数 watches]", imgPath: "images/noun_watch.jpg" },
+        { word: "umbrella", phonetic: "[ʌmˈbrelə]", grammar: "n. [C] 雨伞", imgPath: "images/noun_umbrella.jpg" },
+        { word: "car", phonetic: "[kɑːr]", grammar: "n. [C] 汽车", imgPath: "images/noun_car.jpg" },
+        { word: "bus", phonetic: "[bʌs]", grammar: "n. [C] 公交车", imgPath: "images/noun_bus.jpg" },
+        { word: "van", phonetic: "[væn]", grammar: "n. [C] 货车", imgPath: "images/noun_van.jpg" },
+        { word: "traffic light", phonetic: "[ˈtræfɪk laɪt]", grammar: "n. 红绿灯", imgPath: "images/noun_trafficlight.jpg" },
+        { word: "boat", phonetic: "[bəʊt]", grammar: "n. [C] 船", imgPath: "images/noun_boat.jpg" },
+        { word: "sea", phonetic: "[siː]", grammar: "n. 海洋", imgPath: "images/noun_sea.jpg" },
+        { word: "sun", phonetic: "[sʌn]", grammar: "n. 太阳", imgPath: "images/noun_sun.jpg" },
+        { word: "moon", phonetic: "[muːn]", grammar: "n. 月亮", imgPath: "images/noun_moon.jpg" },
+        { word: "flower", phonetic: "[ˈflaʊər]", grammar: "n. [C] 花", imgPath: "images/noun_flower.jpg" },
+        { word: "grass", phonetic: "[ɡrɑːs]", grammar: "n. [U] 草", imgPath: "images/noun_grass.jpg" },
+        { word: "spring", phonetic: "[sprɪŋ]", grammar: "n. 春天", imgPath: "images/noun_spring.jpg" },
+        { word: "summer", phonetic: "[ˈsʌmər]", grammar: "n. 夏天", imgPath: "images/noun_summer.jpg" },
+        { word: "autumn", phonetic: "[ˈɔːtəm]", grammar: "n. 秋天", imgPath: "images/noun_autumn.jpg" },
+        { word: "winter", phonetic: "[ˈwɪntər]", grammar: "n. 冬天", imgPath: "images/noun_winter.jpg" }
+    ];
+const verbsData = [
+        { word: "annoy", phonetic: "[əˈnɔɪ]", past: "annoyed", pastPart: "annoyed", imgPath: "images/verb_annoy.jpg" },
+        { word: "approach", phonetic: "[əˈprəʊtʃ]", past: "approached", pastPart: "approached", imgPath: "images/verb_approach.jpg" },
+        { word: "attack", phonetic: "[əˈtæk]", past: "attacked", pastPart: "attacked", imgPath: "images/verb_attack.jpg" },
+        { word: "bite", phonetic: "[baɪt]", past: "bit", pastPart: "bitten", imgPath: "images/verb_bite.jpg" },
+        { word: "break", phonetic: "[breɪk]", past: "broke", pastPart: "broken", imgPath: "images/verb_break.jpg" },
+        { word: "brush", phonetic: "[brʌʃ]", past: "brushed", pastPart: "brushed", imgPath: "images/verb_brush.jpg" },
+        { word: "build", phonetic: "[bɪld]", past: "built", pastPart: "built", imgPath: "images/verb_build.jpg" },
+        { word: "carry", phonetic: "[ˈkæri]", past: "carried", pastPart: "carried", imgPath: "images/verb_carry.jpg" },
+        { word: "catch", phonetic: "[kætʃ]", past: "caught", pastPart: "caught", imgPath: "images/verb_catch.jpg" },
+        { word: "charge", phonetic: "[tʃɑːdʒ]", past: "charged", pastPart: "charged", imgPath: "images/verb_charge.jpg" },
+        { word: "chase", phonetic: "[tʃeɪs]", past: "chased", pastPart: "chased", imgPath: "images/verb_chase.jpg" },
+        { word: "clean", phonetic: "[kliːn]", past: "cleaned", pastPart: "cleaned", imgPath: "images/verb_clean.jpg" },
+        { word: "climb", phonetic: "[klaɪm]", past: "climbed", pastPart: "climbed", imgPath: "images/verb_climb.jpg" },
+        { word: "compare", phonetic: "[kəmˈpeər]", past: "compared", pastPart: "compared", imgPath: "images/verb_compare.jpg" },
+        { word: "cook", phonetic: "[kʊk]", past: "cooked", pastPart: "cooked", imgPath: "images/verb_cook.jpg" },
+        { word: "cover", phonetic: "[ˈkʌvər]", past: "covered", pastPart: "covered", imgPath: "images/verb_cover.jpg" },
+        { word: "dance", phonetic: "[dɑːns]", past: "danced", pastPart: "danced", imgPath: "images/verb_dance.jpg" },
+        { word: "defeat", phonetic: "[dɪˈfiːt]", past: "defeated", pastPart: "defeated", imgPath: "images/verb_defeat.jpg" },
+        { word: "dig", phonetic: "[dɪɡ]", past: "dug", pastPart: "dug", imgPath: "images/verb_dig.jpg" },
+        { word: "dive", phonetic: "[daɪv]", past: "dived", pastPart: "dived", imgPath: "images/verb_dive.jpg" },
+        { word: "drink", phonetic: "[drɪŋk]", past: "drank", pastPart: "drunk", imgPath: "images/verb_drink.jpg" },
+        { word: "escape", phonetic: "[ɪˈskeɪp]", past: "escaped", pastPart: "escaped", imgPath: "images/verb_escape.jpg" },
+        { word: "fart", phonetic: "[fɑːt]", past: "farted", pastPart: "farted", imgPath: "images/verb_fart.jpg" },
+        { word: "feed", phonetic: "[fiːd]", past: "fed", pastPart: "fed", imgPath: "images/verb_feed.jpg" },
+        { word: "feel", phonetic: "[fiːl]", past: "felt", pastPart: "felt", imgPath: "images/verb_feel.jpg" },
+        { word: "fight", phonetic: "[faɪt]", past: "fought", pastPart: "fought", imgPath: "images/verb_fight.jpg" },
+        { word: "float", phonetic: "[fləʊt]", past: "floated", pastPart: "floated", imgPath: "images/verb_float.jpg" },
+        { word: "fly", phonetic: "[flaɪ]", past: "flew", pastPart: "flown", imgPath: "images/verb_fly.jpg" },
+        { word: "follow", phonetic: "[ˈfɒləʊ]", past: "followed", pastPart: "followed", imgPath: "images/verb_follow.jpg" },
+        { word: "gasp", phonetic: "[ɡɑːsp]", past: "gasped", pastPart: "gasped", imgPath: "images/verb_gasp.jpg" },
+        { word: "give", phonetic: "[ɡɪv]", past: "gave", pastPart: "given", imgPath: "images/verb_give.jpg" },
+        { word: "grin", phonetic: "[ɡrɪn]", past: "grinned", pastPart: "grinned", imgPath: "images/verb_grin.jpg" },
+        { word: "growl", phonetic: "[ɡraʊl]", past: "growled", pastPart: "growled", imgPath: "images/verb_growl.jpg" },
+        { word: "hang", phonetic: "[hæŋ]", past: "hung", pastPart: "hung", imgPath: "images/verb_hang.jpg" },
+        { word: "hatch", phonetic: "[hætʃ]", past: "hatched", pastPart: "hatched", imgPath: "images/verb_hatch.jpg" },
+        { word: "hate", phonetic: "[heɪt]", past: "hated", pastPart: "hated", imgPath: "images/verb_hate.jpg" },
+        { word: "have", phonetic: "[hæv]", past: "had", pastPart: "had", imgPath: "images/verb_have.jpg" },
+        { word: "head-butt", phonetic: "[hed bʌt]", past: "head-butted", pastPart: "head-butted", imgPath: "images/verb_headbutt.jpg" },
+        { word: "hide", phonetic: "[haɪd]", past: "hid", pastPart: "hidden", imgPath: "images/verb_hide.jpg" },
+        { word: "hoard", phonetic: "[hɔːd]", past: "hoarded", pastPart: "hoarded", imgPath: "images/verb_hoard.jpg" },
+        { word: "hop", phonetic: "[hɒp]", past: "hopped", pastPart: "hopped", imgPath: "images/verb_hop.jpg" },
+        { word: "hug", phonetic: "[hʌɡ]", past: "hugged", pastPart: "hugged", imgPath: "images/verb_hug.jpg" },
+        { word: "jump", phonetic: "[dʒʌmp]", past: "jumped", pastPart: "jumped", imgPath: "images/verb_jump.jpg" },
+        { word: "kick", phonetic: "[kɪk]", past: "kicked", pastPart: "kicked", imgPath: "images/verb_kick.jpg" },
+        { word: "lead", phonetic: "[liːd]", past: "led", pastPart: "led", imgPath: "images/verb_lead.jpg" },
+        { word: "lean", phonetic: "[liːn]", past: "leaned", pastPart: "leaned", imgPath: "images/verb_lean.jpg" },
+        { word: "leave", phonetic: "[liːv]", past: "left", pastPart: "left", imgPath: "images/verb_leave.jpg" },
+        { word: "lick", phonetic: "[lɪk]", past: "licked", pastPart: "licked", imgPath: "images/verb_lick.jpg" },
+        { word: "listen", phonetic: "[ˈlɪsn]", past: "listened", pastPart: "listened", imgPath: "images/verb_listen.jpg" },
+        { word: "look", phonetic: "[lʊk]", past: "looked", pastPart: "looked", imgPath: "images/verb_look.jpg" },
+        { word: "measure", phonetic: "[ˈmeʒər]", past: "measured", pastPart: "measured", imgPath: "images/verb_measure.jpg" },
+        { word: "move", phonetic: "[muːv]", past: "moved", pastPart: "moved", imgPath: "images/verb_move.jpg" },
+        { word: "observe", phonetic: "[əbˈzɜːv]", past: "observed", pastPart: "observed", imgPath: "images/verb_observe.jpg" },
+        { word: "overeat", phonetic: "[ˌəʊvərˈiːt]", past: "overate", pastPart: "overeaten", imgPath: "images/verb_overeat.jpg" },
+        { word: "pee", phonetic: "[piː]", past: "peed", pastPart: "peed", imgPath: "images/verb_pee.jpg" },
+        { word: "play", phonetic: "[pleɪ]", past: "played", pastPart: "played", imgPath: "images/verb_play.jpg" },
+        { word: "poke", phonetic: "[pəʊk]", past: "poked", pastPart: "poked", imgPath: "images/verb_poke.jpg" },
+        { word: "poop", phonetic: "[puːp]", past: "pooped", pastPart: "pooped", imgPath: "images/verb_poop.jpg" },
+        { word: "pounce", phonetic: "[paʊns]", past: "pounced", pastPart: "pounced", imgPath: "images/verb_pounce.jpg" },
+        { word: "pout", phonetic: "[paʊt]", past: "pouted", pastPart: "pouted", imgPath: "images/verb_pout.jpg" },
+        { word: "pretend", phonetic: "[prɪˈtend]", past: "pretended", pastPart: "pretended", imgPath: "images/verb_pretend.jpg" },
+        { word: "protect", phonetic: "[prəˈtekt]", past: "protected", pastPart: "protected", imgPath: "images/verb_protect.jpg" },
+        { word: "puke", phonetic: "[pjuːk]", past: "puked", pastPart: "puked", imgPath: "images/verb_puke.jpg" },
+        { word: "pull", phonetic: "[pʊl]", past: "pulled", pastPart: "pulled", imgPath: "images/verb_pull.jpg" },
+        { word: "race", phonetic: "[reɪs]", past: "raced", pastPart: "raced", imgPath: "images/verb_race.jpg" },
+        { word: "raise", phonetic: "[reɪz]", past: "raised", pastPart: "raised", imgPath: "images/verb_raise.jpg" },
+        { word: "refuse", phonetic: "[rɪˈfjuːz]", past: "refused", pastPart: "refused", imgPath: "images/verb_refuse.jpg" },
+        { word: "run", phonetic: "[rʌn]", past: "ran", pastPart: "run", imgPath: "images/verb_run.jpg" },
+        { word: "scratch", phonetic: "[skrætʃ]", past: "scratched", pastPart: "scratched", imgPath: "images/verb_scratch.jpg" },
+        { word: "salute", phonetic: "[səˈluːt]", past: "saluted", pastPart: "saluted", imgPath: "images/verb_salute.jpg" },
+        { word: "shake", phonetic: "[ʃeɪk]", past: "shook", pastPart: "shaken", imgPath: "images/verb_shake.jpg" },
+        { word: "shed", phonetic: "[ʃed]", past: "shed", pastPart: "shed", imgPath: "images/verb_shed.jpg" },
+        { word: "show", phonetic: "[ʃəʊ]", past: "showed", pastPart: "shown", imgPath: "images/verb_show.jpg" },
+        { word: "sing", phonetic: "[sɪŋ]", past: "sang", pastPart: "sung", imgPath: "images/verb_sing.jpg" },
+        { word: "slap", phonetic: "[slæp]", past: "slapped", pastPart: "slapped", imgPath: "images/verb_slap.jpg" },
+        { word: "sleep", phonetic: "[sliːp]", past: "slept", pastPart: "slept", imgPath: "images/verb_sleep.jpg" },
+        { word: "slither", phonetic: "[ˈslɪðər]", past: "slithered", pastPart: "slithered", imgPath: "images/verb_slither.jpg" },
+        { word: "slurp", phonetic: "[slɜːp]", past: "slurped", pastPart: "slurped", imgPath: "images/verb_slurp.jpg" },
+        { word: "smell", phonetic: "[smel]", past: "smelled", pastPart: "smelled", imgPath: "images/verb_smell.jpg" },
+        { word: "smile", phonetic: "[smaɪl]", past: "smiled", pastPart: "smiled", imgPath: "images/verb_smile.jpg" },
+        { word: "spit", phonetic: "[spɪt]", past: "spat", pastPart: "spat", imgPath: "images/verb_spit.jpg" },
+        { word: "spray", phonetic: "[spreɪ]", past: "sprayed", pastPart: "sprayed", imgPath: "images/verb_spray.jpg" },
+        { word: "stand", phonetic: "[stænd]", past: "stood", pastPart: "stood", imgPath: "images/verb_stand.jpg" },
+        { word: "stare", phonetic: "[steər]", past: "stared", pastPart: "stared", imgPath: "images/verb_stare.jpg" },
+        { word: "stretch", phonetic: "[stretʃ]", past: "stretched", pastPart: "stretched", imgPath: "images/verb_stretch.jpg" },
+        { word: "stroke", phonetic: "[strəʊk]", past: "stroked", pastPart: "stroked", imgPath: "images/verb_stroke.jpg" },
+        { word: "stuff", phonetic: "[stʌf]", past: "stuffed", pastPart: "stuffed", imgPath: "images/verb_stuff.jpg" },
+        { word: "sulk", phonetic: "[sʌlk]", past: "sulked", pastPart: "sulked", imgPath: "images/verb_sulk.jpg" },
+        { word: "swim", phonetic: "[swɪm]", past: "swam", pastPart: "swum", imgPath: "images/verb_swim.jpg" },
+        { word: "teach", phonetic: "[tiːtʃ]", past: "taught", pastPart: "taught", imgPath: "images/verb_teach.jpg" },
+        { word: "tease", phonetic: "[tiːz]", past: "teased", pastPart: "teased", imgPath: "images/verb_tease.jpg" },
+        { word: "think", phonetic: "[θɪŋk]", past: "thought", pastPart: "thought", imgPath: "images/verb_think.jpg" },
+        { word: "waddle", phonetic: "[ˈwɒdl]", past: "waddled", pastPart: "waddled", imgPath: "images/verb_waddle.jpg" },
+        { word: "warm", phonetic: "[wɔːm]", past: "warmed", pastPart: "warmed", imgPath: "images/verb_warm.jpg" },
+        { word: "warn", phonetic: "[wɔːn]", past: "warned", pastPart: "warned", imgPath: "images/verb_warn.jpg" },
+        { word: "wash", phonetic: "[wɒʃ]", past: "washed", pastPart: "washed", imgPath: "images/verb_wash.jpg" },
+        { word: "weigh", phonetic: "[weɪ]", past: "weighed", pastPart: "weighed", imgPath: "images/verb_weigh.jpg" },
+        { word: "whistle", phonetic: "[ˈwɪsl]", past: "whistled", pastPart: "whistled", imgPath: "images/verb_whistle.jpg" },
+        { word: "wiggle", phonetic: "[ˈwɪɡl]", past: "wiggled", pastPart: "wiggled", imgPath: "images/verb_wiggle.jpg" },
+        { word: "yawn", phonetic: "[jɔːn]", past: "yawned", pastPart: "yawned", imgPath: "images/verb_yawn.jpg" }
+    ];
+const aSentences = [
+        "[A01] It's a", "[A02] This is", "[A03] That is", "[A04] What is red?", "[A05] What is blue?", "[A06] It's a yellow pear.",
+        "[A07] What is big?", "[A08] What is small?", "[A09] It isn't", "[A10] I can see", "[A11] I can see(many things)",
+        "It's my", "She is", "It isn't mine", "My mom's", "There is", "What's in the sea?",
+        "What's on the grass?", "I can't see", "I have", "I don't have", "My dad has",
+        "My dad doesn't have", "I like", "I don't like", "The lion likes", "doesn't like",
+        "I love", "I hate", "Grandpa loves", "Grandpa hates", "I want", "I don't want",
+        "The cow wants", "Mr bull doesn't want", "Can I have", "I want to eat", "I am wearing",
+        "He is wearing", "A cat doesn't eat", "I can drink", "Look at", "Listen to", "I can hear",
+        "It's hot", "It's cold", "On the table", "In the freezer", "Under your bed",
+        "It's beautiful.", "It's gone."
+    ];
+const bSentences = [
+        "I am doing.", "You are doing", "He is doing", "She is doing", "It is doing",
+        "I am not doing", "He isn't doing", "I can do", "I can't do", "An elephant can't do",
+        "A fish can do", "Can I do", "I want to do", "I don't want to do", "The hen wants to do",
+        "I do it everyday", "The monkey does it everyday", "do it", "Don't do it", "Let's do it",
+        "I like doing", "I hate doing", "Dad likes doing", "My mom hates doing", "Why don't we do",
+        "I am going to do", "It will not do.", "I don't know how to do it", "Do it fast",
+        "Do it slowly", "Somebody is doing sth. quietly", "Too loudly", "I did it yesterday",
+        "I didn't do it yesterday", "It did it yesterday", "The robot didn't do it yesterday.",
+        "I have done", "I haven't done", "The monkey has done", "The rabbit hasn't done",
+        "Keep doing", "Stop doing", "It is easy", "It is difficult!", "Have to do",
+        "Don't have to do", "Must do", "Musn't do", "My dad always does", "The bull never does",
+        "A girl sometimes does", "It is good for you", "It is a bad behavior",
+        "On the desk", "on the grass", "on the sofa", "on the bus", "on the bed",
+        "on the boat", "on the moon", "under the table", "under the sun",
+        "around the flowers", "to the car", "in the building", "in the sea",
+        "through the window", "behind the door"
+    ];
+const zoomTips = {
+        "加音效": "🔊 心态建设：音效学得像不像不重要。学得像，孩子身临其境；学得不像，孩子觉得搞笑。只要互动起来，就是成功的。 <br>音效来源： <br>角色自身：喝水声（咕噜咕噜）、打嗝声、放屁声、肚子叫、满足的呼噜声、甚至是疼痛的叫声。 <br>环境与道具：水声、风声、物体掉落声。 <br>其他角色：蜜蜂声、鸟叫声、鱼吐泡泡声、鳄鱼爬行声、甚至老虎妈妈的喊叫声。",
+        "表情+动作": "😊投入即自然：不需要刻意去想“该做什么表情”，只要真正投入到场景中（如真的在喝水、真的被吓到），表情会自然跟随情绪到位。如果需要刻意思考表情，说明尚未投入。<br>模仿学习：观看美剧或主持人表演，观察演员如何通过表情和肢体语言传递情绪，学习那种夸张的演绎方式。",
+        "变大变小": "🔍 稳定性要求：在练习后续新技巧（如变大变小）时，必须保持前序技巧（音效/表情/动作）不丢失。<br>操作方法：<br>物体变形：将普通物品进行夸张化处理。例如普通苹果变为“巨大的苹果”（Giant Apple）或“微小的苹果”（Tiny Apple）。<br>角色变形：不仅限于物品，角色本身也可变形。如将凶猛的狮子变为“口袋里的小猫咪”（Cute Little Lion），或将普通眼睛变为“巨大的泡泡眼”。<br>场景延伸：巨大的苹果可以钻进去挖洞；巨大的鸡腿可以引发夸张的食欲反应。<br>例句演练：The monkey is cooking meat under the sun。<br>变大：A giant chicken leg! Wow!<br>变小：Why is it shrinking? So little now.",
+        "加角色": "👑  角色定义的无限性：万物皆可角色。<br>案例：在“The hippo is standing in the water”这一句中，除了Hippo，还有Fish、Water、Crocodile、Bubble、Dirt、Sky、Air、Microbes、Bacteria等",
+        "变颜色": "🎨 操作：将物体颜色进行随意改变。如灰色的河马变为黄色的河马，或紫色的河马。<br>进阶：结合彩虹色等特殊视觉效果，引发进一步的情节发展（如彩虹色河马做了什么）。",
+        "反常识": "🤯打破常规认知，如鱼儿在天上飞、汽车在水里游，激发想象力。<br>地点反常识：不睡在床上，而睡在冰淇淋、浴缸或铅笔盒里。<br>属性反常识：铅笔可以变得比人高（Giant）、由彩虹制成、会说话、会飞。<br>互动反常识：铅笔不仅飞，还落在人的鼻子、脸蛋上；不仅重得抬不起来，甚至能让人脸憋红。<br>多感官反常识：墨水（Ink）可以是草莓汁（Sweet）、结冰了（Frozen）、喝了变蓝精灵（Blue）、甚至是隐形的（Invisible）。<br>发散逻辑：反常识可以分步骤进行，层层递进（如铅笔先飞，再落在鼻子上，再跳舞），制造持续的趣味性。",
+        "五感": "在“现在”这个时空点，必须通过五感（视觉、听觉、嗅觉、触觉、味觉）去构建一个立体的场景，而不是停留在干巴巴的文字上。<br>视觉：不仅限于画面本身，还包括影子、天空、其他动物、环境细节（如彩虹、蚂蚁、火山）。<br>听觉：环境音（风声、水声）、动物叫声、甚至肚子咕噜声。<br>嗅觉：花香、鱼腥味、烤肉味、甚至屁味。<br>触觉：温度（冷热）、质感（水的滑腻、沙子的粗糙）。<br>味觉：水的味道（甘甜、苦涩、甚至是巧克力味）。",
+        "四维空间": "⏰时间轴：探索过去（原因）、现在（状态）、未来（结果）。<br>操作：针对一个画面（如猫头鹰和人对视），追问“Why？”（过去原因）、“What will happen？”（未来结果）。<br>语法结合：在探讨过去时使用过去式，探讨未来时使用将来时，实现高阶语法的自然内化。",
+        "英雄主义": "🦸‍♂️底层需求：孩子渴望成长、掌控权以及被需要。<br>操作：家长故意示弱，扮演需要帮助的角色（Help me）。<br>案例：河马掉进水里，妈妈不会游泳，请求孩子救援。<br>价值：赋予孩子“英雄”身份，让他们体验被需要的成就感，这是符合人性的深层心理需求。。"
+    };
+
+// ===== NoRepeatRandom =====
+class NoRepeatRandomSB {
+  constructor(items) { this.items = [...items]; this.remaining = [...items]; this.totalCount = items.length; this.usedCount = 0; }
+  getNext() {
+    if(this.remaining.length === 0) { this.remaining = [...this.items]; this.usedCount = 0; }
+    var idx = Math.floor(Math.random() * this.remaining.length);
+    var sel = this.remaining[idx]; this.remaining.splice(idx, 1); this.usedCount++;
+    return { item: sel, progress: this.usedCount, total: this.totalCount, isRoundComplete: this.remaining.length === 0 };
+  }
+  reset() { this.remaining = [...this.items]; this.usedCount = 0; }
+}
+
+var sbNounR = new NoRepeatRandomSB(nounsData);
+var sbVerbR = new NoRepeatRandomSB(verbsData);
+
+// 颜色句型的专属名词子集（10个指定 + 5个随机从其余名词中挑选）
+var sbColorNounMap = {
+  "What is red?": ["mouth","heart","sun","traffic light","apple","candy","tomato","autumn","watermelon","umbrella"],
+  "What is blue?": ["car","robot","freezer","TV","cap","sea","cup","lock","fish","jeans"],
+  "It's a yellow pear.": ["banana","book","envelope","grape","dress","vest","chick","door","pear","hen","T-shirt","grass","bus","hat","van","pig","duck","boat","coconut","bed","fox","orange","mouth","heart","sun","traffic light","apple","candy","tomato","autumn","watermelon","umbrella","car","robot","freezer","TV","cap","sea","cup","lock","fish","jeans"]
+};
+
+// 保存原始完整数据，用于切换回非颜色句型时恢复
+var sbNounRFull = [...nounsData];
+var sbCurrentColorKey = null;
+var sbCurNoun = null, sbCurVerb = null;
+
+function sbSetImg(imgEl, wrap, path, alt) {
+  imgEl.src = path; imgEl.alt = alt; imgEl.style.display = "block";
+  imgEl.onload = function() { imgEl.style.display = "block"; var p = wrap.querySelector('.sb-img-placeholder'); if(p) p.remove(); };
+  imgEl.onerror = function() { imgEl.style.display = "none"; var p = wrap.querySelector('.sb-img-placeholder'); if(!p) { p = document.createElement('div'); p.className = 'sb-img-placeholder'; p.innerText = '📷 ' + alt + '\n图片不存在'; wrap.appendChild(p); } };
+}
+
+function sbRefreshNoun() {
+  var r = sbNounR.getNext(); sbCurNoun = r.item;
+  document.getElementById('sb-nounPhonetic').innerHTML = r.item.phonetic;
+  document.getElementById('sb-nounGrammar').innerHTML = r.item.grammar;
+  var wrap = document.getElementById('sb-nounImgWrap');
+  var p = wrap.querySelector('.sb-img-placeholder'); if(p) p.remove();
+  sbSetImg(document.getElementById('sb-nounImg'), wrap, r.item.imgPath, r.item.word);
+  document.getElementById('sb-nounCounter').innerHTML = '📊 ' + r.progress + '/' + r.total;
+  if(r.isRoundComplete) document.getElementById('sb-nounCounter').innerHTML = '🎉 完成一轮！';
+}
+
+function sbRefreshVerb() {
+  var r = sbVerbR.getNext(); sbCurVerb = r.item;
+  document.getElementById('sb-verbPhonetic').innerHTML = r.item.phonetic;
+  document.getElementById('sb-verbTenses').innerHTML = '过去式: ' + r.item.past + ' | 过去分词: ' + r.item.pastPart;
+  var wrap = document.getElementById('sb-verbImgWrap');
+  var p = wrap.querySelector('.sb-img-placeholder'); if(p) p.remove();
+  sbSetImg(document.getElementById('sb-verbImg'), wrap, r.item.imgPath, r.item.word);
+  document.getElementById('sb-verbCounter').innerHTML = '📊 ' + r.progress + '/' + r.total;
+  if(r.isRoundComplete) document.getElementById('sb-verbCounter').innerHTML = '🎉 完成一轮！';
+}
+
+// ===== Populate Selects =====
+var sbPractice = {
+  KEY: 'baby-sb-practice',
+  SESSION_KEY: 'baby-sb-session',
+  getAll: function() { try { return JSON.parse(localStorage.getItem(this.KEY)) || { a: {}, b: {} }; } catch(e) { return { a: {}, b: {} }; } },
+  save: function(d) { localStorage.setItem(this.KEY, JSON.stringify(d)); },
+  getSessions: function(type) { try { var all = JSON.parse(localStorage.getItem(this.SESSION_KEY)) || {}; return all[type] || {}; } catch(e) { return {}; } },
+  saveSessions: function(type, s) { var all = JSON.parse(localStorage.getItem(this.SESSION_KEY) || '{}'); all[type] = s; localStorage.setItem(this.SESSION_KEY, JSON.stringify(all)); },
+  addClick: function(type, sentence) {
+    if(!sentence) return;
+    var sessions = this.getSessions(type);
+    if(!sessions[sentence]) sessions[sentence] = { clicks: 0, earned: false };
+    if(sessions[sentence].earned) return;
+    sessions[sentence].clicks++;
+    this.saveSessions(type, sessions);
+    if(sessions[sentence].clicks >= 5) {
+      var d = this.getAll();
+      d[type][sentence] = (d[type][sentence] || 0) + 1;
+      this.save(d);
+      sessions[sentence].earned = true;
+      this.saveSessions(type, sessions);
+      return true; // earned this round
+    }
+    return false;
+  },
+  count: function(type, sentence) { return this.getAll()[type][sentence] || 0; },
+  resetSession: function(type, sentence) {
+    var sessions = this.getSessions(type);
+    sessions[sentence] = { clicks: 0, earned: false };
+    this.saveSessions(type, sessions);
+  },
+  clear: function(type) {
+    var d = this.getAll();
+    d[type] = {};
+    this.save(d);
+    var all = JSON.parse(localStorage.getItem(this.SESSION_KEY) || '{}');
+    all[type] = {};
+    localStorage.setItem(this.SESSION_KEY, JSON.stringify(all));
+  }
+};
+
+function sbUpdateCustomOpts(type, dropdown) {
+  var d = sbPractice.getAll()[type];
+  var opts = dropdown.querySelectorAll('.sb-select-opt');
+  for(var i = 0; i < opts.length; i++) {
+    var v = opts[i].dataset.value;
+    var c = d[v] || 0;
+    opts[i].textContent = c > 0 ? '● ' + v + '  ×' + c : '○ ' + v;
+    opts[i].className = 'sb-select-opt ' + (c > 0 ? 'practiced' : 'unpracticed');
+  }
+}
+
+function initCustomSelect(customId, hiddenSelId, sentences, type) {
+  var container = document.getElementById(customId);
+  var trigger = container.querySelector('.sb-select-trigger');
+  var dropdown = container.querySelector('.sb-select-dropdown');
+  var hiddenSel = document.getElementById(hiddenSelId);
+  sentences.forEach(function(s) {
+    var opt = document.createElement('div');
+    opt.className = 'sb-select-opt unpracticed';
+    opt.dataset.value = s;
+    opt.textContent = '○ ' + s;
+    dropdown.appendChild(opt);
+  });
+  sbUpdateCustomOpts(type, dropdown);
+  // Open/close
+  trigger.addEventListener('click', function(e) {
+    e.stopPropagation();
+    document.querySelectorAll('.sb-custom-select.open').forEach(function(el) { if(el !== container) el.classList.remove('open'); });
+    container.classList.toggle('open');
+    sbUpdateCustomOpts(type, dropdown);
+  });
+  // Select option — do NOT set trigger text here, let change handler do it
+  dropdown.addEventListener('click', function(e) {
+    var opt = e.target.closest('.sb-select-opt');
+    if(!opt) return;
+    var v = opt.dataset.value;
+    if(!v) return;
+    hiddenSel.value = v;
+    hiddenSel.dispatchEvent(new Event('change'));
+    container.classList.remove('open');
+  });
+  document.addEventListener('click', function() { container.classList.remove('open'); });
+}
+
+function sbUpdateTrigger(type, sentence) {
+  var customId = type === 'a' ? 'sb-customA' : 'sb-customB';
+  var trigger = document.querySelector('#' + customId + ' .sb-select-trigger');
+  var dropdown = document.querySelector('#' + customId + ' .sb-select-dropdown');
+  var c = sbPractice.count(type, sentence);
+  trigger.textContent = c > 0 ? '● ' + sentence + '  ×' + c : sentence;
+  sbUpdateCustomOpts(type, dropdown);
+}
+
+(function() {
+  var aSel = document.getElementById('sb-sentenceA');
+  var defA = document.createElement('option'); defA.value = ''; defA.textContent = '-- 请选择A句型 --'; aSel.appendChild(defA);
+  aSentences.forEach(function(s) { var o = document.createElement('option'); o.value = s; o.textContent = s; aSel.appendChild(o); });
+  var bSel = document.getElementById('sb-sentenceB');
+  var defB = document.createElement('option'); defB.value = ''; defB.textContent = '-- 请选择B句型 --'; bSel.appendChild(defB);
+  bSentences.forEach(function(s) { var o = document.createElement('option'); o.value = s; o.textContent = s; bSel.appendChild(o); });
+  var nSel = document.getElementById('sb-nounSelect');
+  var defN = document.createElement('option'); defN.value = ''; defN.textContent = '-- 选择名词 --'; nSel.appendChild(defN);
+  nounsData.forEach(function(item, idx) { var o = document.createElement('option'); o.value = idx; o.textContent = item.word; nSel.appendChild(o); });
+  nSel.addEventListener('change', function() {
+    var i = this.value; if(i === '') return; var n = nounsData[i]; if(!n) return;
+    sbCurNoun = n;
+    document.getElementById('sb-nounPhonetic').innerHTML = n.phonetic;
+    document.getElementById('sb-nounGrammar').innerHTML = n.grammar;
+    var wrap = document.getElementById('sb-nounImgWrap'); var p = wrap.querySelector('.sb-img-placeholder'); if(p) p.remove();
+    sbSetImg(document.getElementById('sb-nounImg'), wrap, n.imgPath, n.word);
+  });
+  var vSel = document.getElementById('sb-verbSelect');
+  var defV = document.createElement('option'); defV.value = ''; defV.textContent = '-- 选择动词 --'; vSel.appendChild(defV);
+  verbsData.forEach(function(item, idx) { var o = document.createElement('option'); o.value = idx; o.textContent = item.word; vSel.appendChild(o); });
+  vSel.addEventListener('change', function() {
+    var i = this.value; if(i === '') return; var v = verbsData[i]; if(!v) return;
+    sbCurVerb = v;
+    document.getElementById('sb-verbPhonetic').innerHTML = v.phonetic;
+    document.getElementById('sb-verbTenses').innerHTML = '过去式: ' + v.past + ' | 过去分词: ' + v.pastPart;
+    var wrap = document.getElementById('sb-verbImgWrap'); var p = wrap.querySelector('.sb-img-placeholder'); if(p) p.remove();
+    sbSetImg(document.getElementById('sb-verbImg'), wrap, v.imgPath, v.word);
+  });
+  document.getElementById('sb-zoomSelect').addEventListener('change', function() {
+    var v = this.value;
+    if(v && zoomTips[v]) document.getElementById('sb-zoomDisplay').innerHTML = '<strong>✨ ' + v + '</strong><br><span style="font-size:0.65rem">' + zoomTips[v] + '</span>';
+    else document.getElementById('sb-zoomDisplay').innerHTML = '💡 选择技巧，查看教学建议';
+  });
+  aSel.addEventListener('change', function() {
+    var v = this.value; if(!v) return;
+    sbPractice.resetSession('a', v);
+    sbUpdateTrigger('a', v);
+    // 每次切换句型都重置名词随机
+    sbCurrentColorKey = null;
+    var cleanV = v.replace(/^\[A\d+\]\s*/, '');
+    if(sbColorNounMap[cleanV]) {
+      sbCurrentColorKey = cleanV;
+      var fixedWords = sbColorNounMap[cleanV];
+      var allWords = fixedWords.slice();
+      if(allWords.length < 15) {
+        var others = sbNounRFull.filter(function(item) { return fixedWords.indexOf(item.word.toLowerCase()) < 0; });
+        var shuffled = others.sort(function() { return Math.random() - 0.5; });
+        var extraWords = shuffled.slice(0, 15 - allWords.length).map(function(item) { return item.word.toLowerCase(); });
+        allWords = allWords.concat(extraWords);
+      }
+      var subset = sbNounRFull.filter(function(item) { return allWords.indexOf(item.word.toLowerCase()) > -1; });
+      sbNounR = new NoRepeatRandomSB(subset);
+    } else {
+      sbNounR = new NoRepeatRandomSB(sbNounRFull);
+    }
+    sbRefreshNoun();
+  });
+  bSel.addEventListener('change', function() {
+    var v = this.value; if(!v) return;
+    sbPractice.resetSession('b', v);
+    sbUpdateTrigger('b', v);
+  });
+  document.getElementById('sb-nounCard').addEventListener('click', function(e) {
+    if(e.target.closest('.sb-speak-icon')) return;
+    sbRefreshNoun();
+    var aSel = document.getElementById('sb-sentenceA');
+    if(aSel && aSel.value) {
+      sbPractice.addClick('a', aSel.value);
+      sbUpdateTrigger('a', aSel.value);
+    }
+  });
+  document.getElementById('sb-verbCard').addEventListener('click', function(e) {
+    if(e.target.closest('.sb-speak-icon')) return;
+    sbRefreshVerb();
+    var bSel = document.getElementById('sb-sentenceB');
+    if(bSel && bSel.value) {
+      sbPractice.addClick('b', bSel.value);
+      sbUpdateTrigger('b', bSel.value);
+    }
+  });
+  // Init custom dropdowns (after hidden select is populated)
+  initCustomSelect('sb-customA', 'sb-sentenceA', aSentences, 'a');
+  initCustomSelect('sb-customB', 'sb-sentenceB', bSentences, 'b');
+  // Reset buttons
+  document.getElementById('sb-resetABtn').addEventListener('click', function() {
+    if(!confirm('确定要清除A句型的学习记录吗？')) return;
+    sbPractice.clear('a');
+    document.querySelector('#sb-customA .sb-select-trigger').textContent = '-- 请选择A句型 --';
+    sbUpdateCustomOpts('a', document.querySelector('#sb-customA .sb-select-dropdown'));
+  });
+  document.getElementById('sb-resetBBtn').addEventListener('click', function() {
+    if(!confirm('确定要清除B句型的学习记录吗？')) return;
+    sbPractice.clear('b');
+    document.querySelector('#sb-customB .sb-select-trigger').textContent = '-- 请选择B句型 --';
+    sbUpdateCustomOpts('b', document.querySelector('#sb-customB .sb-select-dropdown'));
+  });
+  sbRefreshNoun();
+  sbRefreshVerb();
+})();
+
+// Keyboard shortcuts
+document.addEventListener('keydown', function(e) {
+  if(activeCat !== 'random') return;
+  var key = e.key.toLowerCase();
+  if(key === 'n') { e.preventDefault(); sbRefreshNoun(); }
+  else if(key === 'v') { e.preventDefault(); sbRefreshVerb(); }
+});
+
+// ===== Sub-TOC (当前分类条目目录) =====
+(function() {
+  var btn = document.getElementById('subTocBtn');
+  var panel = document.getElementById('subTocPanel');
+  var body = document.getElementById('subTocBody');
+  var titleEl = document.getElementById('subTocTitle');
+  var closeBtn = document.getElementById('subTocClose');
+
+  btn.addEventListener('click', function(e) {
+    e.stopPropagation();
+    if(panel.classList.contains('open')) { panel.classList.remove('open'); return; }
+    // 构建当前分类的条目目录
+    var conf = catConfig[activeCat] || { name: activeCat, emoji: '📌' };
+    titleEl.textContent = conf.emoji + ' ' + conf.name;
+    var items = qaData.filter(function(q) { return q.category === activeCat; });
+    var h = '';
+    for(var i = 0; i < items.length; i++) {
+      var tid = 'toc-' + activeCat + '-' + i;
+      var t = items[i].displayTitle || items[i].question;
+      h += '<a class="sub-toc-item" data-target="' + tid + '">' + (i+1) + '. ' + t + '</a>';
+    }
+    if(!h) h = '<div style="padding:10px;color:#999;text-align:center;font-size:0.8rem">暂无条目</div>';
+    body.innerHTML = h;
+    highlightActive();
+    panel.classList.add('open');
+  });
+
+  closeBtn.addEventListener('click', function() { panel.classList.remove('open'); });
+
+  document.addEventListener('click', function(e) {
+    if(!panel.contains(e.target) && !btn.contains(e.target)) panel.classList.remove('open');
+  });
+
+  body.addEventListener('click', function(e) {
+    var item = e.target.closest('.sub-toc-item');
+    if(!item) return;
+    var target = document.getElementById(item.dataset.target);
+    if(target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    panel.classList.remove('open');
+  });
+
+  function highlightActive() {
+    var items = body.querySelectorAll('.sub-toc-item');
+    for(var i = 0; i < items.length; i++) items[i].classList.remove('active');
+    for(var i = items.length - 1; i >= 0; i--) {
+      var el = document.getElementById(items[i].dataset.target);
+      if(el && el.getBoundingClientRect().top <= 120) { items[i].classList.add('active'); break; }
+    }
+  }
+
+  var st;
+  window.addEventListener('scroll', function() {
+    clearTimeout(st);
+    st = setTimeout(function() { if(panel.classList.contains('open')) highlightActive(); }, 150);
+  });
+})();
+</script>
+</body>
+</html>
