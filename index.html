@@ -120,24 +120,6 @@
   .sub-toc-item:hover { background: #f0edff; color: #4338ca; }
   .sub-toc-item.active { background: #ede9fe; color: #4338ca; font-weight: 600; }
   @media(max-width:480px){ .sub-toc-panel{right:8px;left:8px;width:auto;max-height:45vh;bottom:72px} .sub-toc-btn{bottom:16px;right:16px} }
-  /* ===== Add Entry Panel ===== */
-  .add-entry-toggle { background: linear-gradient(135deg,#10b981,#059669); color:#fff; border:none; padding:6px 14px; border-radius:20px; font-size:0.8rem; cursor:pointer; box-shadow:0 2px 8px rgba(16,185,129,0.3); margin-left:auto; white-space:nowrap; }
-  .add-entry-toggle:hover { box-shadow:0 4px 12px rgba(16,185,129,0.4); transform:scale(1.03); }
-  .add-entry-panel { display:none; background:#fff; border-radius:16px; padding:16px; margin-bottom:1rem; box-shadow:0 4px 16px rgba(0,0,0,0.06); border:1px solid #e5e7eb; }
-  .add-entry-panel.open { display:block; }
-  .add-entry-panel h3 { font-size:0.9rem; margin-bottom:10px; color:#374151; }
-  .add-entry-row { display:flex; gap:8px; margin-bottom:8px; flex-wrap:wrap; }
-  .add-entry-row label { font-size:0.75rem; color:#6b7280; min-width:50px; align-self:center; }
-  .add-entry-row input, .add-entry-row textarea, .add-entry-row select { flex:1; padding:6px 10px; border:1px solid #d1d5db; border-radius:8px; font-size:0.8rem; font-family:inherit; min-width:0; }
-  .add-entry-row textarea { min-height:80px; resize:vertical; }
-  .add-entry-row select { max-width:160px; }
-  .add-entry-actions { display:flex; gap:8px; justify-content:flex-end; }
-  .add-entry-actions button { padding:6px 16px; border-radius:8px; font-size:0.8rem; cursor:pointer; border:none; }
-  .btn-save { background:#10b981; color:#fff; }
-  .btn-save:hover { background:#059669; }
-  .btn-cancel { background:#f3f4f6; color:#666; }
-  .btn-cancel:hover { background:#e5e7eb; }
-  .add-entry-saved { color:#10b981; font-size:0.78rem; margin-left:8px; }
 </style>
 </head>
 <body>
@@ -169,43 +151,6 @@
   </div>
   <div class="search-box" id="search-box">
     <input type="text" id="search" placeholder="🔍 搜索问题或关键词...">
-  </div>
-  <div style="display:flex;align-items:center;gap:8px;margin-bottom:0.5rem">
-    <span style="font-size:0.78rem;color:#9ca3af" id="userEntryCount"></span>
-    <button class="add-entry-toggle" id="addEntryToggle">➕ 录入知识点</button>
-  </div>
-  <div class="add-entry-panel" id="addEntryPanel">
-    <h3>📝 录入新知识点</h3>
-    <div class="add-entry-row">
-      <label>标题</label>
-      <input type="text" id="addEntryTitle" placeholder="如：如何引导宝宝开口说话">
-    </div>
-    <div class="add-entry-row">
-      <label>分类</label>
-      <select id="addEntryCat">
-        <option value="songs">🎵 儿歌童谣</option>
-        <option value="books">📖 绘本阅读</option>
-        <option value="daily">🗣️ 日常互动</option>
-        <option value="vocab">📝 词汇与表达</option>
-        <option value="cards">🃏 闪卡</option>
-        <option value="methods">🎯 启蒙方法</option>
-        <option value="phonics">🔤 自然拼读</option>
-        <option value="confusions">❓ 常见困惑</option>
-        <option value="resources">📦 资源推荐</option>
-      </select>
-    </div>
-    <div class="add-entry-row">
-      <label>内容</label>
-      <textarea id="addEntryContent" placeholder="输入知识点内容...&#10;支持多行，直接写就行"></textarea>
-    </div>
-    <div class="add-entry-row">
-      <label>标签</label>
-      <input type="text" id="addEntryTags" placeholder="用逗号分隔，如：TPR,互动,日常">
-    </div>
-    <div class="add-entry-actions">
-      <button class="btn-cancel" id="addEntryCancel">取消</button>
-      <button class="btn-save" id="addEntrySave">💾 保存</button>
-    </div>
   </div>
   <div id="qa-list"></div>
   <div id="sentence-builder">
@@ -3345,6 +3290,55 @@ var qaData = [
 "日常生活"
 ],
 "date": "2026-06-30"
+},
+{
+  "displayTitle": "1000 Useful Words·昆虫与动物",
+  "sections": [
+    {
+      "title": "🦋 飞行昆虫",
+      "words": [
+        {"en": "butterfly", "ipa": "/ˈbʌtərflaɪ/", "cn": "蝴蝶"},
+        {"en": "bee", "ipa": "/biː/", "cn": "蜜蜂"},
+        {"en": "ladybug", "ipa": "/ˈleɪdibʌɡ/", "cn": "瓢虫"},
+        {"en": "dragonfly", "ipa": "/ˈdræɡənflaɪ/", "cn": "蜻蜓"},
+        {"en": "moth", "ipa": "/mɒθ/", "cn": "飞蛾"},
+        {"en": "fly", "ipa": "/flaɪ/", "cn": "苍蝇"},
+        {"en": "mosquito", "ipa": "/məˈskiːtoʊ/", "cn": "蚊子"},
+        {"en": "wasp", "ipa": "/wɒsp/", "cn": "黄蜂"},
+        {"en": "firefly", "ipa": "/ˈfaɪərflaɪ/", "cn": "萤火虫"}
+      ]
+    },
+    {
+      "title": "🐛 爬行小虫",
+      "words": [
+        {"en": "ant", "ipa": "/ænt/", "cn": "蚂蚁"},
+        {"en": "caterpillar", "ipa": "/ˈkætərpɪlər/", "cn": "毛毛虫"},
+        {"en": "spider", "ipa": "/ˈspaɪdər/", "cn": "蜘蛛"},
+        {"en": "beetle", "ipa": "/ˈbiːtl/", "cn": "甲虫"},
+        {"en": "worm", "ipa": "/wɜːrm/", "cn": "蠕虫/蚯蚓"},
+        {"en": "snail", "ipa": "/sneɪl/", "cn": "蜗牛"},
+        {"en": "grasshopper", "ipa": "/ˈɡræshɒpər/", "cn": "蚱蜢"},
+        {"en": "cricket", "ipa": "/ˈkrɪkɪt/", "cn": "蟋蟀"},
+        {"en": "cockroach", "ipa": "/ˈkɒkroʊtʃ/", "cn": "蟑螂"},
+        {"en": "centipede", "ipa": "/ˈsentɪpiːd/", "cn": "蜈蚣"},
+        {"en": "ladybird", "ipa": "/ˈleɪdibɜːrd/", "cn": "瓢虫（英式）"}
+      ]
+    },
+    {
+      "title": "🦗 其他小生物",
+      "words": [
+        {"en": "bug", "ipa": "/bʌɡ/", "cn": "虫子（统称）"},
+        {"en": "insect", "ipa": "/ˈɪnsekt/", "cn": "昆虫"},
+        {"en": "praying mantis", "ipa": "/ˈpreɪɪŋ ˈmæntɪs/", "cn": "螳螂"},
+        {"en": "scorpion", "ipa": "/ˈskɔːrpiən/", "cn": "蝎子"},
+        {"en": "slug", "ipa": "/slʌɡ/", "cn": "鼻涕虫"}
+      ]
+    }
+  ],
+  "tip": "昆虫是宝宝最容易在户外遇到的小动物！出门时指给宝宝看：Look, a butterfly! 搭配绘本《The Very Hungry Caterpillar》效果特别好。做Buzzzz声模仿蜜蜂，让宝宝觉得有趣。公园里找蚂蚁搬家也是很好的观察活动。",
+  "category": "vocab",
+  "tags": ["1000 useful words", "昆虫", "动物", "户外"],
+  "date": "2026-06-30"
 }
 ];
 
@@ -3439,7 +3433,6 @@ function renderQA(data) {
       if(q.tip) h += '<div class="tip-box">💡 ' + q.tip + '</div>';
       h += '</div>';
       if(q.tags && q.tags.length) { h += '<div class="tags">'; for(var t = 0; t < q.tags.length; t++) h += '<span class="tag">' + q.tags[t] + '</span>'; h += '</div>'; }
-      if(q._userEntry) h += '<button class="btn-delete-entry" data-idx="' + (q._userIdx || '') + '" style="background:none;border:1px solid #fca5a5;color:#ef4444;padding:3px 10px;border-radius:8px;font-size:0.72rem;cursor:pointer;margin-top:6px">🗑️ 删除此条</button>';
       h += '<div class="date">' + (q.date || '') + '</div></div>';
     }
     h += '</div>';
@@ -4118,99 +4111,6 @@ document.addEventListener('keydown', function(e) {
   window.addEventListener('scroll', function() {
     clearTimeout(st);
     st = setTimeout(function() { if(panel.classList.contains('open')) highlightActive(); }, 150);
-  });
-})();
-// ===== User Entry Storage (localStorage) =====
-(function() {
-  var STORAGE_KEY = 'babyEnglishQA_userEntries';
-  var toggle = document.getElementById('addEntryToggle');
-  var panel = document.getElementById('addEntryPanel');
-  var saveBtn = document.getElementById('addEntrySave');
-  var cancelBtn = document.getElementById('addEntryCancel');
-  var countEl = document.getElementById('userEntryCount');
-
-  function getEntries() {
-    try { return JSON.parse(localStorage.getItem(STORAGE_KEY)) || []; } catch(e) { return []; }
-  }
-  function saveEntries(entries) {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(entries));
-  }
-  function updateCount() {
-    var n = getEntries().length;
-    countEl.textContent = n > 0 ? '已录入 ' + n + ' 条' : '';
-  }
-
-  function mergeUserEntries() {
-    var entries = getEntries();
-    for(var i = qaData.length - 1; i >= 0; i--) {
-      if(qaData[i]._userEntry) qaData.splice(i, 1);
-    }
-    for(var i = 0; i < entries.length; i++) {
-      var e = entries[i];
-      qaData.push({
-        question: e.title,
-        answer: e.content.replace(/\n/g, '<br>'),
-        category: e.category,
-        tags: e.tags,
-        date: e.date,
-        _userEntry: true,
-        _userIdx: i
-      });
-    }
-  }
-
-  var origApply = applyFilters;
-  window.applyFilters = function() {
-    mergeUserEntries();
-    origApply();
-    updateCount();
-  };
-
-  toggle.addEventListener('click', function() {
-    panel.classList.toggle('open');
-  });
-  cancelBtn.addEventListener('click', function() {
-    panel.classList.remove('open');
-  });
-
-  saveBtn.addEventListener('click', function() {
-    var title = document.getElementById('addEntryTitle').value.trim();
-    var content = document.getElementById('addEntryContent').value.trim();
-    var category = document.getElementById('addEntryCat').value;
-    var tagsStr = document.getElementById('addEntryTags').value.trim();
-    if(!title || !content) { alert('请填写标题和内容'); return; }
-    var tags = tagsStr ? tagsStr.split(/[,，]/).map(function(t){return t.trim()}).filter(Boolean) : [];
-    var entries = getEntries();
-    entries.push({
-      title: title,
-      content: content,
-      category: category,
-      tags: tags,
-      date: new Date().toISOString().split('T')[0]
-    });
-    saveEntries(entries);
-    document.getElementById('addEntryTitle').value = '';
-    document.getElementById('addEntryContent').value = '';
-    document.getElementById('addEntryTags').value = '';
-    panel.classList.remove('open');
-    applyFilters();
-    saveBtn.textContent = '✅ 已保存';
-    setTimeout(function() { saveBtn.textContent = '💾 保存'; }, 1500);
-  });
-
-  updateCount();
-  // Delegate delete button clicks
-  document.getElementById('qa-list').addEventListener('click', function(e) {
-    var btn = e.target.closest('.btn-delete-entry');
-    if(!btn) return;
-    if(!confirm('确定删除这条记录吗？')) return;
-    var idx = parseInt(btn.dataset.idx);
-    var entries = getEntries();
-    if(idx >= 0 && idx < entries.length) {
-      entries.splice(idx, 1);
-      saveEntries(entries);
-      applyFilters();
-    }
   });
 })();
 </script>
