@@ -3892,7 +3892,7 @@ function applyFilters() {
   }
   var q = document.getElementById('search').value.toLowerCase(), f = qaData;
   if(activeCat !== 'all') f = f.filter(function(x) { return x.category === activeCat; });
-  if(activeCat === 'growth') f.sort(function(a, b) { return (a.date || '').localeCompare(b.date || ''); });
+  if(activeCat === 'growth') f.sort(function(a, b) { return (b.date || '').localeCompare(a.date || ''); });
   if(q) { f = f.filter(function(x) { var t = (x.displayTitle || x.question).toLowerCase(), aw = ''; if(x.sections) for(var i = 0; i < x.sections.length; i++) for(var j = 0; j < x.sections[i].words.length; j++) aw += x.sections[i].words[j].en + ' ' + x.sections[i].words[j].cn + ' '; return t.indexOf(q) >= 0 || aw.toLowerCase().indexOf(q) >= 0 || (x.tags && x.tags.some(function(tg) { return tg.toLowerCase().indexOf(q) >= 0; })); }); }
   renderQA(f);
 }
