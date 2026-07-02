@@ -130,6 +130,7 @@
 </div>
 <div class="header">
   <h1>👶 Susan教英语启蒙工具包</h1>
+  <div class="age-badge" id="ageBadge" style="text-align:center;margin-top:4px;font-size:0.82rem;color:#6366f1;font-weight:600"></div>
 
   <div class="meta" id="lastUpdated"></div>
 </div>
@@ -213,6 +214,45 @@
 <div class="footer">💕 用爱陪伴宝宝成长 · Susan教英语知识库</div>
 
 <script>
+// ===== Baby Age Calculator =====
+var BABY_BIRTH = new Date('2025-01-24');
+function getBabyAge() {
+  var now = new Date(), y = now.getFullYear() - BABY_BIRTH.getFullYear(), m = now.getMonth() - BABY_BIRTH.getMonth(), d = now.getDate() - BABY_BIRTH.getDate();
+  if(d < 0) { m--; var prev = new Date(now.getFullYear(), now.getMonth(), 0); d += prev.getDate(); }
+  if(m < 0) { y--; m += 12; }
+  var totalMonths = y * 12 + m;
+  if(y > 0 && m > 0) return y + '岁' + m + '个月（' + totalMonths + '个月）';
+  if(y > 0) return y + '岁（' + totalMonths + '个月）';
+  return m + '个月';
+}
+function getBabyTotalMonths() {
+  var now = new Date(), y = now.getFullYear() - BABY_BIRTH.getFullYear(), m = now.getMonth() - BABY_BIRTH.getMonth(), d = now.getDate() - BABY_BIRTH.getDate();
+  if(d < 0) m--;
+  if(m < 0) { y--; m += 12; }
+  return y * 12 + m;
+}
+function getAgeStageTip() {
+  var mo = getBabyTotalMonths();
+  if(mo < 6) return '目前'+getBabyAge()+'，处于新生儿听觉敏感期。重点是多对宝宝说英语、唱儿歌，建立语音印象。';
+  if(mo < 12) return '目前'+getBabyAge()+'，听觉探测能力逐渐收窄。抓紧让宝宝接触各种英语发音。可以开始引入绘本。';
+  if(mo < 18) return '目前'+getBabyAge()+'，处于黄金启蒙期！妈妈学Susan方法教宝宝，坚持亲子口语+儿歌+绘本。重点做名词卡指认。';
+  if(mo < 24) return '目前'+getBabyAge()+'，黄金启蒙期后期。可以开始让孩子看Susan视频。继续指认+开始基础句型构建。';
+  if(mo < 36) return '目前'+getBabyAge()+'，可以开始看视频+引导输出练习。2-3岁不要求整句输出，重点积累词汇和句型。';
+  return '目前'+getBabyAge()+'，3岁以上应当要求整句输出。可以开始猜词游戏、引导输出ABCD、自然拼读。';
+}
+function processTip(tip) {
+  if(!tip) return '';
+  var mo = getBabyTotalMonths();
+  tip = tip.replace(/17个月/g, getBabyAge());
+  if(mo < 24) {
+    tip = tip.replace('你家宝宝还不到看视频的年龄。现在妈妈先看视频学方法，等宝宝接近2岁再开始看。到时候从名词卡对应的视频开始，每天看一遍。', '你家宝宝'+getBabyAge()+'，还不到看视频的年龄（接近2岁才可以看）。现在妈妈先看视频学方法，用Susan方法教宝宝。');
+  } else if(mo >= 24 && mo < 36) {
+    tip = tip.replace('你家宝宝17个月，还不适合磨耳朵。现在重点是妈妈学Susan方法，通过人-人互动输入。等宝宝2岁后有一定积累了，再在碎片时间放听过的音频加深印象。', '你家宝宝'+getBabyAge()+'，可以在碎片时间放已经看过的音频加深印象。');
+    tip = tip.replace('你家宝宝17个月，还不到看视频的年龄。现在妈妈先看视频学方法，等宝宝接近2岁再开始看。到时候从名词卡对应的视频开始，每天看一遍。', '你家宝宝'+getBabyAge()+'，可以开始看Susan视频了！从名词卡对应的视频开始，每天看一遍。');
+  }
+  return tip;
+}
+
 // ===== QA Data =====
 var qaData = [
 {
@@ -3518,7 +3558,7 @@ function renderQA(data) {
       h += '<div class="qa-card" id="toc-' + cat + '-' + i + '"><div class="question"><span class="q-badge">Q</span>' + (q.displayTitle || q.question) + '</div><div class="answer">';
       if(q.sections) { for(var j = 0; j < q.sections.length; j++) { h += '<div class="section-title">' + q.sections[j].title + '</div>'; h += buildWordList(q.sections[j].words, qIdx, j); } }
       else if(q.answer) { h += q.answer; }
-      if(q.tip) h += '<div class="tip-box">💡 ' + q.tip + '</div>';
+      if(q.tip) h += '<div class="tip-box">💡 ' + processTip(q.tip) + '</div>';
       h += '</div>';
       if(q.tags && q.tags.length) { h += '<div class="tags">'; for(var t = 0; t < q.tags.length; t++) h += '<span class="tag">' + q.tags[t] + '</span>'; h += '</div>'; }
       h += '<div class="date">' + (q.date || '') + '</div></div>';
@@ -3638,6 +3678,7 @@ if('speechSynthesis' in window) { window.speechSynthesis.getVoices(); if(window.
   for(var i = 0; i < els.length; i++) { var cat = els[i].dataset.count; els[i].textContent = counts[cat] || 0; }
 })();
 updateFavCount();
+document.getElementById('ageBadge').textContent = '🍼 宝宝月龄：' + getBabyAge() + ' | ' + getAgeStageTip();
 applyFilters();
 
 // ===== 随机组句 Data =====
