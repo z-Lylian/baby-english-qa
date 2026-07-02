@@ -273,205 +273,6 @@ var catConfig = {
   random: { name: '随机组句', emoji: '🎲' },
   growth: { name: '成长记录', emoji: '📈' }
 };
-
-// ===== Favorites Storage =====
-var favStorage = {
-  KEY: 'baby-qa-favs',
-  getAll: function() { try { return JSON.parse(localStorage.getItem(this.KEY)) || {}; } catch(e) { return {}; } },
-  toggle: function(k) { var f = this.getAll(); if(f[k]) delete f[k]; else f[k] = true; localStorage.setItem(this.KEY, JSON.stringify(f)); return !!f[k]; },
-  isFav: function(k) { return !!this.getAll()[k]; },
-  count: function() { return Object.keys(this.getAll()).length; },
-  getKeys: function() { return Object.keys(this.getAll()); }
-};
-
-// ===== Speak =====
-function speak(text, btn) {
-  if(!('speechSynthesis' in window)) return;
-  window.speechSynthesis.cancel();
-  // Try pre-generated audio file first (works with Bluetooth/AirPods)
-  var word = text.trim().toLowerCase();
-  var audioSrc = null;
-  if(sbCurNoun && sbCurNoun.word.toLowerCase() === word) audioSrc = 'audio/noun_' + word.replace(/ /g,'_').replace(/\//g,'_') + '.wav';
-  else if(sbCurVerb && sbCurVerb.word.toLowerCase() === word) audioSrc = 'audio/verb_' + word.replace(/ /g,'_').replace(/\//g,'_') + '.wav';
-  if(audioSrc) {
-    if(btn) { var orig = btn.textContent; btn.textContent = '⏳'; }
-    var a = new Audio(audioSrc);
-    a.onended = function() { if(btn) btn.textContent = orig; };
-    a.onerror = function() { if(btn) btn.textContent = orig; };
-    a.play();
-    return;
-  }
-  // Fallback to speechSynthesis for QA section words
-  var u = new SpeechSynthesisUtterance(text);
-  u.lang = 'en-US'; u.rate = 0.8;
-  var voices = window.speechSynthesis.getVoices();
-  for(var i = 0; i < voices.length; i++) { if(voices[i].lang.indexOf('en') === 0 && voices[i].name.indexOf('Female') > -1) { u.voice = voices[i]; break; } }
-  if(btn) { var orig = btn.textContent; btn.textContent = '⏳'; u.onend = function() { btn.textContent = orig; }; u.onerror = function() { btn.textContent = orig; }; }
-  window.speechSynthesis.speak(u);
-}
-
-function makeWordKey(q, s, w, en) { return q + '-' + s + '-' + w + '-' + en; }
-function toggleFav(key, btn) { var is = favStorage.toggle(key); btn.textContent = is ? '⭐' : '☆'; btn.className = 'star-btn' + (is ? ' active' : ''); updateFavCount(); }
-function updateFavCount() {
-  var c = favStorage.count();
-  document.getElementById('fav-nav-count').textContent = c;
-}
-
-// ===== Render QA =====
-function buildWordList(words, qIdx, sIdx, hasImg) {
-  var hasImg2 = words.some(function(w) { return !!w.img; });
-  var h = '<ul class="word-list' + (hasImg2 ? ' has-img' : '') + '">';
-  for(var j = 0; j < words.length; j++) {
-    var w = words[j], key = makeWordKey(qIdx, sIdx, j, w.en);
-    var ipa = w.ipa ? '<span class="word-ipa">' + w.ipa + '</span>' : '';
-    var safeEn = w.en.replace(/'/g, "&apos;").replace(/"/g, '&quot;');
-    var isFav = favStorage.isFav(key), sc = 'star-btn' + (isFav ? ' active' : ''), si = isFav ? '⭐' : '☆', lc = isFav ? ' starred' : '';
-    var imgHtml = '';
-    if(w.img) imgHtml = '<img class="word-img" src="' + w.img + '" alt="' + safeEn + '" loading="lazy" onerror="this.style.display=\'none\'">';
-    h += '<li class="' + lc + '">' + imgHtml + '<div class="word-text"><span class="word-en">' + w.en + '</span>' + ipa + '<span class="word-cn">' + w.cn + '</span></div><div class="action-btns"><button class="' + sc + '" data-action="fav" data-key="' + key + '" title="收藏">' + si + '</button><button class="speak-btn" data-action="speak" data-text="' + safeEn + '" title="点击发音">🔊</button></div></li>';
-  }
-  return h + '</ul>';
-}
-
-function renderQA(data) {
-  var l = document.getElementById('qa-list');
-  if(!data || data.length === 0) { l.innerHTML = '<div class="empty-state"><div class="emoji">🔍</div><p>没有找到匹配的问题</p></div>'; return; }
-  var groups = {};
-  data.forEach(function(q) { if(!groups[q.category]) groups[q.category] = []; groups[q.category].push(q); });
-  var h = '';
-  var keys = Object.keys(groups);
-  for(var k = 0; k < keys.length; k++) {
-    var cat = keys[k], items = groups[cat], conf = catConfig[cat] || { name: cat, emoji: '📌' };
-    h += '<div class="category-section" data-cat="' + cat + '"><div class="category-title"><span class="emoji">' + conf.emoji + '</span>' + conf.name + '<span class="count">' + items.length + '</span></div>';
-    for(var i = 0; i < items.length; i++) {
-      var q = items[i], qIdx = qaData.indexOf(q);
-      h += '<div class="qa-card" id="toc-' + cat + '-' + i + '"><div class="question"><span class="q-badge">Q</span>' + (q.displayTitle || q.question) + '</div><div class="answer">';
-      if(q.sections) { for(var j = 0; j < q.sections.length; j++) { h += '<div class="section-title">' + q.sections[j].title + '</div>'; h += buildWordList(q.sections[j].words, qIdx, j); } }
-      else if(q.answer) { h += q.answer; }
-      if(q.tip) h += '<div class="tip-box">💡 ' + processTip(q.tip) + '</div>';
-      h += '</div>';
-      if(q.tags && q.tags.length) { h += '<div class="tags">'; for(var t = 0; t < q.tags.length; t++) h += '<span class="tag">' + q.tags[t] + '</span>'; h += '</div>'; }
-      h += '<div class="date">' + (q.date || '') + '</div></div>';
-    }
-    h += '</div>';
-  }
-  l.innerHTML = h;
-}
-
-function renderFavorites() {
-  var l = document.getElementById('qa-list'), fk = favStorage.getKeys();
-  if(fk.length === 0) { l.innerHTML = '<div class="empty-state"><div class="emoji">🌟</div><p>还没有收藏的单词<br>点击单词旁边的 ☆ 来收藏吧</p></div>'; return; }
-  var grouped = {};
-  for(var i = 0; i < fk.length; i++) {
-    var key = fk[i], p = key.split('-'), qi = parseInt(p[0]), si = parseInt(p[1]), wi = parseInt(p[2]), en = p.slice(3).join('-');
-    if(!grouped[qi]) grouped[qi] = {};
-    if(!grouped[qi][si]) grouped[qi][si] = [];
-    grouped[qi][si].push({ idx: wi, en: en });
-  }
-  var h = '';
-  var qks = Object.keys(grouped).sort(function(a,b) { return parseInt(a) - parseInt(b); });
-  for(var qi = 0; qi < qks.length; qi++) {
-    var qiN = qks[qi], q = qaData[parseInt(qiN)];
-    if(!q) continue;
-    h += '<div class="qa-card"><div class="fav-source-label">' + (q.displayTitle || q.question) + '</div>';
-    if(q.sections) {
-      for(var si = 0; si < q.sections.length; si++) {
-        if(!grouped[qiN][si]) continue;
-        var sec = q.sections[si], fws = grouped[qiN][si].sort(function(a,b) { return a.idx - b.idx; });
-        h += '<div class="fav-section-title">' + sec.title + '</div><ul class="word-list">';
-        for(var fw = 0; fw < fws.length; fw++) {
-          var w = sec.words[fws[fw].idx];
-          if(!w) continue;
-          var wKey = makeWordKey(parseInt(qiN), si, fws[fw].idx, w.en);
-          var ipa = w.ipa ? '<span class="word-ipa">' + w.ipa + '</span>' : '';
-          var safeEn = w.en.replace(/'/g, "&apos;").replace(/"/g, '&quot;');
-          h += '<li class="starred"><span class="word-en">' + w.en + '</span>' + ipa + '<span class="word-cn">' + w.cn + '</span><div class="action-btns"><button class="star-btn active" data-action="fav" data-key="' + wKey + '" title="取消收藏">⭐</button><button class="speak-btn" data-action="speak" data-text="' + safeEn + '" title="点击发音">🔊</button></div></li>';
-        }
-        h += '</ul>';
-      }
-    }
-    h += '</div>';
-  }
-  l.innerHTML = h;
-}
-
-// ===== Filtering =====
-var activeCat = 'all';
-
-function applyFilters() {
-  var sb = document.getElementById('sentence-builder');
-  var ql = document.getElementById('qa-list');
-  var sbox = document.getElementById('search-box');
-
-  if(activeCat === 'random') {
-    sb.className = 'active';
-    ql.style.display = 'none';
-    sbox.style.display = 'none';
-    return;
-  }
-  sb.className = '';
-  ql.style.display = '';
-  sbox.style.display = '';
-
-  if(activeCat === 'favorites') {
-    renderFavorites();
-    var q = document.getElementById('search').value.toLowerCase();
-    if(q) { var lis = document.querySelectorAll('#qa-list .word-list li'); for(var i = 0; i < lis.length; i++) lis[i].style.display = lis[i].textContent.toLowerCase().indexOf(q) >= 0 ? '' : 'none'; }
-    return;
-  }
-  var q = document.getElementById('search').value.toLowerCase(), f = qaData;
-  if(activeCat !== 'all') f = f.filter(function(x) { return x.category === activeCat; });
-  if(activeCat === 'growth') f.sort(function(a, b) { return (b.date || '').localeCompare(a.date || ''); });
-  if(q) { f = f.filter(function(x) { var t = (x.displayTitle || x.question).toLowerCase(), aw = ''; if(x.sections) for(var i = 0; i < x.sections.length; i++) for(var j = 0; j < x.sections[i].words.length; j++) aw += x.sections[i].words[j].en + ' ' + x.sections[i].words[j].cn + ' '; return t.indexOf(q) >= 0 || aw.toLowerCase().indexOf(q) >= 0 || (x.tags && x.tags.some(function(tg) { return tg.toLowerCase().indexOf(q) >= 0; })); }); }
-  renderQA(f);
-}
-
-// ===== Event Listeners =====
-document.getElementById('cat-nav').addEventListener('click', function(e) {
-  var btn = e.target.closest('.cat-btn');
-  if(!btn) return;
-  var allBtns = document.querySelectorAll('.cat-btn');
-  for(var i = 0; i < allBtns.length; i++) allBtns[i].classList.remove('active');
-  btn.classList.add('active');
-  activeCat = btn.dataset.cat;
-  applyFilters();
-  // 显示/隐藏悬浮目录按钮
-  var stb = document.getElementById('subTocBtn');
-  stb.style.display = (activeCat !== 'all' && activeCat !== 'favorites' && activeCat !== 'random') ? 'flex' : 'none';
-  document.getElementById('subTocPanel').classList.remove('open');
-});
-
-document.getElementById('qa-list').addEventListener('click', function(e) {
-  var btn = e.target.closest('[data-action]');
-  if(!btn) return;
-  var action = btn.dataset.action;
-  if(action === 'fav') toggleFav(btn.dataset.key, btn);
-  else if(action === 'speak') speak(btn.dataset.text.replace(/&apos;/g, "'").replace(/&quot;/g, '"'), btn);
-});
-
-document.addEventListener('click', function(e) {
-  var btn = e.target.closest('[data-action="speak-noun"]');
-  if(btn && sbCurNoun) speak(sbCurNoun.word, btn);
-  var btn2 = e.target.closest('[data-action="speak-verb"]');
-  if(btn2 && sbCurVerb) speak(sbCurVerb.word, btn2);
-});
-
-document.getElementById('search').addEventListener('input', applyFilters);
-
-// ===== Speech Synthesis Init =====
-if('speechSynthesis' in window) { window.speechSynthesis.getVoices(); if(window.speechSynthesis.onvoiceschanged !== undefined) window.speechSynthesis.onvoiceschanged = function() { window.speechSynthesis.getVoices(); }; }
-
-// ===== Init =====
-(function() {
-  var counts = {};
-  qaData.forEach(function(q) { counts[q.category] = (counts[q.category] || 0) + 1; });
-  var els = document.querySelectorAll('[data-count]');
-  for(var i = 0; i < els.length; i++) { var cat = els[i].dataset.count; els[i].textContent = counts[cat] || 0; }
-})();
-updateFavCount();
-document.getElementById('ageBadge').textContent = '🍼 宝宝月龄：' + getBabyAge() + ' | ' + getAgeStageTip();
-applyFilters();
-
 // ===== 随机组句 Data =====
 const nounsData = [
         { word: "chick", phonetic: "[tʃɪk]", grammar: "n. [C] 小鸡[ 复数 chicks   ]", imgPath: "images/noun_chick.jpg" },
@@ -1034,6 +835,209 @@ document.addEventListener('keydown', function(e) {
     st = setTimeout(function() { if(panel.classList.contains('open')) highlightActive(); }, 150);
   });
 })();
+
+document.getElementById('qa-list').addEventListener('click', function(e) {
+  var btn = e.target.closest('[data-action]');
+  if(!btn) return;
+  var action = btn.dataset.action;
+  if(action === 'fav') toggleFav(btn.dataset.key, btn);
+  else if(action === 'speak') speak(btn.dataset.text.replace(/&apos;/g, "'").replace(/&quot;/g, '"'), btn);
+});
+
+document.addEventListener('click', function(e) {
+  var btn = e.target.closest('[data-action="speak-noun"]');
+  if(btn && sbCurNoun) speak(sbCurNoun.word, btn);
+  var btn2 = e.target.closest('[data-action="speak-verb"]');
+  if(btn2 && sbCurVerb) speak(sbCurVerb.word, btn2);
+});
+
+document.getElementById('search').addEventListener('input', applyFilters);
+
+// ===== Speech Synthesis Init =====
+if('speechSynthesis' in window) { window.speechSynthesis.getVoices(); if(window.speechSynthesis.onvoiceschanged !== undefined) window.speechSynthesis.onvoiceschanged = function() { window.speechSynthesis.getVoices(); }; }
+
+// ===== Init =====
+(function() {
+  var counts = {};
+  qaData.forEach(function(q) { counts[q.category] = (counts[q.category] || 0) + 1; });
+  var els = document.querySelectorAll('[data-count]');
+  for(var i = 0; i < els.length; i++) { var cat = els[i].dataset.count; els[i].textContent = counts[cat] || 0; }
+})();
+
+
+
+// ===== Favorites Storage =====
+var favStorage = {
+  KEY: 'baby-qa-favs',
+  getAll: function() { try { return JSON.parse(localStorage.getItem(this.KEY)) || {}; } catch(e) { return {}; } },
+  toggle: function(k) { var f = this.getAll(); if(f[k]) delete f[k]; else f[k] = true; localStorage.setItem(this.KEY, JSON.stringify(f)); return !!f[k]; },
+  isFav: function(k) { return !!this.getAll()[k]; },
+  count: function() { return Object.keys(this.getAll()).length; },
+  getKeys: function() { return Object.keys(this.getAll()); }
+};
+
+// ===== Speak =====
+function speak(text, btn) {
+  if(!('speechSynthesis' in window)) return;
+  window.speechSynthesis.cancel();
+  // Try pre-generated audio file first (works with Bluetooth/AirPods)
+  var word = text.trim().toLowerCase();
+  var audioSrc = null;
+  if(sbCurNoun && sbCurNoun.word.toLowerCase() === word) audioSrc = 'audio/noun_' + word.replace(/ /g,'_').replace(/\//g,'_') + '.wav';
+  else if(sbCurVerb && sbCurVerb.word.toLowerCase() === word) audioSrc = 'audio/verb_' + word.replace(/ /g,'_').replace(/\//g,'_') + '.wav';
+  if(audioSrc) {
+    if(btn) { var orig = btn.textContent; btn.textContent = '⏳'; }
+    var a = new Audio(audioSrc);
+    a.onended = function() { if(btn) btn.textContent = orig; };
+    a.onerror = function() { if(btn) btn.textContent = orig; };
+    a.play();
+    return;
+  }
+  // Fallback to speechSynthesis for QA section words
+  var u = new SpeechSynthesisUtterance(text);
+  u.lang = 'en-US'; u.rate = 0.8;
+  var voices = window.speechSynthesis.getVoices();
+  for(var i = 0; i < voices.length; i++) { if(voices[i].lang.indexOf('en') === 0 && voices[i].name.indexOf('Female') > -1) { u.voice = voices[i]; break; } }
+  if(btn) { var orig = btn.textContent; btn.textContent = '⏳'; u.onend = function() { btn.textContent = orig; }; u.onerror = function() { btn.textContent = orig; }; }
+  window.speechSynthesis.speak(u);
+}
+
+function makeWordKey(q, s, w, en) { return q + '-' + s + '-' + w + '-' + en; }
+function toggleFav(key, btn) { var is = favStorage.toggle(key); btn.textContent = is ? '⭐' : '☆'; btn.className = 'star-btn' + (is ? ' active' : ''); updateFavCount(); }
+function updateFavCount() {
+  var c = favStorage.count();
+  document.getElementById('fav-nav-count').textContent = c;
+}
+
+// ===== Render QA =====
+function buildWordList(words, qIdx, sIdx, hasImg) {
+  var hasImg2 = words.some(function(w) { return !!w.img; });
+  var h = '<ul class="word-list' + (hasImg2 ? ' has-img' : '') + '">';
+  for(var j = 0; j < words.length; j++) {
+    var w = words[j], key = makeWordKey(qIdx, sIdx, j, w.en);
+    var ipa = w.ipa ? '<span class="word-ipa">' + w.ipa + '</span>' : '';
+    var safeEn = w.en.replace(/'/g, "&apos;").replace(/"/g, '&quot;');
+    var isFav = favStorage.isFav(key), sc = 'star-btn' + (isFav ? ' active' : ''), si = isFav ? '⭐' : '☆', lc = isFav ? ' starred' : '';
+    var imgHtml = '';
+    if(w.img) imgHtml = '<img class="word-img" src="' + w.img + '" alt="' + safeEn + '" loading="lazy" onerror="this.style.display=\'none\'">';
+    h += '<li class="' + lc + '">' + imgHtml + '<div class="word-text"><span class="word-en">' + w.en + '</span>' + ipa + '<span class="word-cn">' + w.cn + '</span></div><div class="action-btns"><button class="' + sc + '" data-action="fav" data-key="' + key + '" title="收藏">' + si + '</button><button class="speak-btn" data-action="speak" data-text="' + safeEn + '" title="点击发音">🔊</button></div></li>';
+  }
+  return h + '</ul>';
+}
+
+function renderQA(data) {
+  var l = document.getElementById('qa-list');
+  if(!data || data.length === 0) { l.innerHTML = '<div class="empty-state"><div class="emoji">🔍</div><p>没有找到匹配的问题</p></div>'; return; }
+  var groups = {};
+  data.forEach(function(q) { if(!groups[q.category]) groups[q.category] = []; groups[q.category].push(q); });
+  var h = '';
+  var keys = Object.keys(groups);
+  for(var k = 0; k < keys.length; k++) {
+    var cat = keys[k], items = groups[cat], conf = catConfig[cat] || { name: cat, emoji: '📌' };
+    h += '<div class="category-section" data-cat="' + cat + '"><div class="category-title"><span class="emoji">' + conf.emoji + '</span>' + conf.name + '<span class="count">' + items.length + '</span></div>';
+    for(var i = 0; i < items.length; i++) {
+      var q = items[i], qIdx = qaData.indexOf(q);
+      h += '<div class="qa-card" id="toc-' + cat + '-' + i + '"><div class="question"><span class="q-badge">Q</span>' + (q.displayTitle || q.question) + '</div><div class="answer">';
+      if(q.sections) { for(var j = 0; j < q.sections.length; j++) { h += '<div class="section-title">' + q.sections[j].title + '</div>'; h += buildWordList(q.sections[j].words, qIdx, j); } }
+      else if(q.answer) { h += q.answer; }
+      if(q.tip) h += '<div class="tip-box">💡 ' + processTip(q.tip) + '</div>';
+      h += '</div>';
+      if(q.tags && q.tags.length) { h += '<div class="tags">'; for(var t = 0; t < q.tags.length; t++) h += '<span class="tag">' + q.tags[t] + '</span>'; h += '</div>'; }
+      h += '<div class="date">' + (q.date || '') + '</div></div>';
+    }
+    h += '</div>';
+  }
+  l.innerHTML = h;
+}
+
+function renderFavorites() {
+  var l = document.getElementById('qa-list'), fk = favStorage.getKeys();
+  if(fk.length === 0) { l.innerHTML = '<div class="empty-state"><div class="emoji">🌟</div><p>还没有收藏的单词<br>点击单词旁边的 ☆ 来收藏吧</p></div>'; return; }
+  var grouped = {};
+  for(var i = 0; i < fk.length; i++) {
+    var key = fk[i], p = key.split('-'), qi = parseInt(p[0]), si = parseInt(p[1]), wi = parseInt(p[2]), en = p.slice(3).join('-');
+    if(!grouped[qi]) grouped[qi] = {};
+    if(!grouped[qi][si]) grouped[qi][si] = [];
+    grouped[qi][si].push({ idx: wi, en: en });
+  }
+  var h = '';
+  var qks = Object.keys(grouped).sort(function(a,b) { return parseInt(a) - parseInt(b); });
+  for(var qi = 0; qi < qks.length; qi++) {
+    var qiN = qks[qi], q = qaData[parseInt(qiN)];
+    if(!q) continue;
+    h += '<div class="qa-card"><div class="fav-source-label">' + (q.displayTitle || q.question) + '</div>';
+    if(q.sections) {
+      for(var si = 0; si < q.sections.length; si++) {
+        if(!grouped[qiN][si]) continue;
+        var sec = q.sections[si], fws = grouped[qiN][si].sort(function(a,b) { return a.idx - b.idx; });
+        h += '<div class="fav-section-title">' + sec.title + '</div><ul class="word-list">';
+        for(var fw = 0; fw < fws.length; fw++) {
+          var w = sec.words[fws[fw].idx];
+          if(!w) continue;
+          var wKey = makeWordKey(parseInt(qiN), si, fws[fw].idx, w.en);
+          var ipa = w.ipa ? '<span class="word-ipa">' + w.ipa + '</span>' : '';
+          var safeEn = w.en.replace(/'/g, "&apos;").replace(/"/g, '&quot;');
+          h += '<li class="starred"><span class="word-en">' + w.en + '</span>' + ipa + '<span class="word-cn">' + w.cn + '</span><div class="action-btns"><button class="star-btn active" data-action="fav" data-key="' + wKey + '" title="取消收藏">⭐</button><button class="speak-btn" data-action="speak" data-text="' + safeEn + '" title="点击发音">🔊</button></div></li>';
+        }
+        h += '</ul>';
+      }
+    }
+    h += '</div>';
+  }
+  l.innerHTML = h;
+}
+
+// ===== Filtering =====
+var activeCat = 'all';
+
+function applyFilters() {
+  var sb = document.getElementById('sentence-builder');
+  var ql = document.getElementById('qa-list');
+  var sbox = document.getElementById('search-box');
+
+  if(activeCat === 'random') {
+    sb.className = 'active';
+    ql.style.display = 'none';
+    sbox.style.display = 'none';
+    return;
+  }
+  sb.className = '';
+  ql.style.display = '';
+  sbox.style.display = '';
+
+  if(activeCat === 'favorites') {
+    renderFavorites();
+    var q = document.getElementById('search').value.toLowerCase();
+    if(q) { var lis = document.querySelectorAll('#qa-list .word-list li'); for(var i = 0; i < lis.length; i++) lis[i].style.display = lis[i].textContent.toLowerCase().indexOf(q) >= 0 ? '' : 'none'; }
+    return;
+  }
+  var q = document.getElementById('search').value.toLowerCase(), f = qaData;
+  if(activeCat !== 'all') f = f.filter(function(x) { return x.category === activeCat; });
+  if(activeCat === 'growth') f.sort(function(a, b) { return (b.date || '').localeCompare(a.date || ''); });
+  if(q) { f = f.filter(function(x) { var t = (x.displayTitle || x.question).toLowerCase(), aw = ''; if(x.sections) for(var i = 0; i < x.sections.length; i++) for(var j = 0; j < x.sections[i].words.length; j++) aw += x.sections[i].words[j].en + ' ' + x.sections[i].words[j].cn + ' '; return t.indexOf(q) >= 0 || aw.toLowerCase().indexOf(q) >= 0 || (x.tags && x.tags.some(function(tg) { return tg.toLowerCase().indexOf(q) >= 0; })); }); }
+  renderQA(f);
+}
+
+// ===== Event Listeners =====
+document.getElementById('cat-nav').addEventListener('click', function(e) {
+  var btn = e.target.closest('.cat-btn');
+  if(!btn) return;
+  var allBtns = document.querySelectorAll('.cat-btn');
+  for(var i = 0; i < allBtns.length; i++) allBtns[i].classList.remove('active');
+  btn.classList.add('active');
+  activeCat = btn.dataset.cat;
+  applyFilters();
+  // 显示/隐藏悬浮目录按钮
+  var stb = document.getElementById('subTocBtn');
+  stb.style.display = (activeCat !== 'all' && activeCat !== 'favorites' && activeCat !== 'random') ? 'flex' : 'none';
+  // Scroll to top
+  window.scrollTo(0, 0);
+});
+
+updateFavCount();
+document.getElementById('ageBadge').textContent = '🍼 宝宝月龄：' + getBabyAge() + ' | ' + getAgeStageTip();
+applyFilters();
+
 </script>
 </body>
 </html>
