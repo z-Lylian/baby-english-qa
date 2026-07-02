@@ -11,14 +11,21 @@
   .header h1 { font-size: 1.6rem; font-weight: 700; letter-spacing: 0.5px; }
   .header .subtitle { opacity: 0.92; font-size: 0.9rem; margin-top: 0.4rem; font-weight: 400; }
   .header .meta { opacity: 0.65; font-size: 0.75rem; margin-top: 0.8rem; }
-  .stats { display: flex; justify-content: center; gap: 1rem; padding: 1.2rem 1rem; }
-  .stat { background: white; border-radius: 14px; padding: 0.7rem 1.3rem; box-shadow: 0 1px 4px rgba(0,0,0,0.05); text-align: center; min-width: 90px; }
-  .stat .num { font-size: 1.6rem; font-weight: 800; color: #6366f1; }
-  .stat .label { font-size: 0.75rem; color: #999; margin-top: 2px; }
+  .stats { display: flex; justify-content: center; gap: 0.6rem; padding: 0.6rem 1rem; }
+  .stat { background: white; border-radius: 10px; padding: 0.35rem 0.8rem; box-shadow: 0 1px 3px rgba(0,0,0,0.05); text-align: center; min-width: 70px; }
+  .stat .num { font-size: 1.2rem; font-weight: 800; color: #6366f1; }
+  .stat .label { font-size: 0.68rem; color: #999; margin-top: 1px; }
   .stat.fav-stat .num { color: #f59e0b; }
   .container { max-width: 720px; margin: 0 auto; padding: 0 1rem 2rem; }
-  .cat-nav { display: flex; flex-wrap: wrap; gap: 6px; padding: 1rem 0; justify-content: center; position: sticky; top: 0; background: #f5f3f0; z-index: 10; }
-  .cat-btn { padding: 5px 14px; border-radius: 20px; border: 1.5px solid #e0ddd8; background: white; cursor: pointer; font-size: 0.82rem; transition: all 0.2s; white-space: nowrap; color: #666; font-weight: 500; }
+  .cat-nav { position: sticky; top: 0; background: #f5f3f0; z-index: 10; }
+  .cat-nav-toggle { display: flex; align-items: center; justify-content: space-between; padding: 6px 10px; cursor: pointer; user-select: none; -webkit-user-select: none; }
+  .cat-nav-label { font-size: 0.82rem; color: #666; font-weight: 500; display: flex; align-items: center; gap: 4px; }
+  .cat-nav-label .active-cat-emoji { font-size: 1rem; }
+  .cat-nav-chevron { font-size: 0.7rem; color: #999; transition: transform 0.2s; }
+  .cat-nav.open .cat-nav-chevron { transform: rotate(180deg); }
+  .cat-nav-btns { display: none; flex-wrap: wrap; gap: 5px; padding: 4px 0 8px; justify-content: center; }
+  .cat-nav.open .cat-nav-btns { display: flex; }
+  .cat-btn { padding: 4px 11px; border-radius: 18px; border: 1.5px solid #e0ddd8; background: white; cursor: pointer; font-size: 0.78rem; transition: all 0.2s; white-space: nowrap; color: #666; font-weight: 500; }
   .cat-btn:hover { border-color: #a78bfa; color: #6366f1; }
   .cat-btn.active { border-color: transparent; background: #6366f1; color: white; box-shadow: 0 2px 8px rgba(99,102,241,0.3); }
   .cat-btn.fav-tab.active { background: #f59e0b; border-color: transparent; box-shadow: 0 2px 8px rgba(245,158,11,0.3); }
@@ -137,19 +144,25 @@
 
 <div class="container">
   <div class="cat-nav" id="cat-nav">
-    <button class="cat-btn active" data-cat="all">📋 全部</button>
-    <button class="cat-btn fav-tab" data-cat="favorites">⭐ 收藏 <span class="fav-count" id="fav-nav-count">0</span></button>
-    <button class="cat-btn" data-cat="songs">🎵 儿歌童谣 <span class="fav-count" data-count="songs"></span></button>
-    <button class="cat-btn" data-cat="books">📖 绘本阅读 <span class="fav-count" data-count="books"></span></button>
-    <button class="cat-btn" data-cat="daily">🗣️ 日常互动 <span class="fav-count" data-count="daily"></span></button>
-    <button class="cat-btn" data-cat="vocab">📝 词汇与表达 <span class="fav-count" data-count="vocab"></span></button>
-    <button class="cat-btn" data-cat="cards">🧩 Susan五件套 <span class="fav-count" data-count="cards"></span></button>
-    <button class="cat-btn" data-cat="methods">🎯 启蒙方法 <span class="fav-count" data-count="methods"></span></button>
-    <button class="cat-btn" data-cat="phonics">🔤️ 自然拼读 <span class="fav-count" data-count="phonics"></span></button>
-    <button class="cat-btn" data-cat="confusions">❓ 常见困惑 <span class="fav-count" data-count="confusions"></span></button>
-    <button class="cat-btn" data-cat="resources">📦 资源推荐 <span class="fav-count" data-count="resources"></span></button>
-    <button class="cat-btn" data-cat="random">🎲 随机组句 <span class="fav-count" data-count="random"></span></button>
-    <button class="cat-btn" data-cat="growth">📈 成长记录 <span class="fav-count" data-count="growth"></span></button>
+    <div class="cat-nav-toggle" id="cat-nav-toggle">
+      <span class="cat-nav-label"><span class="active-cat-emoji" id="active-cat-emoji">📋</span> <span id="active-cat-name">全部</span></span>
+      <span class="cat-nav-chevron">▼</span>
+    </div>
+    <div class="cat-nav-btns" id="cat-nav-btns">
+      <button class="cat-btn active" data-cat="all">📋 全部</button>
+      <button class="cat-btn fav-tab" data-cat="favorites">⭐ 收藏 <span class="fav-count" id="fav-nav-count">0</span></button>
+      <button class="cat-btn" data-cat="songs">🎵 儿歌童谣 <span class="fav-count" data-count="songs"></span></button>
+      <button class="cat-btn" data-cat="books">📖 绘本阅读 <span class="fav-count" data-count="books"></span></button>
+      <button class="cat-btn" data-cat="daily">🗣️ 日常互动 <span class="fav-count" data-count="daily"></span></button>
+      <button class="cat-btn" data-cat="vocab">📝 词汇与表达 <span class="fav-count" data-count="vocab"></span></button>
+      <button class="cat-btn" data-cat="cards">🧩 Susan五件套 <span class="fav-count" data-count="cards"></span></button>
+      <button class="cat-btn" data-cat="methods">🎯 启蒙方法 <span class="fav-count" data-count="methods"></span></button>
+      <button class="cat-btn" data-cat="phonics">🔤️ 自然拼读 <span class="fav-count" data-count="phonics"></span></button>
+      <button class="cat-btn" data-cat="confusions">❓ 常见困惑 <span class="fav-count" data-count="confusions"></span></button>
+      <button class="cat-btn" data-cat="resources">📦 资源推荐 <span class="fav-count" data-count="resources"></span></button>
+      <button class="cat-btn" data-cat="random">🎲 随机组句 <span class="fav-count" data-count="random"></span></button>
+      <button class="cat-btn" data-cat="growth">📈 成长记录 <span class="fav-count" data-count="growth"></span></button>
+    </div>
   </div>
   <div class="search-box" id="search-box">
     <input type="text" id="search" placeholder="🔍 搜索问题或关键词...">
@@ -1021,17 +1034,29 @@ function applyFilters() {
 // ===== Event Listeners =====
 document.getElementById('cat-nav').addEventListener('click', function(e) {
   var btn = e.target.closest('.cat-btn');
-  if(!btn) return;
-  var allBtns = document.querySelectorAll('.cat-btn');
-  for(var i = 0; i < allBtns.length; i++) allBtns[i].classList.remove('active');
-  btn.classList.add('active');
-  activeCat = btn.dataset.cat;
-  applyFilters();
-  // 显示/隐藏悬浮目录按钮
-  var stb = document.getElementById('subTocBtn');
-  stb.style.display = (activeCat !== 'all' && activeCat !== 'favorites' && activeCat !== 'random') ? 'flex' : 'none';
-  // Scroll to top
-  window.scrollTo(0, 0);
+  if(btn) {
+    var allBtns = document.querySelectorAll('.cat-btn');
+    for(var i = 0; i < allBtns.length; i++) allBtns[i].classList.remove('active');
+    btn.classList.add('active');
+    activeCat = btn.dataset.cat;
+    applyFilters();
+    // 显示/隐藏悬浮目录按钮
+    var stb = document.getElementById('subTocBtn');
+    stb.style.display = (activeCat !== 'all' && activeCat !== 'favorites' && activeCat !== 'random') ? 'flex' : 'none';
+    // 更新折叠标签
+    var conf = catConfig[activeCat] || { name: activeCat, emoji: '📌' };
+    document.getElementById('active-cat-emoji').textContent = btn.textContent.trim().split(' ')[0];
+    document.getElementById('active-cat-name').textContent = (conf.emoji + ' ' + conf.name).replace(conf.emoji + ' ', '');
+    // 自动收起
+    document.getElementById('cat-nav').classList.remove('open');
+    // Scroll to top
+    window.scrollTo(0, 0);
+    return;
+  }
+  // 点击toggle区域展开/收起
+  if(e.target.closest('#cat-nav-toggle')) {
+    document.getElementById('cat-nav').classList.toggle('open');
+  }
 });
 
 updateFavCount();
