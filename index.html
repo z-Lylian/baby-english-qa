@@ -11,6 +11,16 @@
   .header h1 { font-size: 1.6rem; font-weight: 700; letter-spacing: 0.5px; }
   .header .subtitle { opacity: 0.92; font-size: 0.9rem; margin-top: 0.4rem; font-weight: 400; }
   .header .meta { opacity: 0.65; font-size: 0.75rem; margin-top: 0.8rem; }
+  .pwd-overlay { position: fixed; inset: 0; background: #f5f3f0; z-index: 9999; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+  .pwd-overlay.hidden { display: none; }
+  .pwd-card { background: white; border-radius: 20px; padding: 2.5rem 2rem; box-shadow: 0 8px 30px rgba(0,0,0,0.08); text-align: center; width: 90%; max-width: 360px; }
+  .pwd-card h2 { font-size: 1.3rem; color: #6366f1; margin-bottom: 0.5rem; }
+  .pwd-card p { font-size: 0.85rem; color: #9ca3af; margin-bottom: 1.5rem; }
+  .pwd-card input { width: 100%; padding: 12px 16px; border: 2px solid #e5e7eb; border-radius: 12px; font-size: 1.1rem; text-align: center; letter-spacing: 8px; outline: none; transition: border-color 0.2s; }
+  .pwd-card input:focus { border-color: #8b5cf6; }
+  .pwd-card input.wrong { border-color: #ef4444; animation: shake 0.4s; }
+  .pwd-card .pwd-hint { font-size: 0.75rem; color: #d1d5db; margin-top: 0.8rem; }
+  @keyframes shake { 0%,100%{transform:translateX(0)} 25%{transform:translateX(-6px)} 75%{transform:translateX(6px)} }
   .stats { display: flex; justify-content: center; gap: 0.6rem; padding: 0.6rem 1rem; }
   .stat { background: white; border-radius: 10px; padding: 0.35rem 0.8rem; box-shadow: 0 1px 3px rgba(0,0,0,0.05); text-align: center; min-width: 70px; }
   .stat .num { font-size: 1.2rem; font-weight: 800; color: #6366f1; }
@@ -130,6 +140,14 @@
 </style>
 </head>
 <body>
+<div class="pwd-overlay" id="pwd-overlay">
+  <div class="pwd-card">
+    <h2>🔒 请输入密码</h2>
+    <p>输入密码后即可访问内容</p>
+    <input type="tel" id="pwd-input" maxlength="10" placeholder="····" autocomplete="off">
+    <div class="pwd-hint">密码错误无法查看</div>
+  </div>
+</div>
 <button class="sub-toc-btn" id="subTocBtn" title="目录">📑</button>
 <div class="sub-toc-panel" id="subTocPanel">
   <div class="sub-toc-head"><span id="subTocTitle">📋 目录</span><button id="subTocClose">✕</button></div>
@@ -228,6 +246,16 @@
 <div class="footer">💕 用爱陪伴宝宝成长 · Susan教英语知识库</div>
 
 <script>
+// ===== Password Gate =====
+(function(){
+  var P='0124';
+  var o=document.getElementById('pwd-overlay'),inp=document.getElementById('pwd-input');
+  if(sessionStorage.getItem('p')){o.className='pwd-overlay hidden';return;}
+  inp.focus();
+  function tryPwd(){if(inp.value===P){o.className='pwd-overlay hidden';sessionStorage.setItem('p','1');}else{inp.className='wrong';setTimeout(function(){inp.className='';inp.value='';inp.focus();},500);}}
+  inp.addEventListener('keydown',function(e){if(e.key==='Enter')tryPwd();});
+  inp.addEventListener('input',function(){if(inp.value.length>=4)tryPwd();});
+})();
 // ===== Baby Age Calculator =====
 var BABY_BIRTH = new Date('2025-01-24');
 function getBabyAge() {
