@@ -921,7 +921,12 @@ var favStorage = {
 ;(function(){try{var f=JSON.parse(localStorage.getItem('baby-qa-favs')||'{}');var keys=Object.keys(f),changed=false,nf={};for(var i=0;i<keys.length;i++){var k=keys[i],p=k.split('-'),qi=parseInt(p[0]);if(qi>=39){var nk=(qi-1)+'-'+p.slice(1).join('-');nf[nk]=true;changed=true}else{nf[k]=f[k]}}if(changed){localStorage.setItem('baby-qa-favs',JSON.stringify(nf))}}catch(e){}})();
 
 
-// ===== Speak =====
+
+var qaTitleMap = (function(){var m={};for(var i=0;i<qaData.length;i++){var t=qaData[i].displayTitle||qaData[i].question||'';if(!m[t])m[t]=i;}return m;})();
+function makeWordKey(qIdx,s,w,en){return (qaData[qIdx].displayTitle||qaData[qIdx].question||'e'+qIdx)+'-'+s+'-'+w+'-'+en;}
+function resolveFavKey(key){var p=key.indexOf('-');if(p<0)return null;var title=key.substring(0,p),rest=key.substring(p+1);var qi=qaTitleMap[title];if(qi===undefined)return null;return{qi:qi,rest:rest};}
+function toggleFav(key, btn) { var is = favStorage.toggle(key); btn.textContent = is ? '⭐' : '☆'; btn.className = 'star-btn active'; updateFavCount(); }
+;(function(){try{var f=JSON.parse(localStorage.getItem('baby-qa-favs')||'{}');var keys=Object.keys(f),nf={},migrated=false;for(var i=0;i<keys.length;i++){var k=keys[i];var p=k.indexOf('-');if(p<0){nf[k]=f[k];continue;}var prefix=k.substring(0,p);if(!isNaN(parseInt(prefix))&&qaData[parseInt(prefix)]){var qi=parseInt(prefix),title=qaData[qi].displayTitle||qaData[qi].question||'e'+qi;nk=title+k.substring(p);nf[nk]=f[k];migrated=true}else{nf[k]=f[k]}}if(migrated){localStorage.setItem('baby-qa-favs',JSON.stringify(nf))}}catch(e){}})();// ===== Speak =====
 function speak(text, btn) {
   if(!('speechSynthesis' in window)) return;
   window.speechSynthesis.cancel();
@@ -947,7 +952,7 @@ function speak(text, btn) {
   window.speechSynthesis.speak(u);
 }
 
-function makeWordKey(q, s, w, en) { return q + '-' + s + '-' + w + '-' + en; }
+
 function toggleFav(key, btn) { var is = favStorage.toggle(key); btn.textContent = is ? '⭐' : '☆'; btn.className = 'star-btn' + (is ? ' active' : ''); updateFavCount(); }
 function updateFavCount() {
   var c = favStorage.count();
@@ -1000,10 +1005,10 @@ function renderFavorites() {
   if(fk.length === 0) { l.innerHTML = '<div class="empty-state"><div class="emoji">🌟</div><p>还没有收藏的单词<br>点击单词旁边的 ☆ 来收藏吧</p></div>'; return; }
   var grouped = {};
   for(var i = 0; i < fk.length; i++) {
-    var key = fk[i], p = key.split('-'), qi = parseInt(p[0]), si = parseInt(p[1]), wi = parseInt(p[2]), en = p.slice(3).join('-');
-    if(!grouped[qi]) grouped[qi] = {};
-    if(!grouped[qi][si]) grouped[qi][si] = [];
-    grouped[qi][si].push({ idx: wi, en: en });
+    var key = fk[i], r = resolveFavKey(key); if(!r) continue; var rest = r.rest, p = rest.split('-'), si = parseInt(p[0]), wi = parseInt(p[1]), en = p.slice(2).join('-');
+    if(!grouped[r.qi]) grouped[r.qi] = {};
+    if(!grouped[r.qi][si]) grouped[r.qi][si] = [];
+    grouped[r.qi][si].push({ idx: wi, en: en });
   }
   var h = '';
   var qks = Object.keys(grouped).sort(function(a,b) { return parseInt(a) - parseInt(b); });
