@@ -133,6 +133,8 @@
   .sub-toc-head button { background: none; border: none; font-size: 0.9rem; cursor: pointer; color: #999; padding: 2px 5px; border-radius: 4px; }
   .sub-toc-head button:hover { background: #f5f3f0; }
   .sub-toc-body { overflow-y: auto; padding: 6px 0; flex: 1; }
+  .sub-toc-search { width: calc(100% - 20px); margin: 4px 10px 6px; padding: 6px 10px; font-size: 0.8rem; border: 1px solid #e3dede; border-radius: 8px; outline: none; box-sizing: border-box; background: #fafaf8; }
+  .sub-toc-search:focus { border-color: #8b5cf6; background: #fff; }
   .sub-toc-item { display: block; padding: 5px 12px 5px 20px; font-size: 0.78rem; color: #5a7aa5; text-decoration: none; cursor: pointer; line-height: 1.4; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
   .sub-toc-item:hover { background: #f0edff; color: #4338ca; }
   .sub-toc-item.active { background: #ede9fe; color: #4338ca; font-weight: 600; }
@@ -846,9 +848,11 @@ document.addEventListener('keydown', function(e) {
       h += '<a class="sub-toc-item" data-target="' + tid + '">' + (i+1) + '. ' + t + '</a>';
     }
     if(!h) h = '<div style="padding:10px;color:#999;text-align:center;font-size:0.8rem">暂无条目</div>';
-    body.innerHTML = h;
+    body.innerHTML = '<input type="text" class="sub-toc-search" id="subTocSearch" placeholder="🔍 输入歌名/关键词过滤…" autocomplete="off"><div id="subTocList">' + h + '</div>';
     highlightActive();
     panel.classList.add('open');
+    var si = document.getElementById('subTocSearch');
+    if(si) { if(items.length > 15) { setTimeout(function(){ si.focus(); }, 150); } else { si.style.display = 'none'; } }
   });
 
   closeBtn.addEventListener('click', function() { panel.classList.remove('open'); });
@@ -865,12 +869,19 @@ document.addEventListener('keydown', function(e) {
     panel.classList.remove('open');
   });
 
+  body.addEventListener('input', function(e) {
+    if(e.target.id !== 'subTocSearch') return;
+    var v = (e.target.value || '').toLowerCase().trim();
+    var its = body.querySelectorAll('.sub-toc-item');
+    for(var i = 0; i < its.length; i++) its[i].style.display = (!v || its[i].textContent.toLowerCase().indexOf(v) >= 0) ? '' : 'none';
+  });
+
   function highlightActive() {
     var items = body.querySelectorAll('.sub-toc-item');
     for(var i = 0; i < items.length; i++) items[i].classList.remove('active');
     for(var i = items.length - 1; i >= 0; i--) {
       var el = document.getElementById(items[i].dataset.target);
-      if(el && el.getBoundingClientRect().top <= 120) { items[i].classList.add('active'); break; }
+      if(el && el.offsetParent && el.getBoundingClientRect().top <= 120) { items[i].classList.add('active'); break; }
     }
   }
 
