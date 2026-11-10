@@ -53,6 +53,11 @@
   .qa-card:hover { box-shadow: 0 4px 16px rgba(0,0,0,0.08); }
   .question { font-size: 1rem; font-weight: 700; color: #4338ca; margin-bottom: 0.8rem; display: flex; align-items: flex-start; gap: 0.5rem; }
   .question .q-badge { background: #6366f1; color: white; padding: 2px 8px; border-radius: 8px; font-size: 0.75rem; font-weight: 700; flex-shrink: 0; margin-top: 2px; }
+  .song-fav-btn { margin-left: auto; background: none; border: none; font-size: 1.15rem; cursor: pointer; padding: 0 4px; flex-shrink: 0; line-height: 1; }
+  .fav-songs-head { padding: 12px 12px 4px; font-weight: 700; font-size: 0.85rem; color: #4338ca; }
+  .fav-song-item { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin: 6px 10px; padding: 10px 12px; background: #fffbeb; border: 1px solid #fde68a; border-radius: 10px; font-size: 0.85rem; cursor: pointer; }
+  .fav-song-item:hover { background: #fef3c7; }
+  .fav-song-jump { color: #92400e; font-size: 0.72rem; white-space: nowrap; }
   .answer { font-size: 0.9rem; color: #444; }
   .section-title { font-weight: 700; color: #2d2d2d; margin: 0.8rem 0 0.4rem; padding: 0.4rem 0; border-bottom: 1px solid #f0eef0; font-size: 0.9rem; }
   .word-list { list-style: none; display: flex; flex-direction: column; gap: 4px; }
@@ -972,6 +977,24 @@ function updateFavCount() {
   document.getElementById('fav-nav-count').textContent = c;
 }
 
+function toggleSongFav(btn) {
+  var key = btn.getAttribute('data-songkey');
+  if(!key) return;
+  var is = favStorage.toggle(key);
+  btn.textContent = is ? '⭐' : '☆';
+  btn.className = 'song-fav-btn' + (is ? ' active' : '');
+  updateFavCount();
+}
+
+function jumpToSong(title) {
+  var btns = document.querySelectorAll('.cat-btn');
+  for(var i = 0; i < btns.length; i++) { if(btns[i].dataset.cat === 'songs') { btns[i].click(); break; } }
+  setTimeout(function() {
+    var qs = document.querySelectorAll('#qa-list .qa-card .question');
+    for(var i = 0; i < qs.length; i++) { if(qs[i].textContent.indexOf(title) >= 0) { qs[i].scrollIntoView({ behavior: 'smooth', block: 'start' }); break; } }
+  }, 150);
+}
+
 // ===== Render QA =====
 function buildWordList(words, qIdx, sIdx, hasImg) {
   var hasImg2 = words.some(function(w) { return !!w.img; });
@@ -1000,7 +1023,9 @@ function renderQA(data) {
     h += '<div class="category-section" data-cat="' + cat + '"><div class="category-title"><span class="emoji">' + conf.emoji + '</span>' + conf.name + '<span class="count">' + items.length + '</span></div>';
     for(var i = 0; i < items.length; i++) {
       var q = items[i], qIdx = qaData.indexOf(q);
-      h += '<div class="qa-card" id="toc-' + cat + '-' + i + '"><div class="question"><span class="q-badge">Q</span>' + (q.displayTitle || q.question) + '</div><div class="answer">';
+      var songFav = '';
+      if(q.category === 'songs') { var sk = 'song|' + (q.displayTitle || q.question); var sf = favStorage.isFav(sk); songFav = '<button class="song-fav-btn' + (sf ? ' active' : '') + '" data-songkey="' + sk.replace(/"/g, '&quot;') + '" title="收藏整首儿歌">' + (sf ? '⭐' : '☆') + '</button>'; }
+      h += '<div class="qa-card" id="toc-' + cat + '-' + i + '"><div class="question"><span class="q-badge">Q</span>' + (q.displayTitle || q.question) + songFav + '</div><div class="answer">';
       if(q.sections) { for(var j = 0; j < q.sections.length; j++) { h += '<div class="section-title">' + q.sections[j].title + '</div>'; h += buildWordList(q.sections[j].words, qIdx, j); } }
       else if(q.answer) { h += q.answer; }
       if(q.tip) h += '<div class="tip-box">💡 ' + processTip(q.tip) + '</div>';
@@ -1015,15 +1040,24 @@ function renderQA(data) {
 
 function renderFavorites() {
   var l = document.getElementById('qa-list'), fk = favStorage.getKeys();
-  if(fk.length === 0) { l.innerHTML = '<div class="empty-state"><div class="emoji">🌟</div><p>还没有收藏的单词<br>点击单词旁边的 ☆ 来收藏吧</p></div>'; return; }
+  if(fk.length === 0) { l.innerHTML = '<div class="empty-state"><div class="emoji">🌟</div><p>还没有收藏<br>儿歌标题旁的 ☆ 收藏整首歌；单词旁的 ☆ 收藏单词</p></div>'; return; }
+  var songKeys = [], wordKeys = [];
+  for(var i = 0; i < fk.length; i++) { if(fk[i].indexOf('song|') === 0) songKeys.push(fk[i]); else wordKeys.push(fk[i]); }
+  var h = '';
+  if(songKeys.length) {
+    h += '<div class="fav-songs-head">🎵 收藏的儿歌（' + songKeys.length + '首）</div>';
+    for(var i = 0; i < songKeys.length; i++) {
+      var sTitle = songKeys[i].substring(5).replace(/"/g, '&quot;');
+      h += '<div class="fav-song-item" data-jump-title="' + sTitle + '">🎵 ' + songKeys[i].substring(5) + '<span class="fav-song-jump">跳过去 →</span></div>';
+    }
+  }
   var grouped = {};
-  for(var i = 0; i < fk.length; i++) {
-    var key = fk[i], r = resolveFavKey(key); if(!r) continue; var rest = r.rest, p = rest.split('-'), si = parseInt(p[0]), wi = parseInt(p[1]), en = p.slice(2).join('-');
+  for(var i = 0; i < wordKeys.length; i++) {
+    var key = wordKeys[i], r = resolveFavKey(key); if(!r) continue; var rest = r.rest, p = rest.split('-'), si = parseInt(p[0]), wi = parseInt(p[1]), en = p.slice(2).join('-');
     if(!grouped[r.qi]) grouped[r.qi] = {};
     if(!grouped[r.qi][si]) grouped[r.qi][si] = [];
     grouped[r.qi][si].push({ idx: wi, en: en });
   }
-  var h = '';
   var qks = Object.keys(grouped).sort(function(a,b) { return parseInt(a) - parseInt(b); });
   for(var qi = 0; qi < qks.length; qi++) {
     var qiN = qks[qi], q = qaData[parseInt(qiN)];
@@ -1047,8 +1081,18 @@ function renderFavorites() {
     }
     h += '</div>';
   }
+  if(songKeys.length && qks.length) h = '<div class="fav-songs-head">⭐ 收藏的单词</div>' + h;
+  if(!h) { l.innerHTML = '<div class="empty-state"><div class="emoji">🌟</div><p>收藏的条目找不到了</p></div>'; return; }
   l.innerHTML = h;
 }
+
+// ===== Song favorites interactions =====
+document.getElementById('qa-list').addEventListener('click', function(e) {
+  var it = e.target.closest('.fav-song-item');
+  if(it) { jumpToSong(it.getAttribute('data-jump-title')); return; }
+  var sb = e.target.closest('.song-fav-btn');
+  if(sb) toggleSongFav(sb);
+});
 
 // ===== Filtering =====
 var activeCat = 'all';
